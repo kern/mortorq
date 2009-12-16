@@ -18,12 +18,17 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * directory.
  */
 public class Widowmaker extends IterativeRobot {
+    private DriveTrain driveTrain;
+    private OperatorInterface opInterface;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-
+        driveTrain = new DriveTrain();
+        opInterface = new OperatorInterface();
+        opInterface.addListener(driveTrain);
     }
 
     /**
