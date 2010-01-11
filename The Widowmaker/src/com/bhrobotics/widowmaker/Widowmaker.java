@@ -7,8 +7,8 @@
 
 package com.bhrobotics.widowmaker;
 
-
 import edu.wpi.first.wpilibj.IterativeRobot;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,30 +19,69 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Widowmaker extends IterativeRobot {
     private DriveTrain driveTrain;
-    private OperatorInterface opInterface;
+    private OperatorInterface console;
+    private AiOperator ai;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
+        console = new OperatorInterface(this);
+        ai = new AiOperator(this);
+
         driveTrain = new DriveTrain();
-        opInterface = new OperatorInterface();
-        opInterface.addListener(driveTrain);
+        console.addListener(driveTrain);
+        ai.addListener(driveTrain);
     }
 
+
     /**
-     * This function is called periodically during autonomous
+     * Called when we first enter autonomous mode
+     */
+    public void autonomousInit() {
+        console.setActive(false);
+        ai.setActive(true);
+    }
+
+
+    /**
+     * Called continuously during autonomous mode
+     */
+    public void autonomousContinuous() {
+        ai.continuous();
+    }
+
+
+    /**
+     * Called periodically during autonomous mode
      */
     public void autonomousPeriodic() {
-
+        ai.periodic();
     }
+
 
     /**
-     * This function is called periodically during operator control
+     * Called when we first enter teleoperated mode
+     */
+    public void teleopInit() {
+        ai.setActive(false);
+        console.setActive(true);
+    }
+
+
+    /**
+     * Called continuously during teleoperated mode
+     */
+    public void teleopContinuous() {
+        console.continuous();
+    }
+
+
+    /**
+     * Called periodically during teleoperated mode
      */
     public void teleopPeriodic() {
-        
+        console.periodic();
     }
-    
 }
