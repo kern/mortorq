@@ -54,7 +54,7 @@ public class Widowmaker extends IterativeRobot {
         // Set up the manual mode controller (operator interface)
         console = new OperatorInterface(this);
         Joystick driveStick = new Joystick(DRIVE_JOYSTICK);
-        console.addDriveController(driveStick);
+        console.setDriveControl(driveStick);
 
         // Set up the drive train component
         Jaguar right = new Jaguar(MOTOR_SLOT, RIGHT_MOTOR_CHANNEL);

@@ -34,10 +34,10 @@ public class OperatorInterface extends Operator {
 
 
     /**
-     * Add the driver's control.
+     * Set the driver's control.
      * @param stick the joystick that controls driving
      */
-    void addDriveController(Joystick stick) {
+    void setDriveControl(Joystick stick) {
         _driveStick = stick;
     }
 
