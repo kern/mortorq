@@ -5,6 +5,8 @@
 
 package com.bhrobotics.widowmaker;
 
+import edu.wpi.first.wpilibj.Joystick;
+
 
 /**
  * Class that handles the station used by robot operators, containing
@@ -19,8 +21,24 @@ public class OperatorInterface extends Operator {
     // Time interval (microseconds) between calls to perioidic()
     private static final double PERIOD = 10000.0;
 
+    private Joystick _driveStick;
+
+
+    /**
+     * Create a new operator interface for the given robot.
+     * @param robot the robot to control
+     */
     OperatorInterface(Widowmaker robot) {
         super(robot);
+    }
+
+
+    /**
+     * Add the driver's control.
+     * @param stick the joystick that controls driving
+     */
+    void addDriveController(Joystick stick) {
+        _driveStick = stick;
     }
 
 
@@ -30,6 +48,19 @@ public class OperatorInterface extends Operator {
      */
     protected double getPeriod() {
         return PERIOD;
+    }
+
+
+    /**
+     * Called continuously while this operator is in control.
+     */
+    protected void continuous() {
+        // Driving control
+        notifyMove(_driveStick.getY(), _driveStick.getX());
+
+        // Compressor control
+
+        // Kicker control
     }
 
 
