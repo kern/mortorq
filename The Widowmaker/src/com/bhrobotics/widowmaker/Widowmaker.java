@@ -78,7 +78,7 @@ public class Widowmaker extends IterativeRobot {
      * Called continuously during autonomous mode
      */
     public void autonomousContinuous() {
-        if(eStop.get()) {
+        if(!eStop.get()) {
             ai.notifyEmergencyStop();
         } else {
             // Let the AI do any controlling it desires
@@ -112,7 +112,7 @@ public class Widowmaker extends IterativeRobot {
      * Called continuously during teleoperated mode
      */
     public void teleopContinuous() {
-        if(eStop.get()) {
+        if(!eStop.get()) {
             console.notifyEmergencyStop();
         } else {
             // Let the operators do any controlling they desire
