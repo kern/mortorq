@@ -22,6 +22,7 @@ public class OperatorInterface extends Operator {
     private static final double PERIOD = 10000.0;
 
     private Joystick _driveStick;
+    private Joystick _aimStick;
 
 
     /**
@@ -41,6 +42,14 @@ public class OperatorInterface extends Operator {
         _driveStick = stick;
     }
 
+    /**
+     * Set the driver's aiming control.
+     * @param stick the joystick that controls aiming
+     */
+    void setAimControl(Joystick stick) {
+        _aimStick = stick;
+    }
+
 
     /**
      * @return the desired time interval (in microseconds, not milliseconds)
@@ -56,7 +65,7 @@ public class OperatorInterface extends Operator {
      */
     protected void continuous() {
         // Driving control
-        notifyMove(_driveStick.getY(), _driveStick.getX());
+        notifyMove(_driveStick.getY(), _driveStick.getX(), _aimStick.getX());
 
         // Compressor control
 

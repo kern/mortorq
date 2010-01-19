@@ -17,27 +17,41 @@ import edu.wpi.first.wpilibj.SpeedController;
  * @author Administrator
  */
 public class DriveTrain implements OiListener {
-    private SpeedController _rightMotor;
-    private SpeedController _leftMotor;
+    private SpeedController _rightFrontMotor;
+    private SpeedController _rightBackMotor;
+    private SpeedController _leftFrontMotor;
+    private SpeedController _leftBackMotor;
 
 
     /**
      * Create a new drive train using the given motors for a
-     * tank-style drive train.
-     * @param right the motor on the right side
-     * @param left the motor on the left side
+     * mechanum-style drive train.
+     * @param rightFront the motor on the front right side
+     * @param rightBack the motor on the back right side
+     * @param leftFront the motor on the front left side
+     * @param leftBack the motor on the back left side
      */
-    public DriveTrain(SpeedController right, SpeedController left) {
+    public DriveTrain(SpeedController rightFront, SpeedController rightBack,
+                      SpeedController leftFront, SpeedController leftBack) {
         // Prevent illegal setup
-        if(right == null) {
-            throw new IllegalArgumentException("right motor is null!");
+        if(rightFront == null) {
+            throw new IllegalArgumentException("right front motor is null!");
         }
-        if(right == null) {
-            throw new IllegalArgumentException("left motor is null!");
+        if(rightBack == null) {
+            throw new IllegalArgumentException("right back motor is null!");
         }
+        if(leftFront == null) {
+            throw new IllegalArgumentException("left front motor is null!");
+        }
+        if(leftBack == null) {
+            throw new IllegalArgumentException("left back motor is null!");
+        }
+
         // Save needed values for later
-        _rightMotor = right;
-        _leftMotor = left;
+        _rightFrontMotor = rightFront;
+        _rightBackMotor = rightBack;
+        _leftFrontMotor = leftFront;
+        _leftBackMotor = leftBack;
     }
 
 
@@ -46,38 +60,47 @@ public class DriveTrain implements OiListener {
      */
     public void emergencyStop() {
         // Stop all drive motors and engage any brakes.
-        _rightMotor.set(0);
-        _leftMotor.set(0);
+        _rightFrontMotor.set(0);
+        _rightBackMotor.set(0);
+        _leftFrontMotor.set(0);
+        _leftBackMotor.set(0);
     }
 
 
     /**
-     * User has changed the driving controls to a new speed or turn rate.
-     * The speed gives the desired forward velocity of the robot, with
-     * zero indicating stopped and negative values indicating driving in
-     * reverse. The turn rate gives the desired angular velocity of the
-     * robot, with zero indicating no turn, positive values indicating a
-     * clockwise (right) turn, and negative values indicating a
+     * User has changed the driving controls to a new speed, strafe,
+     * or rotation. The speed gives the desired forward velocity of the
+     * robot, with zero indicating stopped and negative values indicating
+     * driving in reverse. The strafe gives the desired sideways velocity
+     * of the  robot, with zero indicating stopped and negative values
+     * indication driving to the left. The rotation gives the desired angular
+     * velocity of the robot, with zero indicating no turn, positive values
+     * indicating a clockwise (right) turn, and negative values indicating a
      * counterclockwise (left) turn.
      *
      * @param speed the new speed, in range [-1..1]
-     * @param turnRate the new turn rate, in range [-1..1]
+     * @param strafe the new strafe, in range [-1..1]
+     * @param rotation the new rotation, in range [-1..1]
      */
-    public void move(double speed, double turnRate) {
+    public void move(double speed, double strafe, double rotation) {
         // Simple algorithm: Motors attempt to reach desired settings
         // immediately.
-        // Alternate algorithm, should it be desired: have a target
-        // speed for each motor, and gradually ramp the motor speed up
-        // or down until it reaches that speed.
 
-        // Convert speed and turn rate to motor speed settings
-        double leftTarget = speed + turnRate;
-        double rightTarget = speed - turnRate;
-        leftTarget = Math.min(1.0, Math.max(-1.0, leftTarget));
-        rightTarget = Math.min(1.0, Math.max(-1.0, rightTarget));
+        // Convert speed and turn rate to mechanum motor speed settings
+        double rightFrontTarget = speed + strafe + rotation;
+        double rightBackTarget = speed - strafe + rotation;
+        double leftFrontTarget = speed - strafe - rotation;
+        double leftBackTarget = speed + strafe - rotation;
 
+        rightFrontTarget = Math.min(1.0, Math.max(-1.0, rightFrontTarget));
+        rightBackTarget = Math.min(1.0, Math.max(-1.0, rightBackTarget));
+        leftFrontTarget = Math.min(1.0, Math.max(-1.0, leftFrontTarget));
+        leftBackTarget = Math.min(1.0, Math.max(-1.0, leftBackTarget));
+        
         // Set motor speeds
-        _rightMotor.set(rightTarget);
-        _leftMotor.set(leftTarget);
+        _rightFrontMotor.set(rightFrontTarget);
+        _rightBackMotor.set(rightBackTarget);
+        _leftFrontMotor.set(leftFrontTarget);
+        _leftBackMotor.set(leftBackTarget);
     }
 }

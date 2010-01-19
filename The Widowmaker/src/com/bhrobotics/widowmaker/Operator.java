@@ -113,13 +113,14 @@ public abstract class Operator {
     /**
      * Notify all listeners that movement should change.
      * @param speed the new movement speed
-     * @param turnRate the new turn rate
+     * @param strafe the new strafe
+     * @param rotation the new rotation
      */
-    protected void notifyMove(double speed, double turnRate) {
+    protected void notifyMove(double speed, double strafe, double rotation) {
         Enumeration en = _listeners.elements();
         while(en.hasMoreElements()) {
             OiListener l = (OiListener) en.nextElement();
-            l.move(speed, turnRate);
+            l.move(speed, strafe, rotation);
         }
     }
 }

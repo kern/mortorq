@@ -24,11 +24,14 @@ import edu.wpi.first.wpilibj.Watchdog;
 public class Widowmaker extends IterativeRobot {
     // Operator interface ports
     private static final int DRIVE_JOYSTICK = 1;
+    private static final int AIM_JOYSTICK = 2;
     private static final int EMERGENCY_STOP = 2;
 
     // cRio slots and channels
-    private static final int RIGHT_MOTOR_CHANNEL = 4;
-    private static final int LEFT_MOTOR_CHANNEL = 1;
+    private static final int RIGHT_FRONT_MOTOR_CHANNEL = 2;
+    private static final int RIGHT_BACK_MOTOR_CHANNEL = 1;
+    private static final int LEFT_FRONT_MOTOR_CHANNEL = 4;
+    private static final int LEFT_BACK_MOTOR_CHANNEL = 5;
     private static final int MOTOR_SLOT = 4;
 
     // Robot controllers
@@ -54,12 +57,17 @@ public class Widowmaker extends IterativeRobot {
         // Set up the manual mode controller (operator interface)
         console = new OperatorInterface(this);
         Joystick driveStick = new Joystick(DRIVE_JOYSTICK);
+        Joystick aimStick = new Joystick(AIM_JOYSTICK);
         console.setDriveControl(driveStick);
+        console.setAimControl(aimStick);
 
         // Set up the drive train component
-        Jaguar right = new Jaguar(MOTOR_SLOT, RIGHT_MOTOR_CHANNEL);
-        Jaguar left = new Jaguar(MOTOR_SLOT, LEFT_MOTOR_CHANNEL);
-        DriveTrain driveTrain = new DriveTrain(right, left);
+        Jaguar rightFront = new Jaguar(MOTOR_SLOT, RIGHT_FRONT_MOTOR_CHANNEL);
+        Jaguar rightBack = new Jaguar(MOTOR_SLOT, RIGHT_BACK_MOTOR_CHANNEL);
+        Jaguar leftFront = new Jaguar(MOTOR_SLOT, LEFT_FRONT_MOTOR_CHANNEL);
+        Jaguar leftBack = new Jaguar(MOTOR_SLOT, LEFT_BACK_MOTOR_CHANNEL);
+        DriveTrain driveTrain = new DriveTrain(rightFront, rightBack,
+                                               leftFront, leftBack);
         console.addListener(driveTrain);
         ai.addListener(driveTrain);
     }

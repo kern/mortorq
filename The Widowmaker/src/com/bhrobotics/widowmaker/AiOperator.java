@@ -1,6 +1,7 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * AiOperator
+ *
+ * Copyright (c) BHRobotics 2010.
  */
 
 package com.bhrobotics.widowmaker;
