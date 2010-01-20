@@ -32,7 +32,7 @@ public class DriveTrain implements OiListener {
         if(right == null) {
             throw new IllegalArgumentException("right motor is null!");
         }
-        if(right == null) {
+        if(left == null) {
             throw new IllegalArgumentException("left motor is null!");
         }
         // Save needed values for later
