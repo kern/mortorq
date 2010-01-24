@@ -1,5 +1,7 @@
 package com.bhrobotics.widowmaker;
 
+import edu.wpi.first.wpilibj.AnalogModule;
+import edu.wpi.first.wpilibj.DigitalModule;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Jaguar;
@@ -18,19 +20,28 @@ public class Widowmaker extends IterativeRobot {
     // Safety components
     private Watchdog watchdog = getWatchdog();
     private DigitalInput eStop;
+
     // Robot controllers
     private AiOperator ai;
     private OperatorInterface console;
+    private DashboardInterface dashboard;
+
     // Operator interface ports
     private static final int DRIVE_JOYSTICK = 1;
     private static final int AIM_JOYSTICK = 2;
     private static final int EMERGENCY_STOP = 2;
-    // cRIO slots and channels
+    
+    // Motor channels
     private static final int RIGHT_FRONT_MOTOR_CHANNEL = 2;
     private static final int RIGHT_BACK_MOTOR_CHANNEL = 1;
     private static final int LEFT_FRONT_MOTOR_CHANNEL = 4;
     private static final int LEFT_BACK_MOTOR_CHANNEL = 5;
+
+    // cRIO slots
+    private static final int ANALOG_SLOT_1 = 1;
+    private static final int ANALOG_SLOT_2 = 2;
     private static final int MOTOR_SLOT = 4;
+    private static final int DIGITAL_SLOT_2 = 6;
 
     /**
      * Runs on the initialization of the robot and sets up all of the various
@@ -60,6 +71,14 @@ public class Widowmaker extends IterativeRobot {
                 leftFront, leftBack);
         console.addListener(driveTrain);
         ai.addListener(driveTrain);
+
+        // Dashboard
+        AnalogModule analogSlot1 = AnalogModule.getInstance(ANALOG_SLOT_1);
+        AnalogModule analogSlot2 = AnalogModule.getInstance(ANALOG_SLOT_2);
+        DigitalModule motorSlot = DigitalModule.getInstance(MOTOR_SLOT);
+        DigitalModule digitalSlot2 = DigitalModule.getInstance(DIGITAL_SLOT_2);
+        dashboard = new DashboardInterface(analogSlot1, analogSlot2,
+                                           motorSlot, digitalSlot2);
     }
 
     public void autonomousInit() {
@@ -96,5 +115,6 @@ public class Widowmaker extends IterativeRobot {
     public void teleopPeriodic() {
         watchdog.feed();
         console.periodic();
+        dashboard.updateLow();
     }
 }

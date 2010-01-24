@@ -1,7 +1,7 @@
 package com.bhrobotics.widowmaker;
 
-import edu.wpi.first.wpilibj.AnalogModule;
 import edu.wpi.first.wpilibj.Dashboard;
+import edu.wpi.first.wpilibj.AnalogModule;
 import edu.wpi.first.wpilibj.DigitalModule;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -9,34 +9,62 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class DashboardInterface {
 
     Dashboard _dashLow;
+    AnalogModule _analogModule1;
+    AnalogModule _analogModule2;
+    DigitalModule _motorModule;
+    DigitalModule _digitalModule2;
+
+    DashboardInterface(AnalogModule analogModule1, AnalogModule analogModule2,
+                       DigitalModule motorModule, DigitalModule digitalModule2) {
+        // Make sure the modules aren't invalid
+        if(analogModule1 == null) {
+            throw new IllegalArgumentException("Analog module 1 is null!");
+        }
+
+        if(analogModule2 == null) {
+            throw new IllegalArgumentException("Analog module 2 is null!");
+        }
+
+        if(motorModule == null) {
+            throw new IllegalArgumentException("Motor module is null!");
+        }
+        
+        if(digitalModule2 == null) {
+            throw new IllegalArgumentException("Digital module 2 is null!");
+        }
+
+        _analogModule1 = analogModule1;
+        _analogModule2 = analogModule2;
+        _motorModule = motorModule;
+        _digitalModule2 = digitalModule2;
+    }
 
     /**
      * Stolen directly out of DashBoardExample with a little bit of refactoring.
-     */
-    void update() {
-
-        /* Need to get a new dashboard packer for each time this function is
-         * run. The _dashLow variable is used to keep state so that it doesn't
-         * need to be passed around to the helper functions.
-         */
+     **/
+    void updateLow() {
+        // Need to get a new dashboard packer for each time this function is
+        // run. The _dashLow variable is used to keep state so that it doesn't
+        // need to be passed around to the helper functions.
         _dashLow = DriverStation.getInstance().getDashboardPackerLow();
 
         _dashLow.addCluster(); {
             // Analog modules
             _dashLow.addCluster(); {
-                add_analog_module(1);
-                add_analog_module(2);
+                analog_module_cluster(_analogModule1);
+                analog_module_cluster(_analogModule2);
             }
             _dashLow.finalizeCluster();
 
             // Digital modules
             _dashLow.addCluster(); {
-                add_digital_module(4);
-                add_digital_module(6);
+                digital_module_cluster(_motorModule);
+                digital_module_cluster(_digitalModule2);
             }
             _dashLow.finalizeCluster();
 
-            add_solenoids();
+            // Solenoids
+            _dashLow.addByte(Solenoid.getAll());
         }
         _dashLow.finalizeCluster();
 
@@ -45,12 +73,12 @@ public class DashboardInterface {
     }
 
     /**
-     * Run once for each of the analog modules.
-     */
-    void add_analog_module(int moduleNum) {
+     * Run once for each of the analog modules. Uses the average voltage of each
+     * analog input for its value.
+     **/
+    void analog_module_cluster(AnalogModule module) {
         _dashLow.addCluster(); {
             for(int i = 1; i <= 8; i++) {
-                AnalogModule module = AnalogModule.getInstance(moduleNum);
                 _dashLow.addFloat((float) module.getAverageVoltage(i));
             }
         }
@@ -60,10 +88,8 @@ public class DashboardInterface {
     /**
      * Run once for each digital module. For some reason, digital modules need
      * to have two nested clusters. I really have no clue why.
-     */
-    void add_digital_module(int moduleNum) {
-        DigitalModule module = DigitalModule.getInstance(moduleNum);
-
+     **/
+    void digital_module_cluster(DigitalModule module) {
         _dashLow.addCluster(); {
             _dashLow.addCluster(); {
 
@@ -87,12 +113,5 @@ public class DashboardInterface {
             _dashLow.finalizeCluster();
         }
         _dashLow.finalizeCluster();
-    }
-
-    /**
-     * Merely used for abstraction purposes.
-     */
-    void add_solenoids() {
-        _dashLow.addByte(Solenoid.getAll());
     }
 }

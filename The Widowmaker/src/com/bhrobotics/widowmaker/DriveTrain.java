@@ -27,19 +27,19 @@ public class DriveTrain implements OiListener {
             SpeedController leftFront, SpeedController leftBack) {
 
         // Prevent illegal setup
-        if (rightFront == null) {
+        if(rightFront == null) {
             throw new IllegalArgumentException("right front motor is null!");
         }
 
-        if (rightBack == null) {
+        if(rightBack == null) {
             throw new IllegalArgumentException("right back motor is null!");
         }
 
-        if (leftFront == null) {
+        if(leftFront == null) {
             throw new IllegalArgumentException("left front motor is null!");
         }
 
-        if (leftBack == null) {
+        if(leftBack == null) {
             throw new IllegalArgumentException("left back motor is null!");
         }
 
