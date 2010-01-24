@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bhrobotics.widowmaker;
 
 /**
  *
  * @author Developer
- * Need to impliment code to:
- * controll kicker
+ * Need to implement code to:
+ * control kicker
  * camera (if used)
  * complicated driving
  */
