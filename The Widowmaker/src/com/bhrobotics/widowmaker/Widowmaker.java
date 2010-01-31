@@ -3,11 +3,9 @@ package com.bhrobotics.widowmaker;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Watchdog;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation.
- **/
+// The VM is configured to automatically run this class, and to call the
+// functions corresponding to each mode, as described in the IterativeRobot
+// documentation.
 public class Widowmaker extends IterativeRobot {
 
     // Time interval (microseconds) between calls to perioidic()

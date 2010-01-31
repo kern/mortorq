@@ -1,5 +1,6 @@
 package com.bhrobotics.widowmaker.model.carney;
 
+// Winding up state of Carney.
 public class WindUp implements CarneyState {
 
     private Carney carney;

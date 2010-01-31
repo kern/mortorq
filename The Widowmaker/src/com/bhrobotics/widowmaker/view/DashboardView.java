@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.AnalogModule;
 import edu.wpi.first.wpilibj.DigitalModule;
 import com.bhrobotics.widowmaker.model.Crio;
 
+// Displays data on the dashboard.
 public class DashboardView {
     
     private static Dashboard dashboard;

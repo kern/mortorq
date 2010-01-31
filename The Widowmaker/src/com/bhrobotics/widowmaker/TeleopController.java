@@ -9,11 +9,9 @@ import com.bhrobotics.widowmaker.view.DashboardView;
 import com.bhrobotics.widowmaker.view.FourWheelView;
 import com.bhrobotics.widowmaker.view.CarneyView;
 
-/**
- * Handles the station used by robot operators, containing the joysticks,
- * buttons, switches, etc., that are used to control the robot's actions in
- * teleoperated mode.
- **/
+// Handles the station used by robot operators, containing the joysticks,
+// buttons, switches, etc., that are used to control the robot's actions in
+// teleoperated mode.
 public class TeleopController extends RobotController {
 
     private Crio crio;
@@ -48,6 +46,7 @@ public class TeleopController extends RobotController {
         if(oi.getFire()) { carney.fire(); }
     }
 
+    // Views
     protected void render() {
         DashboardView.render(crio);
         FourWheelView.render(driveTrain);

@@ -1,10 +1,8 @@
 package com.bhrobotics.widowmaker.model;
 
-/**
- * Controls the robot's drive train. It takes in input in the form of values
- * ranging from -1 (backwards or ccw) to 1 (forwards or cw). This does not move
- * the robot, this merely stores values for the view(s) to use.
- **/
+// Controls the robot's drive train. It takes in input in the form of values
+// ranging from -1 (backwards or ccw) to 1 (forwards or cw). This does not move
+// the robot, this merely stores values for the view(s) to use.
 public class DriveTrain {
 
     private static DriveTrain instance = new DriveTrain();

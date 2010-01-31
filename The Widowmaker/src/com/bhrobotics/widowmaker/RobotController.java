@@ -1,10 +1,8 @@
 package com.bhrobotics.widowmaker;
 
-/**
- * Abstract base class for controllers. Interprets the input from both the robot
- * IO and the operator interface and sends it to the models, such as the drive
- * train and manipulator. The data is then sent to the corresponding view.
- **/
+// Abstract base class for controllers. Interprets the input from both the robot
+// IO and the operator interface and sends it to the models, such as the drive
+// train and manipulator. The data is then sent to the corresponding view.
 public class RobotController {
 
     private boolean wasStopped = false;

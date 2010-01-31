@@ -1,5 +1,6 @@
 package com.bhrobotics.widowmaker.model.carney;
 
+// State of Carney with the highest potential energy; fully wound winch.
 public class Hold implements CarneyState {
 
     private Carney carney;

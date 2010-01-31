@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Servo;
 import com.bhrobotics.widowmaker.model.carney.Carney;
 
+// Controls Carney.
 public class CarneyView {
     
     private static final int WINCH = 1;

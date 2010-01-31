@@ -1,5 +1,6 @@
 package com.bhrobotics.widowmaker.model.carney;
 
+// The ground state of the system during an emergency stop.
 public class DeadStop implements CarneyState {
 
     private Carney carney;

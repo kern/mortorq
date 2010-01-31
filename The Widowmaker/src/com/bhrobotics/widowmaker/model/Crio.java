@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.Dashboard;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Crio {
-    
+
+    // Slot numbers
     private static final int ANALOG_BUMPER = 1;
     private static final int SOLENOID_BUMPER = 2;
     private static final int MISC_SIDECAR = 4;

@@ -1,5 +1,6 @@
 package com.bhrobotics.widowmaker.model.carney;
 
+// Carney's kicked state.
 public class Released implements CarneyState {
     
     private Carney carney;

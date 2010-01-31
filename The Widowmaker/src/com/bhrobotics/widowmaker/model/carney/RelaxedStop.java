@@ -1,5 +1,6 @@
 package com.bhrobotics.widowmaker.model.carney;
 
+// State of Carney with a small amount of potential energy. Emergency stopped.
 public class RelaxedStop implements CarneyState {
 
     private Carney carney;

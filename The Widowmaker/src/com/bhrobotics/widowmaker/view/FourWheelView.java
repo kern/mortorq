@@ -3,6 +3,7 @@ package com.bhrobotics.widowmaker.view;
 import edu.wpi.first.wpilibj.Jaguar;
 import com.bhrobotics.widowmaker.model.DriveTrain;
 
+// Uses four wheels to control a robot.
 public class FourWheelView {
     
     private static final int RIGHT_FRONT = 1;

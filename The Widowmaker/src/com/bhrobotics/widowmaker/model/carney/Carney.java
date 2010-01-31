@@ -2,6 +2,9 @@ package com.bhrobotics.widowmaker.model.carney;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
+// Carney, the former kicker of the Saints, is the kicking mechanism on the
+// robot. This model is an FSM specifically tailored to the 2010 robot and
+// should not be modified in subsequent years.
 public class Carney {
 
     private static final int TOP_LIMIT = 1;

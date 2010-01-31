@@ -1,5 +1,6 @@
 package com.bhrobotics.widowmaker.model.carney;
 
+// State of Carney with a high amount of potential energy. Stopped state.
 public class TenseStop implements CarneyState {
 
     private Carney carney;
