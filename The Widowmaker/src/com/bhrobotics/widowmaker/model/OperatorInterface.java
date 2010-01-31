@@ -8,6 +8,7 @@ public class OperatorInterface {
     private static OperatorInterface instance = new OperatorInterface();
 
     private static final int EMERGENCY_STOP = 1;
+    private static final int FIRE = 2;
     private static final int DRIVE_STICK = 1;
     private static final int AIM_STICK = 2;
 
@@ -33,6 +34,10 @@ public class OperatorInterface {
 
     public boolean getEmergencyStop() {
         return driverStation.getDigitalIn(EMERGENCY_STOP);
+    }
+
+    public boolean getFire() {
+        return driverStation.getDigitalIn(FIRE);
     }
 
     // Joystick controls, probably will be changed.

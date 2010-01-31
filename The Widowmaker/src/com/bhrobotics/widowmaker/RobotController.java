@@ -7,14 +7,22 @@ package com.bhrobotics.widowmaker;
  **/
 public class RobotController {
 
+    private boolean wasStopped = false;
+
     // Called by Widowmaker to run the continuous routine. If the robot is
     // stopped via the emergency stop button, then the emergencyStop() function
     // is instead run continuously.
     public void run_continuous() {
         if(getEmergencyStop()) {
             emergencyStop();
+            wasStopped = true;
         }else{
+            if(wasStopped) {
+                exitEmergencyStop();
+            }
+
             continuous();
+            wasStopped = false;
         }
 
         // View rendering
@@ -36,6 +44,7 @@ public class RobotController {
     // Called at various times in the robots execution. Should be implemented by
     // all controllers. Not called directly from Widowmaker!
     protected void emergencyStop() {}
+    protected void exitEmergencyStop() {}
     protected void continuous() {}
     protected void periodic() {}
 

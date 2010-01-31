@@ -3,7 +3,7 @@ package com.bhrobotics.widowmaker;
 import com.bhrobotics.widowmaker.model.Crio;
 import com.bhrobotics.widowmaker.model.OperatorInterface;
 import com.bhrobotics.widowmaker.model.DriveTrain;
-import com.bhrobotics.widowmaker.model.Carney;
+import com.bhrobotics.widowmaker.model.carney.Carney;
 
 import com.bhrobotics.widowmaker.view.DashboardView;
 import com.bhrobotics.widowmaker.view.FourWheelView;
@@ -37,8 +37,15 @@ public class TeleopController extends RobotController {
         carney.emergencyStop();
     }
 
+    protected void exitEmergencyStop() {
+        carney.exitEmergencyStop();
+    }
+
     protected void continuous() {
         driveTrain.mecanum(oi.getX(), oi.getY(), oi.getRotation());
+
+        carney.checkLimits();
+        if(oi.getFire()) { carney.fire(); }
     }
 
     protected void render() {

@@ -3,7 +3,7 @@ package com.bhrobotics.widowmaker.view;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Servo;
-import com.bhrobotics.widowmaker.model.Carney;
+import com.bhrobotics.widowmaker.model.carney.Carney;
 
 public class CarneyView {
     
