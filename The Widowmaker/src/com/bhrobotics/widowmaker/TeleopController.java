@@ -1,9 +1,11 @@
 package com.bhrobotics.widowmaker;
 
+import com.bhrobotics.widowmaker.model.Crio;
 import com.bhrobotics.widowmaker.model.OperatorInterface;
 import com.bhrobotics.widowmaker.model.DriveTrain;
 import com.bhrobotics.widowmaker.model.Carney;
 
+import com.bhrobotics.widowmaker.view.DashboardView;
 import com.bhrobotics.widowmaker.view.FourWheelView;
 import com.bhrobotics.widowmaker.view.CarneyView;
 
@@ -14,14 +16,16 @@ import com.bhrobotics.widowmaker.view.CarneyView;
  **/
 public class TeleopController extends RobotController {
 
+    private Crio crio;
     private OperatorInterface oi;
     private DriveTrain driveTrain;
     private Carney carney;
     
     public TeleopController() {
-        oi = new OperatorInterface();
-        driveTrain = new DriveTrain();
-        carney = new Carney();
+        crio = Crio.getInstance();
+        oi = OperatorInterface.getInstance();
+        driveTrain = DriveTrain.getInstance();
+        carney = Carney.getInstance();
     }
 
     protected boolean getEmergencyStop() {
@@ -38,6 +42,7 @@ public class TeleopController extends RobotController {
     }
 
     protected void render() {
+        DashboardView.render(crio);
         FourWheelView.render(driveTrain);
         CarneyView.render(carney);
     }

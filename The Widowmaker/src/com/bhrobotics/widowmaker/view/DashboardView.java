@@ -3,7 +3,6 @@ package com.bhrobotics.widowmaker.view;
 import edu.wpi.first.wpilibj.Dashboard;
 import edu.wpi.first.wpilibj.AnalogModule;
 import edu.wpi.first.wpilibj.DigitalModule;
-import edu.wpi.first.wpilibj.Solenoid;
 import com.bhrobotics.widowmaker.model.Crio;
 
 public class DashboardView {

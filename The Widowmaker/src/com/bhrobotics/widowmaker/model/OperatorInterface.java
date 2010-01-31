@@ -30,7 +30,7 @@ public class OperatorInterface {
     public DriverStation.Alliance getAlliance() {
         return driverStation.getAlliance();
     }
-    
+
     public boolean getEmergencyStop() {
         return driverStation.getDigitalIn(EMERGENCY_STOP);
     }
