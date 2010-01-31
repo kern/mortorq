@@ -1,7 +1,6 @@
 package com.bhrobotics.widowmaker;
 
 import com.bhrobotics.widowmaker.model.Crio;
-
 import com.bhrobotics.widowmaker.view.DashboardView;
 
 public class AutoController extends RobotController {

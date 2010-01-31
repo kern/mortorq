@@ -32,14 +32,10 @@ public class DriveTrain {
     public double getRight() { return rightFront; }
     public double getLeft() { return leftFront; }
 
-    /**
-     * "Complicated" mecanum style drive code. It basically just adds and
-     * subtracts the rotation from the standard arcade drive settings.
-     *
-     * @param x the new strafe speed, in range [-1..1]
-     * @param y the new forward speed, in range [-1..1]
-     * @param rotation the new turn rate, in range [-1..1]
-     **/
+    // "Complicated" mecanum style drive code. It basically just adds and
+    // subtracts the rotation from the standard arcade drive settings. X  is the
+    // new strafe speed, in range [-1..1]. Y the new forward speed, in range
+    // [-1..1]. Rotation the new turn rate, in range [-1..1].
     public void mecanum(double x, double y, double rotation) {
         // Convert x, y, and rotation to mechanum motor speed settings
         double rightFrontTarget = y + x + rotation;
