@@ -12,44 +12,35 @@ import com.bhrobotics.widowmaker.view.CarneyView;
 // Handles the station used by robot operators, containing the joysticks,
 // buttons, switches, etc., that are used to control the robot's actions in
 // teleoperated mode.
-public class TeleopController extends RobotController {
+class TeleopController extends RobotController {
 
-    private Crio crio;
-    private OperatorInterface oi;
-    private DriveTrain driveTrain;
-    private Carney carney;
-    
-    public TeleopController() {
-        crio = Crio.getInstance();
-        oi = OperatorInterface.getInstance();
-        driveTrain = DriveTrain.getInstance();
-        carney = Carney.getInstance();
+    boolean isStopped() { return OperatorInterface.getEmergencyStop(); }
+
+    void stoppedInit() {
+        Carney.stoppedInit();
     }
 
-    protected boolean getEmergencyStop() {
-        return oi.getEmergencyStop();
+    void stopped() {
+        DriveTrain.stopped();
     }
 
-    protected void emergencyStop() {
-        driveTrain.emergencyStop();
-        carney.emergencyStop();
+    void runningInit() {
+        Carney.runningInit();
     }
 
-    protected void exitEmergencyStop() {
-        carney.exitEmergencyStop();
+    void running() {
+        double x = OperatorInterface.getX();
+        double y = OperatorInterface.getY();
+        double rotation = OperatorInterface.getRotation();
+        DriveTrain.mecanum(x, y, rotation);
+
+        Carney.checkLimits();
+        if(OperatorInterface.getFire()) { Carney.fire(); }
     }
 
-    protected void continuous() {
-        driveTrain.mecanum(oi.getX(), oi.getY(), oi.getRotation());
-
-        carney.checkLimits();
-        if(oi.getFire()) { carney.fire(); }
-    }
-
-    // Views
-    protected void render() {
-        DashboardView.render(crio);
-        FourWheelView.render(driveTrain);
-        CarneyView.render(carney);
+    void render() {
+        DashboardView.render();
+        FourWheelView.render();
+        CarneyView.render();
     }
 }

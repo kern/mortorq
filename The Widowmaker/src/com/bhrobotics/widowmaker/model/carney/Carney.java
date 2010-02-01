@@ -14,50 +14,40 @@ public class Carney {
     private static final double CLUTCH_ENGAGED_POSITION = 1.0;
     private static final double CLUTCH_RELEASED_POSITION = 0.0;
 
-    // State-keeping
-    private static Carney instance = new Carney();
-    private CarneyState state;
+    // State
+    private static CarneyState state = new Released();
 
     // Digital inputs
-    private DigitalInput topLimit;
-    private DigitalInput bottomLimit;
+    private static DigitalInput topLimit = new DigitalInput(TOP_LIMIT);
+    private static DigitalInput bottomLimit = new DigitalInput(BOTTOM_LIMIT);
 
     // Outputs
-    private double winch;
-    private boolean brake;
-    private double clutch;
-
-    public Carney() {
-        state = new Released(this);
-
-        topLimit = new DigitalInput(TOP_LIMIT);
-        bottomLimit = new DigitalInput(BOTTOM_LIMIT);
-    }
+    private static double winch;
+    private static boolean brake;
+    private static double clutch;
     
-    public static Carney getInstance() { return Carney.instance; }
-
     // FSM stuff
-    public void setState(CarneyState _state) { state = _state; }
-    public void fire() { state.fire(); }
-    public void emergencyStop() { state.emergencyStop(); }
-    public void exitEmergencyStop() { state.exitEmergencyStop(); }
+    public static void setState(CarneyState _state) { state = _state; }
+    public static void stoppedInit() { state.stop(); }
+    public static void runningInit() { state.run(); }
+    public static void fire() { state.fire(); }
 
     // Outputs
-    public double getWinch() { return winch; }
-    public boolean getBrake() { return brake; }
-    public double getClutch() { return clutch; }
+    public static double getWinch() { return winch; }
+    public static boolean getBrake() { return brake; }
+    public static double getClutch() { return clutch; }
     
     // Limit switches
-    public void checkLimits() {
+    public static void checkLimits() {
         if(topLimit.get()) { state.topLimitHit(); }
         if(bottomLimit.get()) { state.bottomLimitHit(); }
     }
 
     // Output controls
-    public void windWinch() { winch = WINCH_SPEED; }
-    public void stopWinch() { winch = 0; }
-    public void engageBrake() { brake = true; }
-    public void releaseBrake() { brake = false; }
-    public void engageClutch() { clutch = CLUTCH_ENGAGED_POSITION; }
-    public void releaseClutch() { clutch = CLUTCH_RELEASED_POSITION; }
+    public static void windWinch() { winch = WINCH_SPEED; }
+    public static void stopWinch() { winch = 0; }
+    public static void engageBrake() { brake = true; }
+    public static void releaseBrake() { brake = false; }
+    public static void engageClutch() { clutch = CLUTCH_ENGAGED_POSITION; }
+    public static void releaseClutch() { clutch = CLUTCH_RELEASED_POSITION; }
 }

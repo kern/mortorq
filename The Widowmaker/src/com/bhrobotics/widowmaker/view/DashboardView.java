@@ -10,24 +10,24 @@ public class DashboardView {
     
     private static Dashboard dashboard;
 
-    public static void render(Crio crio) {
-        dashboard = crio.getDashboardPackerLow();
+    public static void render() {
+        dashboard = Crio.getDashboardPackerLow();
 
         dashboard.addCluster(); {
             // Analog modules
             dashboard.addCluster(); {
-                analogModuleCluster(crio.getAnalogBumper());
-                analogModuleCluster(crio.getSolenoidBumper());
+                analogModuleCluster(Crio.getAnalogBumper());
+                analogModuleCluster(Crio.getSolenoidBumper());
             } dashboard.finalizeCluster();
 
             // Digital modules
             dashboard.addCluster(); {
-                digitalModuleCluster(crio.getMiscSidecar());
-                digitalModuleCluster(crio.getMotorSidecar());
+                digitalModuleCluster(Crio.getMiscSidecar());
+                digitalModuleCluster(Crio.getMotorSidecar());
             } dashboard.finalizeCluster();
 
             // Solenoids
-            dashboard.addByte(crio.getSolenoids());
+            dashboard.addByte(Crio.getSolenoids());
         } dashboard.finalizeCluster();
 
         // Sends the data to the dashboard.

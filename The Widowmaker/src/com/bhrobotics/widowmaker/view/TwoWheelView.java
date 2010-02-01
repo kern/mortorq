@@ -17,8 +17,8 @@ public class TwoWheelView {
         left = new Jaguar(LEFT);
     }
 
-    public void parse(DriveTrain driveTrain) {
-        right.set(driveTrain.getRight());
-        left.set(driveTrain.getLeft());
+    public void render() {
+        right.set(DriveTrain.getRight());
+        left.set(DriveTrain.getLeft());
     }
 }

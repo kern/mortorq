@@ -16,10 +16,10 @@ public class FourWheelView {
     private static Jaguar leftFront = new Jaguar(LEFT_FRONT);
     private static Jaguar leftBack = new Jaguar(LEFT_BACK);
     
-    public static void render(DriveTrain driveTrain) {
-        rightFront.set(driveTrain.getRightFront());
-        rightBack.set(driveTrain.getRightBack());
-        leftFront.set(driveTrain.getLeftFront());
-        leftBack.set(driveTrain.getLeftBack());
+    public static void render() {
+        rightFront.set(DriveTrain.getRightFront());
+        rightBack.set(DriveTrain.getRightBack());
+        leftFront.set(DriveTrain.getLeftFront());
+        leftBack.set(DriveTrain.getLeftBack());
     }
 }
