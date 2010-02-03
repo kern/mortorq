@@ -3,37 +3,37 @@ package com.bhrobotics.widowmaker;
 // Abstract base class for controllers. Interprets the input from both the robot
 // IO and the operator interface and sends it to the models, such as the drive
 // train and manipulator. The data is then sent to the corresponding view.
-abstract class RobotController {
+class RobotController {
 
     private static final int STOPPED = 0;
     private static final int RUNNING = 1;
 
-    private int state = RUNNING;
+    private int state = STOPPED;
 
-    void init() {}
-
-    // Called by Widowmaker to run the robot. If the
-    void run() {
-        if(isStopped()) {
-            if(state != STOPPED) { stoppedInit(); }
-            stopped();
-        }else{
-            if(state != RUNNING) { runningInit(); }
+    // Called by Widowmaker to refresh the robot's models and views.
+    void refresh() {
+        if(isActive()) {
+            if(state != RUNNING) { start(); }
             running();
+        }else{
+            if(state != STOPPED) { stop(); }
+            stopped();
         }
 
         render();
     }
     
-    // Called at various times in the robots execution. Must be implemented by
-    // all controllers. Not called directly from Widowmaker!
-    abstract boolean isStopped();
+    // Called to check if the robot is running or stopped.
+    boolean isActive() { return true; }
 
-    void stoppedInit() {}
-    abstract void stopped(); // Run continuously while the robot is stopped
+    // Called once when starting or stopping the controller.
+    void start() {}
+    void stop() {}
 
-    void runningInit() {}
-    abstract void running(); // Run continuously while the robot is running
+    // Run continuously while the robot is running or stopped
+    void running() {}
+    void stopped() {}
 
-    abstract void render(); // Renders views
+    // Renders views
+    void render() {}
 }

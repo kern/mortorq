@@ -1,11 +1,18 @@
 package com.bhrobotics.widowmaker.model.carney;
 
 // For the FSM that is used to control Carney
-public interface CarneyState {
-    public void stop();
-    public void run();
+public class CarneyState {
 
-    public void fire();
-    public void topLimitHit();
-    public void bottomLimitHit();
+    protected Carney carney;
+
+    public CarneyState(Carney _carney) {
+        carney = _carney;
+    }
+
+    public void start() {};
+    public void stop() {};
+
+    public void fire() {};
+    public void topLimitHit() {};
+    public void bottomLimitHit() {};
 }

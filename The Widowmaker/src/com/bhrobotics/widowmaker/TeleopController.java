@@ -14,28 +14,26 @@ import com.bhrobotics.widowmaker.view.CarneyView;
 // teleoperated mode.
 class TeleopController extends RobotController {
 
-    boolean isStopped() { return OperatorInterface.getEmergencyStop(); }
+    public OperatorInterface oi = new OperatorInterface();
+    public DriveTrain driveTrain = new DriveTrain();
+    public Carney carney = new Carney();
 
-    void stoppedInit() {
-        Carney.stoppedInit();
+    boolean isActive() { return !oi.getStop(); }
+    
+    void start() {
+        carney.start();
     }
 
-    void stopped() {
-        DriveTrain.stopped();
-    }
-
-    void runningInit() {
-        Carney.runningInit();
+    void stop() {
+        carney.stop();
+        driveTrain.stop();
     }
 
     void running() {
-        double x = OperatorInterface.getX();
-        double y = OperatorInterface.getY();
-        double rotation = OperatorInterface.getRotation();
-        DriveTrain.mecanum(x, y, rotation);
+        driveTrain.mecanum(oi.getX(), oi.getY(), oi.getRotation());
 
-        Carney.checkLimits();
-        if(OperatorInterface.getFire()) { Carney.fire(); }
+        carney.checkLimits();
+        if(oi.getFire()) { carney.fire(); }
     }
 
     void render() {

@@ -2,13 +2,10 @@ package com.bhrobotics.widowmaker.model;
 
 import edu.wpi.first.wpilibj.AnalogModule;
 import edu.wpi.first.wpilibj.DigitalModule;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Dashboard;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Crio {
 
-    // Slot numbers
     private static final int ANALOG_BUMPER = 1;
     private static final int SOLENOID_BUMPER = 2;
     private static final int MISC_SIDECAR = 4;
@@ -18,10 +15,6 @@ public class Crio {
     private static AnalogModule solenoid_bumper = AnalogModule.getInstance(SOLENOID_BUMPER);
     private static DigitalModule misc_sidecar = DigitalModule.getInstance(MISC_SIDECAR);
     private static DigitalModule motor_sidecar = DigitalModule.getInstance(MOTOR_SIDECAR);
-
-    public static Dashboard getDashboardPackerLow() {
-        return DriverStation.getInstance().getDashboardPackerLow();
-    }
 
     // Analog bumpers
     public static AnalogModule getAnalogBumper() { return analog_bumper; }

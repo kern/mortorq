@@ -16,18 +16,16 @@ public class Widowmaker extends SimpleRobot {
     }
 
     public void autonomous() {
-        autoController.init();
         while(this.isAutonomous()) {
             getWatchdog().feed();
-            autoController.run();
+            autoController.refresh();
         }
     }
 
     public void operatorControl() {
-        teleopController.init();
         while(this.isOperatorControl()) {
             getWatchdog().feed();
-            teleopController.run();
+            teleopController.refresh();
         }
     }
 }

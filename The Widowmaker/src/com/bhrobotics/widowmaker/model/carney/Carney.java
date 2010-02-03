@@ -15,7 +15,7 @@ public class Carney {
     private static final double CLUTCH_RELEASED_POSITION = 0.0;
 
     // State
-    private static CarneyState state = new Released();
+    //private static CarneyState state = new Released();
 
     // Digital inputs
     private static DigitalInput topLimit = new DigitalInput(TOP_LIMIT);
@@ -25,29 +25,34 @@ public class Carney {
     private static double winch;
     private static boolean brake;
     private static double clutch;
-    
-    // FSM stuff
-    public static void setState(CarneyState _state) { state = _state; }
-    public static void stoppedInit() { state.stop(); }
-    public static void runningInit() { state.run(); }
-    public static void fire() { state.fire(); }
 
-    // Outputs
-    public static double getWinch() { return winch; }
-    public static boolean getBrake() { return brake; }
-    public static double getClutch() { return clutch; }
-    
-    // Limit switches
-    public static void checkLimits() {
+    //**************************************************************************
+    // Interface
+    //**************************************************************************
+
+    public void start() { state.start(); }
+    public void stop() { state.stop(); }
+    public void fire() { state.fire(); }
+
+    public void setState(CarneyState _state) { state = _state; }
+
+    public void checkLimits() {
         if(topLimit.get()) { state.topLimitHit(); }
         if(bottomLimit.get()) { state.bottomLimitHit(); }
     }
 
-    // Output controls
-    public static void windWinch() { winch = WINCH_SPEED; }
-    public static void stopWinch() { winch = 0; }
-    public static void engageBrake() { brake = true; }
-    public static void releaseBrake() { brake = false; }
-    public static void engageClutch() { clutch = CLUTCH_ENGAGED_POSITION; }
-    public static void releaseClutch() { clutch = CLUTCH_RELEASED_POSITION; }
+    public void windWinch() { winch = WINCH_SPEED; }
+    public void stopWinch() { winch = 0; }
+    public void engageBrake() { brake = true; }
+    public void releaseBrake() { brake = false; }
+    public void engageClutch() { clutch = CLUTCH_ENGAGED_POSITION; }
+    public void releaseClutch() { clutch = CLUTCH_RELEASED_POSITION; }
+
+    //**************************************************************************
+    // Getters
+    //**************************************************************************
+
+    public double getWinch() { return winch; }
+    public boolean getBrake() { return brake; }
+    public double getClutch() { return clutch; }
 }
