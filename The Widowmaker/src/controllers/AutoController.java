@@ -1,4 +1,4 @@
-package com.bhrobotics.widowmaker;
+package com.bhrobotics.widowmaker.controller;
 
 import com.bhrobotics.widowmaker.view.DashboardView;
 

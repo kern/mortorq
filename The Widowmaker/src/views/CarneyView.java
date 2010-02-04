@@ -17,8 +17,8 @@ public class CarneyView {
     private static Servo clutch = new Servo(CLUTCH);
 
     public static void render() {
-        winch.set(Carney.getWinch());
-        brake.set(Carney.getBrake());
-        clutch.set(Carney.getClutch());
+        winch.set(carney.getWinch());
+        brake.set(carney.getBrake());
+        clutch.set(carney.getClutch());
     }
 }

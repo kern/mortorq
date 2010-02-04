@@ -1,11 +1,9 @@
-package com.bhrobotics.widowmaker;
+package com.bhrobotics.morlib;
 
 import edu.wpi.first.wpilibj.SimpleRobot;
+import
 
-// The VM is configured to automatically run this class, and to call the
-// functions corresponding to each mode, as described in the IterativeRobot
-// documentation.
-public class Widowmaker extends SimpleRobot {
+public class Robot extends SimpleRobot {
 
     private AutoController autoController;
     private TeleopController teleopController;
