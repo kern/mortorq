@@ -7,6 +7,16 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class Carney {
 
     //**************************************************************************
+    // State
+    //**************************************************************************
+
+    private static final int FIRED = 0;
+    private static final int WINDING = 1;
+    private static final int HOLDING = 2;
+
+    private int state = FIRED;
+
+    //**************************************************************************
     // IO
     //**************************************************************************
 
@@ -32,26 +42,32 @@ public class Carney {
     // Interface
     //**************************************************************************
 
-    public void start() {
+    // Also the firing function.
+    public void start() { fire(); }
+
+    public void stop() { stopWinch(); }
+
+    public void fire() {
+        state = FIRED;
         stopWinch();
         releaseBrake();
         releaseClutch();
     }
 
-    public void stop() { stopWinch(); }
-
     public void wind() {
+        state = WINDING;
         windWinch();
         releaseBrake();
         engageClutch();
     }
 
     public void hold() {
+        state = HOLDING;
         stopWinch();
         engageBrake();
         engageClutch();
     }
-    
+
     //**************************************************************************
     // Internal
     //**************************************************************************
@@ -70,7 +86,4 @@ public class Carney {
     public double getWinch() { return winch; }
     public boolean getBrake() { return brake; }
     public double getClutch() { return clutch; }
-
-    public boolean getTopLimit() { return topLimit.get(); }
-    public boolean getBottomLimit() { return bottomLimit.get(); }
 }

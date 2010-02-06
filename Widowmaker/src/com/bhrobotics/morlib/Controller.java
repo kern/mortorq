@@ -1,37 +1,42 @@
 package com.bhrobotics.morlib;
 
-public abstract class Controller {
+public abstract class Controller extends Thread {
 
-    protected static final int STOPPED = 0;
-    protected static final int RUNNING = 1;
+    private static final int DISABLED = 0;
+    private static final int STOPPED = 1;
+    private static final int ACTIVE = 2;
 
-    protected int state = STOPPED;
+    private int state = DISABLED;
 
-    // Called by Widowmaker to refresh the robot's models and views. Essentially
-    // it's the method that makes the robot do stuff.
-    public void refresh() {
-        if(isActive()) {
-            if(state != RUNNING) { start(); }
-            running();
-        }else{
-            if(state != STOPPED) { stop(); }
-            stopped();
+    //**************************************************************************
+    // State-keeping
+    //**************************************************************************
+
+    public void disable() { state = DISABLED; }
+    public void stop() { state = STOPPED; }
+    public void activate() { state = ACTIVE; }
+
+    public boolean isEnabled() { return state != DISABLED; }
+    public boolean isDisabled() { return !isEnabled(); }
+    public boolean isActive() { return state == ACTIVE; }
+    public boolean isStopped() { return state == STOPPED; }
+
+    //**************************************************************************
+    // Multi-threading
+    //**************************************************************************
+
+    public void run() {
+        while(isEnabled()) {
+            if(isActive()) {
+                if() {
+
+                }else{
+
+                }
+            }else{
+                whenStopped();
+            }
         }
 
-        render();
     }
-
-    // Called to check if the robot is running or stopped.
-    protected boolean isActive() { return true; }
-
-    // Called once when starting or stopping the controller.
-    protected void start() {}
-    protected void stop() {}
-
-    // Run continuously while the robot is running or stopped
-    protected void running() {}
-    protected void stopped() {}
-
-    // Renders views
-    protected void render() {}
 }

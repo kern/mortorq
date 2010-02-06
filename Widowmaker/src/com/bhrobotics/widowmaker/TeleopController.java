@@ -1,20 +1,16 @@
 package com.bhrobotics.widowmaker;
 
 import com.bhrobotics.morlib.Controller;
-import com.bhrobotics.widowmaker.models.*;
+import com.bhrobotics.widowmaker.models.DriveTrain;
+import com.bhrobotics.widowmaker.models.Carney;
 
 // Controls the robot during teleop mode.
 public class TeleopController extends Controller {
 
-    private OperatorInterface oi;
-    private Crio crio;
     private DriveTrain driveTrain;
     private Carney carney;
 
-    public TeleopController(OperatorInterface _oi, Crio _crio,
-                            DriveTrain _driveTrain, Carney _carney) {
-        oi = _oi;
-        crio = _crio;
+    public TeleopController(DriveTrain _driveTrain, Carney _carney) {
         driveTrain = _driveTrain;
         carney = _carney;
     }
@@ -31,11 +27,7 @@ public class TeleopController extends Controller {
 
     protected void running() {
         driveTrain.mecanum(oi.getX(), oi.getY(), oi.getRotation());
-
-        // TODO: Carney code goes here
-    }
-
-    protected void render() {
-        // TODO: Render the views
+        
+        if(oi.getFire()) { carney.fire(); }
     }
 }

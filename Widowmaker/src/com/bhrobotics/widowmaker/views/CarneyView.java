@@ -1,12 +1,13 @@
 package com.bhrobotics.widowmaker.views;
 
+import com.bhrobotics.morlib.View;
 import com.bhrobotics.widowmaker.models.Carney;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Servo;
 
 // Controls Carney.
-public class CarneyView {
+public class CarneyView implements View {
 
     private Carney carney;
 
