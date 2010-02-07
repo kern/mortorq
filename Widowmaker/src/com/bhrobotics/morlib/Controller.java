@@ -1,42 +1,44 @@
 package com.bhrobotics.morlib;
 
-public abstract class Controller extends Thread {
+public abstract class Controller {
 
-    private static final int DISABLED = 0;
-    private static final int STOPPED = 1;
-    private static final int ACTIVE = 2;
+    protected static final int STOPPED = 0;
+    protected static final int RUNNING = 1;
 
-    private int state = DISABLED;
-
-    //**************************************************************************
-    // State-keeping
-    //**************************************************************************
-
-    public void disable() { state = DISABLED; }
-    public void stop() { state = STOPPED; }
-    public void activate() { state = ACTIVE; }
-
-    public boolean isEnabled() { return state != DISABLED; }
-    public boolean isDisabled() { return !isEnabled(); }
-    public boolean isActive() { return state == ACTIVE; }
-    public boolean isStopped() { return state == STOPPED; }
+    private int state = STOPPED;
 
     //**************************************************************************
-    // Multi-threading
+    // Interface
     //**************************************************************************
 
-    public void run() {
-        while(isEnabled()) {
-            if(isActive()) {
-                if() {
+    public void init() {}
+    public void shutdown() {}
 
-                }else{
+    public boolean isStopped(OperatorInterface oi) { return false; }
 
-                }
-            }else{
-                whenStopped();
+    public void start(OperatorInterface oi) {}
+    public void running(OperatorInterface oi) {}
+
+    public void stop() {}
+    public void stopped() {}
+
+    //**************************************************************************
+    /// Automation
+    //**************************************************************************
+
+    public void refresh(OperatorInterface oi) {
+        if(!isStopped(oi)) {
+            if(state != RUNNING) {
+                state = RUNNING;
+                start(oi);
             }
+            running(oi);
+        }else{
+            if(state != STOPPED) {
+                state = STOPPED;
+                stop();
+            }
+            stopped();
         }
-
     }
 }

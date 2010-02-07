@@ -68,6 +68,16 @@ public class Carney {
         engageClutch();
     }
 
+    public void checkLimits() {
+        if(state == FIRED && bottomLimit.get()) {
+            wind();
+        }
+
+        if(state == WINDING && topLimit.get()) {
+            hold();
+        }
+    }
+
     //**************************************************************************
     // Internal
     //**************************************************************************
