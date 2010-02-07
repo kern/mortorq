@@ -21,20 +21,24 @@ public abstract class Robot extends SimpleRobot {
 
             // Now enabled - check if we should run Autonomous code
             if(isAutonomous()) {
+                System.out.println("Entering Autonomous.");
                 autoController.init();
                 while(isAutonomous() && !isDisabled()) {
                     getWatchdog().feed();
                     autoController.refresh(oi);
                     render();
                 }
+                System.out.println("Exiting Autonomous.");
                 autoController.shutdown();
             }else{
+                System.out.println("Entering Teleop.");
                 teleopController.init();
                 while(isOperatorControl() && !isDisabled()) {
                     getWatchdog().feed();
                     teleopController.refresh(oi);
                     render();
                 }
+                System.out.println("Exiting Teleop.");
                 teleopController.shutdown();
             }
         }

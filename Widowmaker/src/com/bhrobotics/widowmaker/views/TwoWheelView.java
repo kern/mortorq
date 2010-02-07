@@ -13,11 +13,12 @@ public class TwoWheelView implements View {
     // Motors
     //**************************************************************************
 
+    private static final int SLOT = 6;
     private static final int RIGHT = 1;
     private static final int LEFT = 2;
 
-    private Jaguar right = new Jaguar(RIGHT);
-    private Jaguar left = new Jaguar(LEFT);
+    private Jaguar right = new Jaguar(SLOT, RIGHT);
+    private Jaguar left = new Jaguar(SLOT, LEFT);
 
     //**************************************************************************
     // Interface

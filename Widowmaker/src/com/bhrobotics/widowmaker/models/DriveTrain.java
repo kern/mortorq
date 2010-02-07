@@ -2,6 +2,8 @@ package com.bhrobotics.widowmaker.models;
 
 public class DriveTrain {
 
+    private static final double DEADBAND = 0.1;
+
     //**************************************************************************
     // Motors
     //**************************************************************************
@@ -31,15 +33,24 @@ public class DriveTrain {
     // [-1..1]. Rotation the new turn rate, in range [-1..1].
     public void mecanum(double x, double y, double rotation) {
         // Convert x, y, and rotation to mechanum motor speed settings
-        double rightFrontTarget = y + x + rotation;
-        double rightBackTarget = y - x + rotation;
-        double leftFrontTarget = y - x - rotation;
-        double leftBackTarget = y + x - rotation;
+        double rightFrontTarget = deadband(y + x + rotation);
+        double rightBackTarget = deadband(y - x + rotation);
+        double leftFrontTarget = deadband(y - x - rotation);
+        double leftBackTarget = deadband(y + x - rotation);
 
         rightFront = Math.min(1.0, Math.max(-1.0, rightFrontTarget));
         rightBack = Math.min(1.0, Math.max(-1.0, rightBackTarget));
         leftFront = Math.min(1.0, Math.max(-1.0, leftFrontTarget));
         leftBack = Math.min(1.0, Math.max(-1.0, leftBackTarget));
+    }
+
+    //**************************************************************************
+    // Internal
+    //*************************************************************************
+
+    private double deadband(double value) {
+        if(value < DEADBAND && value > -DEADBAND) { return 0.0; }
+        return value;
     }
 
     //**************************************************************************

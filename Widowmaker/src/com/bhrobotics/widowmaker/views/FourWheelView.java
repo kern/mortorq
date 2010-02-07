@@ -13,15 +13,16 @@ public class FourWheelView implements View {
     // Motors
     //**************************************************************************
 
-    private static final int RIGHT_FRONT = 1;
+    private static final int SLOT = 6;
+    private static final int RIGHT_FRONT = 4;
     private static final int RIGHT_BACK = 2;
-    private static final int LEFT_FRONT = 3;
-    private static final int LEFT_BACK = 4;
+    private static final int LEFT_FRONT = 5;
+    private static final int LEFT_BACK = 3;
 
-    private Jaguar rightFront = new Jaguar(RIGHT_FRONT);
-    private Jaguar rightBack = new Jaguar(RIGHT_BACK);
-    private Jaguar leftFront = new Jaguar(LEFT_FRONT);
-    private Jaguar leftBack = new Jaguar(LEFT_BACK);
+    private Jaguar rightFront = new Jaguar(SLOT, RIGHT_FRONT);
+    private Jaguar rightBack = new Jaguar(SLOT, RIGHT_BACK);
+    private Jaguar leftFront = new Jaguar(SLOT, LEFT_FRONT);
+    private Jaguar leftBack = new Jaguar(SLOT, LEFT_BACK);
 
     //**************************************************************************
     // Interface

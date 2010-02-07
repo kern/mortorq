@@ -15,9 +15,9 @@ public class CarneyView implements View {
     // Outputs
     //**************************************************************************
 
-    private static final int WINCH = 1;
+    private static final int WINCH = 7;
     private static final int BRAKE = 1;
-    private static final int CLUTCH = 1;
+    private static final int CLUTCH = 8;
 
     private Jaguar winch = new Jaguar(WINCH);
     private Solenoid brake = new Solenoid(BRAKE);
