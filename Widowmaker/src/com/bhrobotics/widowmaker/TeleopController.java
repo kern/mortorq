@@ -26,14 +26,15 @@ public class TeleopController extends Controller {
     // Interface
     //**************************************************************************
 
-    public TeleopController(DriveTrain _driveTrain, Carney _carney,
-                            Roller _roller) {
+    public TeleopController(OperatorInterface _oi, DriveTrain _driveTrain,
+                            Carney _carney, Roller _roller) {
+        super(_oi);
         driveTrain = _driveTrain;
         carney = _carney;
         roller = _roller;
     }
 
-    public boolean isStopped(OperatorInterface oi) {
+    public boolean isStopped() {
         return oi.getDigitalIn(STOP_BUTTON);
     }
 
@@ -43,7 +44,7 @@ public class TeleopController extends Controller {
         roller.start();
     }
 
-    public void running(OperatorInterface oi) {
+    public void newData() {
 
         // Drive train controls
         double x = oi.getJoystick(DRIVE_STICK).getX();
@@ -52,8 +53,11 @@ public class TeleopController extends Controller {
         driveTrain.mecanum(x, y, rotation);
 
         // Carney controls
-        carney.checkLimits();
-        if(oi.getDigitalIn(FIRE_BUTTON)) { carney.fire(); }
+        if(oi.getDigitalIn(FIRE_BUTTON)) {
+            carney.fire();
+        }else{
+            carney.retract();
+        }
 
         // Roller controls
         if(oi.getDigitalIn(ROLLER_BUTTON)) {
@@ -61,6 +65,10 @@ public class TeleopController extends Controller {
         }else{
             roller.stop();
         }
+    }
+
+    public void running() {
+        carney.checkLimits();
     }
 
     public void stop() {

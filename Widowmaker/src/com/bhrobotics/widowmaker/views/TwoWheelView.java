@@ -28,6 +28,8 @@ public class TwoWheelView implements View {
         driveTrain = _driveTrain;
     }
 
+    public void update() {}
+
     public void render() {
         right.set(driveTrain.getRight());
         left.set(driveTrain.getLeft());

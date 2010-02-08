@@ -16,6 +16,8 @@ public class DashboardView implements View{
         crio = _crio;
     }
 
+    public void update() {}
+
     public void render() {
         dashboard = DriverStation.getInstance().getDashboardPackerLow();
 

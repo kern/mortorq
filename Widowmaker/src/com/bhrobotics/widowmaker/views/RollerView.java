@@ -26,6 +26,8 @@ public class RollerView implements View {
         roller = _roller;
     }
 
+    public void update() {}
+
     // Rollers are wired with reverse polarity.
     public void render() {
         right.set(roller.getRoller());

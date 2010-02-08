@@ -12,6 +12,8 @@ public class OperatorInterface {
     private Joystick joystick_3 = new Joystick(3);
     private Joystick joystick_4 = new Joystick(4);
 
+    private boolean newData = false;
+
     public Joystick getJoystick(int number) {
         if(number == 1) {
             return joystick_1;
@@ -28,4 +30,6 @@ public class OperatorInterface {
         return ds.getDigitalIn(number);
     }
 
+    public boolean getNewData() { return newData; }
+    public void setNewData(boolean _newData) { newData = _newData; }
 }

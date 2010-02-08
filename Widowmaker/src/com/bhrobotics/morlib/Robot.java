@@ -25,7 +25,8 @@ public abstract class Robot extends SimpleRobot {
                 autoController.init();
                 while(isAutonomous() && !isDisabled()) {
                     getWatchdog().feed();
-                    autoController.refresh(oi);
+                    update();
+                    autoController.refresh();
                     render();
                 }
                 System.out.println("Exiting Autonomous.");
@@ -35,7 +36,14 @@ public abstract class Robot extends SimpleRobot {
                 teleopController.init();
                 while(isOperatorControl() && !isDisabled()) {
                     getWatchdog().feed();
-                    teleopController.refresh(oi);
+                    update();
+                    
+                    // Check for new data
+                    if(isNewDataAvailable()) {
+                        oi.setNewData(true);
+                    }
+
+                    teleopController.refresh();
                     render();
                 }
                 System.out.println("Exiting Teleop.");
@@ -46,6 +54,14 @@ public abstract class Robot extends SimpleRobot {
 
     protected void addView(View view) {
         views.addElement(view);
+    }
+
+    private void update() {
+        Enumeration en = views.elements();
+        while(en.hasMoreElements()) {
+            View view = (View) en.nextElement();
+            view.update();
+        }
     }
 
     private void render() {

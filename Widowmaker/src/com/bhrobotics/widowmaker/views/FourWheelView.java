@@ -25,17 +25,28 @@ public class FourWheelView implements View {
     private Jaguar leftBack = new Jaguar(SLOT, LEFT_BACK);
 
     //**************************************************************************
+    // Polarity
+    //**************************************************************************
+
+    private static final int RIGHT_FRONT_POLARITY = 1;
+    private static final int RIGHT_BACK_POLARITY = 1;
+    private static final int LEFT_FRONT_POLARITY = -1;
+    private static final int LEFT_BACK_POLARITY = -1;
+
+    //**************************************************************************
     // Interface
     //**************************************************************************
+    
+    public void update() {}
 
     public FourWheelView(DriveTrain _driveTrain) {
         driveTrain = _driveTrain;
     }
 
     public void render() {
-        rightFront.set(driveTrain.getRightFront());
-        rightBack.set(driveTrain.getRightBack());
-        leftFront.set(driveTrain.getLeftFront());
-        leftBack.set(driveTrain.getLeftBack());
+        rightFront.set(driveTrain.getRightFront() * RIGHT_FRONT_POLARITY);
+        rightBack.set(driveTrain.getRightBack() * RIGHT_BACK_POLARITY);
+        leftFront.set(driveTrain.getLeftFront() * LEFT_FRONT_POLARITY);
+        leftBack.set(driveTrain.getLeftBack() * LEFT_BACK_POLARITY);
     }
 }
