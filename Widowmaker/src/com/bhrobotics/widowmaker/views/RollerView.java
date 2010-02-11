@@ -12,11 +12,16 @@ public class RollerView implements View {
     // Outputs
     //**************************************************************************
 
-    private static final int RIGHT = 5;
+    private static final int RIGHT_SLOT = 4;
+    private static final int RIGHT_POLARITY = -1;
+    private static final int RIGHT = 1;
+
+    private static final int LEFT_SLOT = 6;
+    private static final int LEFT_POLARITY = -1;
     private static final int LEFT = 6;
 
-    private Jaguar right = new Jaguar(RIGHT);
-    private Jaguar left = new Jaguar(LEFT);
+    private Jaguar right = new Jaguar(RIGHT_SLOT, RIGHT);
+    private Jaguar left = new Jaguar(LEFT_SLOT, LEFT);
 
     //**************************************************************************
     // Interface
@@ -30,7 +35,7 @@ public class RollerView implements View {
 
     // Rollers are wired with reverse polarity.
     public void render() {
-        right.set(roller.getRoller());
-        left.set(roller.getRoller());
+        right.set(roller.getRoller() * RIGHT_POLARITY);
+        left.set(roller.getRoller() * LEFT_POLARITY);
     }
 }

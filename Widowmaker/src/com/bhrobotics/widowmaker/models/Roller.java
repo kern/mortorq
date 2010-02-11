@@ -4,7 +4,7 @@ import com.bhrobotics.morlib.Model;
 
 public class Roller implements Model {
 
-    private static final double SPEED = 1.0;
+    private static final double SPEED = 0.1;
 
     private double roller = 0;
 

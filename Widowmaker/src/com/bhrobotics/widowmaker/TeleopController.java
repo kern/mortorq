@@ -16,7 +16,7 @@ public class TeleopController extends Controller {
     //**************************************************************************
 
     private static final int DRIVE_STICK = 1;
-    private static final int AIM_STICK = 2;
+    private static final int STRAFE_STICK = 2;
 
     private static final int STOP_BUTTON = 1;
     private static final int FIRE_BUTTON = 2;
@@ -47,9 +47,9 @@ public class TeleopController extends Controller {
     public void newData() {
 
         // Drive train controls
-        double x = oi.getJoystick(DRIVE_STICK).getX();
+        double x = oi.getJoystick(STRAFE_STICK).getX();
         double y = oi.getJoystick(DRIVE_STICK).getY();
-        double rotation = oi.getJoystick(AIM_STICK).getX();
+        double rotation = oi.getJoystick(DRIVE_STICK).getX();
         driveTrain.mecanum(x, y, rotation);
 
         // Carney controls
