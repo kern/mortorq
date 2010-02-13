@@ -18,6 +18,6 @@ public class Widowmaker extends Robot {
         addView(new DashboardView(crio));
         addView(new FourWheelView(driveTrain));
         addView(new CarneyView(carney));
-        addView(new RollerView(roller));
+        addView(new CompressorView());
     }
 }

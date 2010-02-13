@@ -67,10 +67,6 @@ public class TeleopController extends Controller {
         }
     }
 
-    public void running() {
-        carney.checkLimits();
-    }
-
     public void stop() {
         driveTrain.stop();
         carney.stop();

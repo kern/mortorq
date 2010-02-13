@@ -1,6 +1,7 @@
 package com.bhrobotics.widowmaker.models;
 
 import com.bhrobotics.morlib.Model;
+import edu.wpi.first.wpilibj.Timer;
 
 // Carney, the former kicker of the Saints, is the kicking mechanism on the
 // robot. It's a very simple pseudo-FSM.
@@ -15,11 +16,14 @@ public class Carney implements Model {
 
     private int state = FIRED;
 
-    private boolean compressor;
+    private boolean carney;
 
     private boolean topLimit;
     private boolean bottomLimit;
-    
+
+    private Timer timer = new Timer();
+    private static final int DELAY = 1000000;
+
     //**************************************************************************
     // Interface
     //**************************************************************************
@@ -28,20 +32,15 @@ public class Carney implements Model {
     public void stop() {}
 
     public void fire() {
-        compressor = true;
+        if(topLimit) {
+            carney = true;
+        }
     }
 
     public void retract() {
-        compressor = false;
-    }
-
-    public void checkLimits() {
-        if(state == FIRED && bottomLimit) {
-            //wind();
-        }
-
-        if(state == RETRACTED && topLimit) {
-            //hold();
+        if(bottomLimit && timer.get() > DELAY) {
+            timer.stop();
+            carney = false;
         }
     }
 
@@ -49,8 +48,9 @@ public class Carney implements Model {
     // Getters
     //**************************************************************************
 
-    public boolean getCompressor() { return compressor; }
-
+    public boolean getTopLimit() { return topLimit; }
+    public boolean getBottomLimit() { return bottomLimit; }
+    
     //**************************************************************************
     // Setters
     //**************************************************************************
@@ -60,6 +60,11 @@ public class Carney implements Model {
     }
 
     public void setBottomLimit(boolean _bottomLimit) {
+        if(_bottomLimit && !bottomLimit) {
+            timer.reset();
+            timer.start();
+        }
+
         bottomLimit = _bottomLimit;
     }
 }

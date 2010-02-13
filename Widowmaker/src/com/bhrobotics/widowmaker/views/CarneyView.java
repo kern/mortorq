@@ -15,20 +15,20 @@ public class CarneyView implements View {
     //**************************************************************************
 
     private static final int LIMIT_SLOT = 4;
-    private static final int TOP_LIMIT = 1;
-    private static final int BOTTOM_LIMIT = 2;
+    private static final int TOP_LIMIT = 13;
+    private static final int BOTTOM_LIMIT = 14;
 
     private DigitalInput topLimit = new DigitalInput(LIMIT_SLOT, TOP_LIMIT);
     private DigitalInput bottomLimit = new DigitalInput(LIMIT_SLOT, BOTTOM_LIMIT);
 
     //**************************************************************************
-    // Outputs
+    // Relays
     //**************************************************************************
 
-    private static final int COMPRESSOR_SLOT = 6;
-    private static final int COMPRESSOR = 1;
-
-    //private Compressor compressor = new Compressor(COMPRESSOR_SLOT, COMPRESSOR);
+    private static final int RELAY_SLOT = 4;
+    private static final int RELAY = 1;
+    
+    private Relay relay = new Relay(RELAY_SLOT, RELAY);
 
     //**************************************************************************
     // Interface
@@ -39,15 +39,17 @@ public class CarneyView implements View {
     }
     
     public void update() {
-        carney.setTopLimit(topLimit.get());
-        carney.setBottomLimit(bottomLimit.get());
+        carney.setTopLimit(!topLimit.get());
+        carney.setBottomLimit(!bottomLimit.get());
     }
 
     public void render() {
-        if(carney.getCompressor()) {
-            //compressor.set(Relay.Value.kOff);
+        if(carney.getTopLimit()) {
+            relay.set(Relay.Value.kReverse);
+        }else if(carney.getBottomLimit()) {
+            relay.set(Relay.Value.kForward);
         }else{
-            //compressor.set(Relay.Value.kOff);
+            relay.set(Relay.Value.kOff);
         }
     }
 }
