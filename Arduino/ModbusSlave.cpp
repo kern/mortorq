@@ -23,21 +23,13 @@ uint8_t ModbusSlave::getAdu(void) {
   uint8_t function = adu[1];
   
   switch(function) {
-    case ku8MBReadCoils:
-    case ku8MBReadDiscreteInputs:
-    case ku8MBReadInputRegisters:
-    case ku8MBReadHoldingRegisters:
-    case ku8MBReadWriteMultipleRegisters:
-      bytesLeft = adu[2];
-      break;
-      
     case ku8MBWriteSingleCoil:
     case ku8MBWriteMultipleCoils:
     case ku8MBWriteSingleRegister:
       bytesLeft = 3;
       break;
       
-    case ku8MBMaskWriteRegister:
+    case ku8MBMaskWriteReg.ister:
       bytesLeft = 5;
       break;
     }
@@ -51,7 +43,7 @@ uint8_t ModbusSlave::getAdu(void) {
   return status;
 }
 
-bool ModbusSlave:validateCrc(uint8_t *adu[], uint8_t aduSize) {
+bool ModbusSlave::validateCrc(uint8_t *adu[], uint8_t aduSize) {
   
   uint16_t crc = 0xFFFF;
   for(i = 0; i < (aduSize - 2); i++) {
