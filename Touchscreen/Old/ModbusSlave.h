@@ -3,7 +3,6 @@
 
 // Wiring core API and CRC calculation
 #include "WProgram.h"
-#include "Adu.h"
 
 class ModbusSlave {
   public:
@@ -13,13 +12,9 @@ class ModbusSlave {
     void begin();
     void begin(uint16_t);
     
-    bool refresh();
-    
-    Adu* getRequest();
-    
   private:
     uint8_t slaveId;
-    bool poop;
+    
 };
 
 #endif

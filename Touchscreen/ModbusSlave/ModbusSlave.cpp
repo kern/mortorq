@@ -1,116 +1,76 @@
 #include "ModbusSlave.h"
 
 // Default Modbus slave ID 1
-ModbusSlave::ModbusSlave(void) { slaveId = 1; }
+ModbusSlave::ModbusSlave() { slaveId = 1; }
 ModbusSlave::ModbusSlave(uint8_t _slaveId) { slaveId = _slaveId; }
 
 // Called after the class is instantiated to set up communication ports
-void ModbusSlave::begin(void) { start(9600); }
+void ModbusSlave::begin() { begin(9600); }
 void ModbusSlave::begin(uint16_t _baud) { Serial.begin(_baud); }
 
-uint8_t ModbusSlave::getAdu(void) {
-  
-  // No data
-  uint8_t length = Serial.available();
-  if(length == 0) { return 0; }
-  
-  // Get the request
-  uint8_t adu[length];
-  if(getRequest(adu) == 0) { return 0; }
-  
-  // Check slave ID and function
-  if(adu[0] != slaveId) { return 0; }
-  uint8_t function = adu[1];
-  
-  switch(function) {
-    case ku8MBWriteSingleCoil:
-    case ku8MBWriteMultipleCoils:
-    case ku8MBWriteSingleRegister:
-      bytesLeft = 3;
-      break;
-      
-    case ku8MBMaskWriteReg.ister:
-      bytesLeft = 5;
-      break;
-    }
-  }
-  
-  // Invalid CRC
-  if(validateCrc(adu, length) == false) {
-    return 0;
-  }
-  
-  return status;
-}
-
-bool ModbusSlave::validateCrc(uint8_t *adu[], uint8_t aduSize) {
-  
-  uint16_t crc = 0xFFFF;
-  for(i = 0; i < (aduSize - 2); i++) {
-    crc = _crc16_update(crc, adu[i]);
-  }
-  
-  if(lowByte(crc) != adu[aduSize - 2] || highByte(crc) != adu[aduSize - 1]) {
-    return false; // Invalid CRC
-  }
-  
-  return true;
-}
-
-
-
-int start_mb_slave(void) {
-  unsigned char query[MAX_MESSAGE_LENGTH];
-  unsigned char errpacket[EXCEPTION_SIZE + CHECKSUM_SIZE];
-  unsigned int start_addr;
-  int exception;
-  int length = Serial.available();
-  unsigned long now = millis();
-  
-  // No new data
-  if(length == 0) { return 0; }
-  
-  if(lastBytesReceived != length) {
-    lastBytesReceived = length;
-    Nowdt = now + 5; // Reset timeout
-    return 0;
-  }
-  
-  if(now < Nowdt) {
-    return 0;
-  }
-  
-  lastBytesReceived = 0;
-  length = modbus_request(slave, query);
-  if(length < 1) {
-    return length;
+// Called continuously to process any new modbus requests
+bool ModbusSlave::refresh() {
+  Adu *request = getRequest();
+  return poop;
+  // Process the request if there is one.
+  if(request == NULL) {
+    return true;
+  }else if(request->getError()) {
+    return false;
   }else{
-    exception = validate_request(query, length, regs_size);
-    if(exception) {
-      build_error_packet(slave, query[FUNC], exception, errpacket);
-      send_reply(errpacket, EXCEPTION_SIZE);
-      return exception;
-    }else{
-      start_addr = ((int) query[START_H] << 8) + (int) query[START_L];
-      if(0x03 == query[FUNC]) {
-        return read_holding_registers(slave, start_addr, query[REGS_L], regs);
-      }
-      
-      if(0x10 == query[FUNC]) {
-        return preset_multiple_registers(slave, start_addr, query[REGS_L], query, regs);
-      }
-    }
+    return false;
   }
 }
 
-uint8_t receiveRequest(uint8_t *request) {
-  uint8_t bytesReceived = 0;
+Adu* ModbusSlave::getRequest() {
+  Adu *request;
+  request->setRequest(true);
   
-  while(Serial.available()) {
-    receivedString[bytesReceived] = Serial.read();
-    bytesReceived++;
-    if(bytesReceived >= MAX_MESSAGE_LENGTH) { return 0; }
+  const int timeout = 50;
+  int counter = 0;
+  int bytesReceived = 0;
+  
+  while(counter < timeout) {
+    if(Serial.available()) {
+      counter = 0;
+      if(bytesReceived == 0) {
+        // Check if the slave id is for this slave.
+        if(slaveId != Serial.read()) { return NULL; }
+        request->setSlaveId(slaveId);
+      }else if(bytesReceived == 1) {
+        // Set the function of the ADU
+        request->setFunction(Serial.read());
+      }else{
+        int dataSize = request->getDataSize();
+      
+        if(dataSize) {
+          for(int i = 0; i < dataSize; i++) {
+            request->setData(i, Serial.read());
+          }
+        
+          // Add in the CRC
+          uint8_t high = Serial.read();
+          uint8_t low = Serial.read();
+          request->setCrc(((uint16_t) ((high) << 8 | (low))));
+        
+          uint8_t *adu = request->getAdu();
+          for(int i = 0; i < request->getAduSize(); i++) {
+            Serial.print(adu[i], BYTE);
+          }
+        
+          return request;
+        }else{
+          // Unsupported or unknown function
+          request->setExceptionCode(0x01);
+          request->setCrc(request->computeCrc());
+          return request;
+        }
+      }
+      bytesReceived++;
+    }else{
+      counter++;
+    }
   }
   
-  return bytesReceived;
+  return NULL;
 }

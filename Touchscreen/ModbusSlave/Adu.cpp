@@ -6,7 +6,7 @@
 
 uint8_t Adu::getSlaveId() { return slaveId; }
 uint8_t Adu::getFunction() { return function; }
-uint8_t Adu::getData() { return data; }
+uint8_t Adu::getData(int index) { return data[index]; }
 uint16_t Adu::getCrc() { return crc; }
 bool Adu::getRequest() { return request; }
 bool Adu::getResponse() { return !request; }
@@ -17,9 +17,8 @@ bool Adu::getError() { return error; }
 //****************************************************************************
 
 void Adu::setSlaveId(uint8_t _slaveId) { slaveId = _slaveId; }
-void Adu::setData(uint8_t _data) { data = _data; }
+void Adu::setData(int index, uint8_t value) { data[index] = value; }
 void Adu::setCrc(uint16_t _crc) { crc = _crc; }
-void Adu::setRequest(bool _request) { request = _request; }
 void Adu::setResponse(bool _response) { request = !_response; }
 
 //****************************************************************************
@@ -31,8 +30,8 @@ void Adu::setResponse(bool _response) { request = !_response; }
 int Adu::getAduSize() {
   const int bufferBytes = 4;
   
-  int dataBits = dataBitsNeeded();
-  if(dataBits) { return bufferBytes + dataBits; }
+  int dataSize = getDataSize();
+  if(dataSize) { return bufferBytes + dataSize; }
   return NULL;
 }
 
@@ -43,18 +42,18 @@ int Adu::getDataSize() {
   if(error) { return 1; }
   
   // Implement the data bits needed for each function here.
-  if(WRITE_SINGLE_COIL) { return 4; }
+  if(function == WRITE_SINGLE_COIL) { return 4; }
   
   // Unknown function means we don't know how many bytes the data must be.
   return NULL;
 }
 
 // Assembles all the various attributes into the final ADU
-uint8_t Adu::getAdu() {
-  int size = aduSize();
+uint8_t* Adu::getAdu() {
+  int size = getAduSize();
   
   if(size) {
-    uint8_t adu[aduSize()];
+    uint8_t adu[size];
     
     adu[0] = slaveId;
     
@@ -63,7 +62,7 @@ uint8_t Adu::getAdu() {
     if(error) { adu[1] += 0x80; }
     
     // Places the data into the ADU with an offset of 2
-    int dataSize = dataSize();
+    int dataSize = getDataSize();
     for(int i = 0; i < dataSize; i++) {
       adu[i + 2] = data[i];
     }
@@ -97,7 +96,13 @@ void Adu::setFunction(uint8_t _function) {
   }
 }
 
-// Errors can only responses
+// Requests cannot be responses.
+void Adu::setRequest(bool _request) {
+  setError(false);
+  request = _request;
+}
+
+// Errors can only responses.
 void Adu::setError(bool _error) {
   if(error == true) { request = false; }
   error = _error;
@@ -108,3 +113,20 @@ void Adu::setExceptionCode(uint8_t exceptionCode) {
   setError(true);
   data[0] = exceptionCode;
 }
+
+//****************************************************************************
+// CRC
+//****************************************************************************
+
+// Computes the CRC to check for any errors or to assemble a response.
+uint8_t Adu::computeCrc() {
+  uint8_t* adu = getAdu();
+  
+  for(int i = 0; i < (sizeof(adu) - 2); i++) {
+    crc = _crc16_update(crc, adu[i]);
+  }
+  
+  return crc;
+}
+
+bool Adu::validCrc() { crc == computeCrc(); }

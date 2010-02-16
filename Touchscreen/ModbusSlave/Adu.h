@@ -9,42 +9,42 @@
 #define lowWord(ww) ((uint16_t) ((ww) & 0xFFFF))
 #define highWord(ww) ((uint16_t) ((ww) >> 16))
 
-// Max sizes
-#define MAX_FRAME_SIZE 256;
-
-// Supported function codes
-#define WRITE_SINGLE_COIL 0x05;
-
 class Adu {
   public:
     uint8_t getSlaveId();
     uint8_t getFunction();
-    uint8_t getFunction();
-    uint8_t getData();
+    uint8_t getData(int);
     uint16_t getCrc();
     bool getRequest();
     bool getResponse();
     bool getError();
     
-    void setFrame(uint8_t);
     void setSlaveId(uint8_t);
-    void setFunction(uint8_t);
-    void setData(uint8_t);
+    void setData(int, uint8_t);
     void setCrc(uint16_t);
-    void setRequest(bool);
     void setResponse(bool);
+    
+    int getAduSize();
+    int getDataSize();
+    uint8_t* getAdu();
+    
+    void setFunction(uint8_t);
+    void setRequest(bool);
     void setError(bool);
-    
-    int aduSize();
-    int dataSize();
-    
     void setExceptionCode(uint8_t);
     
+    uint8_t computeCrc();
+    bool validCrc();
+    
   private:
+    static const int MAX_DATA_SIZE = 252;
+    static const uint8_t WRITE_SINGLE_COIL = 0x05;
+    
     uint8_t slaveId;
     uint8_t function;
-    uint8_t data[MAX_FRAME_SIZE - 4]; // Accomadate for the slave ID, function, and CRC
+    uint8_t data[MAX_DATA_SIZE];
     uint8_t crc;
+    bool request;
     bool error;
 };
 
