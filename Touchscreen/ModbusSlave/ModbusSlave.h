@@ -16,6 +16,7 @@ class ModbusSlave {
     bool refresh();
     
     Adu* getRequest();
+    uint8_t* receiveRequest();
     
   private:
     uint8_t slaveId;

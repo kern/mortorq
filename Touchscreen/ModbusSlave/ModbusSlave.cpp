@@ -1,7 +1,7 @@
 #include "ModbusSlave.h"
 
 // Default Modbus slave ID 1
-ModbusSlave::ModbusSlave() { slaveId = 1; }
+ModbusSlave::ModbusSlave() { slaveId = 0x01; }
 ModbusSlave::ModbusSlave(uint8_t _slaveId) { slaveId = _slaveId; }
 
 // Called after the class is instantiated to set up communication ports
@@ -24,53 +24,46 @@ bool ModbusSlave::refresh() {
 
 Adu* ModbusSlave::getRequest() {
   Adu *request;
+  uint8_t bytes[253];
   request->setRequest(true);
   
   const int timeout = 50;
   int counter = 0;
-  int bytesReceived = 0;
+  int byteIndex = 0;
   
-  while(counter < timeout) {
-    if(Serial.available()) {
-      counter = 0;
-      if(bytesReceived == 0) {
-        // Check if the slave id is for this slave.
-        if(slaveId != Serial.read()) { return NULL; }
-        request->setSlaveId(slaveId);
-      }else if(bytesReceived == 1) {
-        // Set the function of the ADU
-        request->setFunction(Serial.read());
-      }else{
-        int dataSize = request->getDataSize();
+  while(counter < timeout && request->getRequest()) {
+    while(Serial.available()) {
       
-        if(dataSize) {
-          for(int i = 0; i < dataSize; i++) {
-            request->setData(i, Serial.read());
-          }
+      // Reset timeout
+      counter = 0;
+      /*
+      uint8_t byte = Serial.read();
+      
+      switch(byteIndex) {
+        case 0:
+          if(slaveId != byte) { return false; }
+          request->setSlaveId(slaveId);
+          Serial.println((int) byte, BIN);
+        break;
         
-          // Add in the CRC
-          uint8_t high = Serial.read();
-          uint8_t low = Serial.read();
-          request->setCrc(((uint16_t) ((high) << 8 | (low))));
-        
-          uint8_t *adu = request->getAdu();
-          for(int i = 0; i < request->getAduSize(); i++) {
-            Serial.print(adu[i], BYTE);
-          }
-        
-          return request;
-        }else{
-          // Unsupported or unknown function
-          request->setExceptionCode(0x01);
-          request->setCrc(request->computeCrc());
-          return request;
-        }
+        case 1:
+          request->setFunction(byte);
+          poop = true;
+          Serial.println((int) byte, BIN);
+        break;
       }
-      bytesReceived++;
-    }else{
-      counter++;
+      
+      byteIndex++;*/
+        
+        Serial.println((int) Serial.read(), BIN);
     }
+    
+    counter++;
   }
   
+  // Return the error if there is one.
+  if(request->getError()) { return request; }
+  
+  // Timeout
   return NULL;
 }
