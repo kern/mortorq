@@ -10,6 +10,13 @@ public class TeleopController extends Controller {
     private DriveTrain driveTrain;
     private Carney carney;
     private Roller roller;
+    private Deflector deflector;
+
+    //**************************************************************************
+    // Button State
+    //**************************************************************************
+
+    private boolean previous_deflector = false;
 
     //**************************************************************************
     // OI inputs
@@ -19,19 +26,21 @@ public class TeleopController extends Controller {
     private static final int STRAFE_STICK = 2;
 
     private static final int STOP_BUTTON = 1;
-    private static final int FIRE_BUTTON = 2;
     private static final int ROLLER_BUTTON = 3;
+    private static final int DEFLECTOR_BUTTON = 2;
 
     //**************************************************************************
     // Interface
     //**************************************************************************
 
     public TeleopController(OperatorInterface _oi, DriveTrain _driveTrain,
-                            Carney _carney, Roller _roller) {
+                            Carney _carney, Roller _roller,
+                            Deflector _deflector) {
         super(_oi);
         driveTrain = _driveTrain;
         carney = _carney;
         roller = _roller;
+        deflector = _deflector;
     }
 
     public boolean isStopped() {
@@ -42,6 +51,7 @@ public class TeleopController extends Controller {
         driveTrain.start();
         carney.start();
         roller.start();
+        deflector.start();
     }
 
     public void newData() {
@@ -53,25 +63,39 @@ public class TeleopController extends Controller {
         driveTrain.mecanum(x, y, rotation);
 
         // Carney controls
-        if(oi.getJoystick(DRIVE_STICK).getTrigger() || oi.getDigitalIn(FIRE_BUTTON)) {
-            carney.fire();
-        }
-
-        if(oi.getJoystick(STRAFE_STICK).getTrigger()) {
+        if(oi.getJoystick(DRIVE_STICK).getTrigger() ||
+           oi.getJoystick(STRAFE_STICK).getTrigger()) {
+            carney.fireSix();
+        }else{
             carney.retract();
         }
 
         // Roller controls
-        if(oi.getDigitalIn(ROLLER_BUTTON)) {
+        if(oi.getJoystick(DRIVE_STICK).getRawButton(ROLLER_BUTTON) ||
+           oi.getJoystick(STRAFE_STICK).getRawButton(ROLLER_BUTTON)) {
             roller.roll();
         }else{
             roller.stop();
         }
+
+        // Deflector controls
+        if(previous_deflector == false &&
+           (oi.getJoystick(DRIVE_STICK).getRawButton(DEFLECTOR_BUTTON) ||
+            oi.getJoystick(STRAFE_STICK).getRawButton(DEFLECTOR_BUTTON))) {
+            if(deflector.getDeflector()) {
+                deflector.up();
+            }else{
+                deflector.down();
+            }
+        }
+        previous_deflector = oi.getJoystick(DRIVE_STICK).getRawButton(DEFLECTOR_BUTTON) ||
+                             oi.getJoystick(STRAFE_STICK).getRawButton(DEFLECTOR_BUTTON);
     }
 
     public void stop() {
         driveTrain.stop();
         carney.stop();
         roller.stop();
+        deflector.stop();
     }
 }

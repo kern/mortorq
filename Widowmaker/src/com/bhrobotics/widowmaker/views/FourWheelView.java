@@ -4,6 +4,7 @@ import com.bhrobotics.morlib.View;
 import com.bhrobotics.widowmaker.models.DriveTrain;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 
 // Uses four wheels to control a robot.
@@ -60,10 +61,15 @@ public class FourWheelView implements View {
     // Interface
     //**************************************************************************
     
-    public void update() {}
-
     public FourWheelView(DriveTrain _driveTrain) {
         driveTrain = _driveTrain;
+    }
+
+    public void update() {
+        driveTrain.setRightFrontRate(rightFrontEncoder.getRate());
+        //driveTrain.setRightBackRate(rightBackEncoder.getRate());
+        //driveTrain.setLeftFrontRate(leftFrontEncoder.getRate());
+        //driveTrain.setLeftBackRate(leftBackEncoder.getRate());
     }
 
     public void render() {

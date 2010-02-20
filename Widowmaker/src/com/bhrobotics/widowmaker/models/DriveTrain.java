@@ -14,6 +14,15 @@ public class DriveTrain {
     private double leftBack;
 
     //**************************************************************************
+    // Rates
+    //**************************************************************************
+
+    private double rightFrontRate;
+    private double rightBackRate;
+    private double leftFrontRate;
+    private double leftBackRate;
+
+    //**************************************************************************
     // Interface
     //**************************************************************************
 
@@ -38,7 +47,12 @@ public class DriveTrain {
         double leftFrontTarget = deadband(y - x - rotation);
         double leftBackTarget = deadband(y + x - rotation);
 
-        rightFront = Math.min(1.0, Math.max(-1.0, rightFrontTarget));
+        if(rightFrontRate > Math.min(1.0, Math.max(-1.0, rightFrontTarget))) {
+            rightFront += 0.05;
+        }else if(rightFrontRate > Math.min(1.0, Math.max(-1.0, rightFrontTarget))) {
+            rightFront -= 0.05;
+        }
+
         rightBack = Math.min(1.0, Math.max(-1.0, rightBackTarget));
         leftFront = Math.min(1.0, Math.max(-1.0, leftFrontTarget));
         leftBack = Math.min(1.0, Math.max(-1.0, leftBackTarget));
@@ -64,6 +78,14 @@ public class DriveTrain {
     // Four wheel drive uses the respective motor values.
     public double getRightFront() { return rightFront; }
     public double getRightBack() { return rightBack; }
-    public double getLeftFront() { return leftFront;}
+    public double getLeftFront() { return leftFront; }
     public double getLeftBack() { return leftBack; }
+
+    //**************************************************************************
+    // Setters
+    //**************************************************************************
+
+    public void setRightFrontRate(double rate) {
+        rightFrontRate = rate;
+    }
 }

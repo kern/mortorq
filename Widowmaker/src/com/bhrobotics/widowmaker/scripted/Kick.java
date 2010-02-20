@@ -14,7 +14,7 @@ public class Kick implements Instruction {
     }
 
     public boolean execute() {
-        carney.fire();
+        carney.fireFour();
         return true;
     }
 

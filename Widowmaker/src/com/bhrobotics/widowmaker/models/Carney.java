@@ -11,18 +11,14 @@ public class Carney implements Model {
     // State
     //**************************************************************************
 
-    private static final int FIRED = 0;
-    private static final int RETRACTED = 1;
+    private boolean fireTwo = false;
+    private boolean fireFour = false;
 
-    private int state = FIRED;
-
-    private boolean carney;
-
-    private boolean topLimit;
-    private boolean bottomLimit;
+    private boolean topLimit = false;
+    private boolean bottomLimit = false;
 
     private Timer timer = new Timer();
-    private static final int DELAY = 1000000;
+    private static final double DELAY = 2.0;
 
     //**************************************************************************
     // Interface
@@ -31,16 +27,38 @@ public class Carney implements Model {
     public void start() {}
     public void stop() {}
 
-    public void fire() {
+    public void fireTwo() {
         if(topLimit) {
-            carney = true;
+            fireTwo = true;
+            fireFour = false;
+        }
+    }
+
+    public void fireFour() {
+        if(topLimit) {
+            fireTwo = false;
+            fireFour = true;
+        }
+    }
+
+    public void fireSix() {
+        if(topLimit) {
+            fireTwo = true;
+            fireFour = true;
         }
     }
 
     public void retract() {
         if(bottomLimit && timer.get() > DELAY) {
-            timer.stop();
-            carney = false;
+            
+            // Reset the timer
+            if(timer.get() != 0) {
+                timer.stop();
+                timer.reset();
+            }
+
+            fireTwo = false;
+            fireFour = false;
         }
     }
 
@@ -48,7 +66,9 @@ public class Carney implements Model {
     // Getters
     //**************************************************************************
 
-    public boolean getCarney() { return carney; }
+    public boolean getFireTwo() { return fireTwo; }
+    public boolean getFireFour() { return fireFour; }
+    public boolean getRetract() { return !(fireTwo || fireFour); }
     public boolean getTopLimit() { return topLimit; }
     public boolean getBottomLimit() { return bottomLimit; }
     

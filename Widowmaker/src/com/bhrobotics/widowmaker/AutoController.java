@@ -10,13 +10,16 @@ public class AutoController extends Controller {
     private DriveTrain driveTrain;
     private Carney carney;
     private Roller roller;
+    private Deflector deflector;
 
     public AutoController(OperatorInterface _oi, DriveTrain _driveTrain,
-                          Carney _carney, Roller _roller) {
+                          Carney _carney, Roller _roller,
+                          Deflector _deflector) {
         super(_oi);
         driveTrain = _driveTrain;
         carney = _carney;
         roller = _roller;
+        deflector = _deflector;
     }
 
 }

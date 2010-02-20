@@ -16,21 +16,21 @@ public class CarneyView implements View {
     //**************************************************************************
 
     private static final int SOLENOID_SLOT = 8;
-    private static final int FIRST_FIRE_SOLENOID = 1;
-    private static final int SECOND_FIRE_SOLENOID = 2;
-    private static final int RETRACT_SOLENOID = 3;
+    private static final int FIRE_TWO = 6;
+    private static final int FIRE_FOUR = 7;
+    private static final int RETRACT = 8;
 
-    private Solenoid firstFireSolenoid = new Solenoid(SOLENOID_SLOT, FIRST_FIRE_SOLENOID);
-    private Solenoid secondFireSolenoid = new Solenoid(SOLENOID_SLOT, SECOND_FIRE_SOLENOID);
-    private Solenoid retractSolenoid = new Solenoid(SOLENOID_SLOT, RETRACT_SOLENOID);
+    private Solenoid fireTwoSolenoid = new Solenoid(SOLENOID_SLOT, FIRE_TWO);
+    private Solenoid fireFourSolenoid = new Solenoid(SOLENOID_SLOT, FIRE_FOUR);
+    private Solenoid retractSolenoid = new Solenoid(SOLENOID_SLOT, RETRACT);
 
     //**************************************************************************
     // Inputs
     //**************************************************************************
 
     private static final int LIMIT_SLOT = 4;
-    private static final int TOP_LIMIT = 13;
-    private static final int BOTTOM_LIMIT = 14;
+    private static final int TOP_LIMIT = 14;
+    private static final int BOTTOM_LIMIT = 13;
 
     private DigitalInput topLimit = new DigitalInput(LIMIT_SLOT, TOP_LIMIT);
     private DigitalInput bottomLimit = new DigitalInput(LIMIT_SLOT, BOTTOM_LIMIT);
@@ -58,9 +58,9 @@ public class CarneyView implements View {
     }
 
     public void render() {
-        firstFireSolenoid.set(carney.getCarney());
-        secondFireSolenoid.set(carney.getCarney());
-        retractSolenoid.set(!carney.getCarney());
+        fireTwoSolenoid.set(carney.getFireTwo());
+        fireFourSolenoid.set(carney.getFireFour());
+        retractSolenoid.set(carney.getRetract());
 
         if(carney.getTopLimit()) {
             relay.set(Relay.Value.kReverse);
