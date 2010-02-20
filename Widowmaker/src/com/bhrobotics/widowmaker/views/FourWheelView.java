@@ -3,8 +3,6 @@ package com.bhrobotics.widowmaker.views;
 import com.bhrobotics.morlib.View;
 import com.bhrobotics.widowmaker.models.DriveTrain;
 import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 
 // Uses four wheels to control a robot.
@@ -37,18 +35,6 @@ public class FourWheelView implements View {
     private static final int LEFT_BACK_POLARITY = -1;
 
     //**************************************************************************
-    // Encoders
-    //**************************************************************************
-
-    private static final int ENCODER_SLOT = 4;
-
-    private static final int RIGHT_FRONT_FORWARD = 11;
-    private static final int RIGHT_FRONT_REVERSE = 10;
-
-    private Encoder rightFrontEncoder = new Encoder(ENCODER_SLOT, RIGHT_FRONT_FORWARD,
-                                                    ENCODER_SLOT, RIGHT_FRONT_REVERSE);
-
-    //**************************************************************************
     // Relays
     //**************************************************************************
 
@@ -65,23 +51,12 @@ public class FourWheelView implements View {
         driveTrain = _driveTrain;
     }
 
-    public void update() {
-        driveTrain.setRightFrontRate(rightFrontEncoder.getRate());
-        //driveTrain.setRightBackRate(rightBackEncoder.getRate());
-        //driveTrain.setLeftFrontRate(leftFrontEncoder.getRate());
-        //driveTrain.setLeftBackRate(leftBackEncoder.getRate());
-    }
+    public void update() {}
 
     public void render() {
         rightFront.set(driveTrain.getRightFront() * RIGHT_FRONT_POLARITY);
         rightBack.set(driveTrain.getRightBack() * RIGHT_BACK_POLARITY);
         leftFront.set(driveTrain.getLeftFront() * LEFT_FRONT_POLARITY);
         leftBack.set(driveTrain.getLeftBack() * LEFT_BACK_POLARITY);
-        
-        if(rightFrontEncoder.getDirection()) {
-            rightFrontRelay.set(Relay.Value.kForward);
-        }else{
-            rightFrontRelay.set(Relay.Value.kReverse);
-        }
     }
 }
