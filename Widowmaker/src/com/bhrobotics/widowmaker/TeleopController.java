@@ -53,9 +53,11 @@ public class TeleopController extends Controller {
         driveTrain.mecanum(x, y, rotation);
 
         // Carney controls
-        if(oi.getDigitalIn(FIRE_BUTTON)) {
+        if(oi.getJoystick(DRIVE_STICK).getTrigger() || oi.getDigitalIn(FIRE_BUTTON)) {
             carney.fire();
-        }else{
+        }
+
+        if(oi.getJoystick(STRAFE_STICK).getTrigger()) {
             carney.retract();
         }
 

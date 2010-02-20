@@ -12,12 +12,13 @@ public class Widowmaker extends Robot {
     private Roller roller = new Roller();
 
     public Widowmaker() {
+
+        //addView(new CompressorView());
         autoController = new AutoController(oi, driveTrain, carney, roller);
         teleopController = new TeleopController(oi, driveTrain, carney, roller);
 
         addView(new DashboardView(crio));
         addView(new FourWheelView(driveTrain));
         addView(new CarneyView(carney));
-        addView(new CompressorView());
     }
 }

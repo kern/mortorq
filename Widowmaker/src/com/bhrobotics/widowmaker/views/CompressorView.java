@@ -15,8 +15,8 @@ public class CompressorView implements View {
     private static final int SENSOR_SLOT = 4;
     private static final int SENSOR = 12;
 
-    private Compressor compressor = new Compressor(COMPRESSOR_SLOT, COMPRESSOR,
-                                                   SENSOR_SLOT, SENSOR);
+    private Compressor compressor = new Compressor(SENSOR_SLOT, SENSOR,
+                                                   COMPRESSOR_SLOT, COMPRESSOR);
 
     //**************************************************************************
     // Interface

@@ -2,6 +2,7 @@ package com.bhrobotics.widowmaker.views;
 
 import com.bhrobotics.morlib.View;
 import com.bhrobotics.widowmaker.models.Carney;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -9,6 +10,19 @@ import edu.wpi.first.wpilibj.Relay;
 public class CarneyView implements View {
 
     private Carney carney;
+
+    //**************************************************************************
+    // Solenoids
+    //**************************************************************************
+
+    private static final int SOLENOID_SLOT = 8;
+    private static final int FIRST_FIRE_SOLENOID = 1;
+    private static final int SECOND_FIRE_SOLENOID = 2;
+    private static final int RETRACT_SOLENOID = 3;
+
+    private Solenoid firstFireSolenoid = new Solenoid(SOLENOID_SLOT, FIRST_FIRE_SOLENOID);
+    private Solenoid secondFireSolenoid = new Solenoid(SOLENOID_SLOT, SECOND_FIRE_SOLENOID);
+    private Solenoid retractSolenoid = new Solenoid(SOLENOID_SLOT, RETRACT_SOLENOID);
 
     //**************************************************************************
     // Inputs
@@ -20,7 +34,7 @@ public class CarneyView implements View {
 
     private DigitalInput topLimit = new DigitalInput(LIMIT_SLOT, TOP_LIMIT);
     private DigitalInput bottomLimit = new DigitalInput(LIMIT_SLOT, BOTTOM_LIMIT);
-
+    
     //**************************************************************************
     // Relays
     //**************************************************************************
@@ -44,6 +58,10 @@ public class CarneyView implements View {
     }
 
     public void render() {
+        firstFireSolenoid.set(carney.getCarney());
+        secondFireSolenoid.set(carney.getCarney());
+        retractSolenoid.set(!carney.getCarney());
+
         if(carney.getTopLimit()) {
             relay.set(Relay.Value.kReverse);
         }else if(carney.getBottomLimit()) {

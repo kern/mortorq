@@ -48,6 +48,7 @@ public class Carney implements Model {
     // Getters
     //**************************************************************************
 
+    public boolean getCarney() { return carney; }
     public boolean getTopLimit() { return topLimit; }
     public boolean getBottomLimit() { return bottomLimit; }
     
