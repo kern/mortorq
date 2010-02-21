@@ -11,8 +11,12 @@ public class Roller implements Model {
     public void start() { stop(); }
     public void stop() { roller = 0.0; }
 
-    public void roll() {
+    public void rollIn() {
         roller = SPEED;
+    }
+
+    public void rollOut() {
+        roller = -SPEED;
     }
 
     public double getRoller() { return roller; }

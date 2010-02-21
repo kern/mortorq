@@ -3,7 +3,6 @@ package com.bhrobotics.widowmaker.views;
 import com.bhrobotics.morlib.View;
 import com.bhrobotics.widowmaker.models.DriveTrain;
 import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Relay;
 
 // Uses four wheels to control a robot.
 public class FourWheelView implements View {
@@ -33,15 +32,6 @@ public class FourWheelView implements View {
     private static final int RIGHT_BACK_POLARITY = 1;
     private static final int LEFT_FRONT_POLARITY = -1;
     private static final int LEFT_BACK_POLARITY = -1;
-
-    //**************************************************************************
-    // Relays
-    //**************************************************************************
-
-    private static final int RELAY_SLOT = 4;
-    private static final int RIGHT_FRONT_RELAY = 3;
-
-    private Relay rightFrontRelay = new Relay(RELAY_SLOT, RIGHT_FRONT_RELAY);
 
     //**************************************************************************
     // Interface

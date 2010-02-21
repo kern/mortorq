@@ -57,9 +57,9 @@ public class TeleopController extends Controller {
     public void newData() {
 
         // Drive train controls
-        double x = oi.getJoystick(STRAFE_STICK).getX();
+        double x = oi.getJoystick(DRIVE_STICK).getX();
         double y = oi.getJoystick(DRIVE_STICK).getY();
-        double rotation = oi.getJoystick(DRIVE_STICK).getX();
+        double rotation = oi.getJoystick(STRAFE_STICK).getX();
         driveTrain.mecanum(x, y, rotation);
 
         // Carney controls
@@ -73,7 +73,10 @@ public class TeleopController extends Controller {
         // Roller controls
         if(oi.getJoystick(DRIVE_STICK).getRawButton(ROLLER_BUTTON) ||
            oi.getJoystick(STRAFE_STICK).getRawButton(ROLLER_BUTTON)) {
-            roller.roll();
+            roller.rollIn();
+        }else if(oi.getJoystick(DRIVE_STICK).getRawButton(10) ||
+                 oi.getJoystick(STRAFE_STICK).getRawButton(10)) {
+            roller.rollOut();
         }else{
             roller.stop();
         }

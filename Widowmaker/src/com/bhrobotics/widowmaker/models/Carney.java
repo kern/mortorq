@@ -49,7 +49,7 @@ public class Carney implements Model {
     }
 
     public void retract() {
-        if(bottomLimit && timer.get() > DELAY) {
+        if(timer.get() > DELAY) {
             
             // Reset the timer
             if(timer.get() != 0) {
