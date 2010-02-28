@@ -44,7 +44,7 @@ public class TeleopController extends Controller {
     }
 
     public boolean isStopped() {
-        return oi.getDigitalIn(STOP_BUTTON);
+        return oi.getStopped();
     }
 
     public void start() {
@@ -57,14 +57,15 @@ public class TeleopController extends Controller {
     public void newData() {
 
         // Drive train controls
-        double x = oi.getJoystick(DRIVE_STICK).getX();
+        double x = oi.getJoystick(STRAFE_STICK).getX();
         double y = oi.getJoystick(DRIVE_STICK).getY();
-        double rotation = oi.getJoystick(STRAFE_STICK).getX();
+        double rotation = oi.getJoystick(DRIVE_STICK).getX();
         driveTrain.mecanum(x, y, rotation);
 
         // Carney controls
         if(oi.getJoystick(DRIVE_STICK).getTrigger() ||
-           oi.getJoystick(STRAFE_STICK).getTrigger()) {
+           oi.getJoystick(STRAFE_STICK).getTrigger() ||
+           oi.getCoil(5, 1)) {
             carney.fireSix();
         }else{
             carney.retract();

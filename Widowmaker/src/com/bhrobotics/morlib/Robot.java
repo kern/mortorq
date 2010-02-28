@@ -40,7 +40,7 @@ public abstract class Robot extends SimpleRobot {
                     
                     // Check for new data
                     if(isNewDataAvailable()) {
-                        oi.setNewData(true);
+                        oi.refresh();
                     }
 
                     teleopController.refresh();

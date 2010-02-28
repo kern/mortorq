@@ -56,6 +56,6 @@ public abstract class Controller {
             stopped();
         }
 
-        oi.setNewData(false);
+        oi.expire();
     }
 }
