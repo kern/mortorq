@@ -1,27 +1,41 @@
 package com.bhrobotics.morlib;
 
-import edu.wpi.first.wpilibj.SimpleRobot;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import java.util.Vector;
-import java.util.Enumeration;
 
-public abstract class Robot extends SimpleRobot {
+public abstract class Robot extends RobotBase {
 
-    protected Controller autoController;
-    protected Controller teleopController;
-    protected OperatorInterface oi = new OperatorInterface();
+    // Modes the robot can be in:
+    // Disabled: Completely disabled by the FSM. Nothing wroks pretty much.
+    // Autonomous: Robot does not receive any human input.
+    // Teleop: Normal robot mode. Receives data fromt the DS normally.
+    // Stopped: Sets all robot settings to defaults, a soft e-stop.
+    public static class Mode {
+        public final int mode;
+        private Mode(int _mode) { mode = _mode; }
 
-    protected Vector views = new Vector();
+        private static final int DISABLED = 0;
+        private static final int AUTONOMOUS = 1;
+        private static final int TELEOP = 2;
+        private static final int STOPPED = 3;
 
-    public void robotMain() {
+        public static final Mode disabled = new Mode(DISABLED);
+        public static final Mode autonomous = new Mode(AUTONOMOUS);
+        public static final Mode teleop = new Mode(TELEOP);
+        public static final Mode stopped = new Mode(STOPPED);
+    }
+
+    // Spawns threads for the different modes. Each thread is a controller which
+    // has complete control over the robot until stopped.
+    public void startCompetition() {
         while(true) {
 
-            // Wait for robot to be enabled.
+            // Nothing to do while disabled.
             while(isDisabled()) { Timer.delay(.01); }
 
+            if(isAutonomous())
             // Now enabled - check if we should run Autonomous code
             if(isAutonomous()) {
-                System.out.println("Entering Autonomous.");
                 autoController.init();
                 while(isAutonomous() && !isDisabled()) {
                     getWatchdog().feed();
@@ -29,10 +43,8 @@ public abstract class Robot extends SimpleRobot {
                     autoController.refresh();
                     render();
                 }
-                System.out.println("Exiting Autonomous.");
                 autoController.shutdown();
             }else{
-                System.out.println("Entering Teleop.");
                 teleopController.init();
                 while(isOperatorControl() && !isDisabled()) {
                     getWatchdog().feed();
@@ -46,29 +58,18 @@ public abstract class Robot extends SimpleRobot {
                     teleopController.refresh();
                     render();
                 }
-                System.out.println("Exiting Teleop.");
                 teleopController.shutdown();
             }
         }
     }
 
-    protected void addView(View view) {
-        views.addElement(view);
-    }
+    public Mode getMode() {
+        if(isDisabled()) { return Mode.disabled; }
+        if(isAutonomous()) { return Mode.autonomous; }
 
-    private void update() {
-        Enumeration en = views.elements();
-        while(en.hasMoreElements()) {
-            View view = (View) en.nextElement();
-            view.update();
-        }
-    }
+        oi.refresh();
+        if(oi.isStopped()) { return Mode.stopped; }
 
-    private void render() {
-        Enumeration en = views.elements();
-        while(en.hasMoreElements()) {
-            View view = (View) en.nextElement();
-            view.render();
-        }
+        return Mode.teleop;
     }
 }
