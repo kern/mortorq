@@ -1,75 +1,65 @@
 package com.bhrobotics.morlib;
 
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.SimpleRobot;
+import java.util.Vector;
+import java.util.Enumeration;
 
-public abstract class Robot extends RobotBase {
+public abstract class Robot extends SimpleRobot {
 
-    // Modes the robot can be in:
-    // Disabled: Completely disabled by the FSM. Nothing wroks pretty much.
-    // Autonomous: Robot does not receive any human input.
-    // Teleop: Normal robot mode. Receives data fromt the DS normally.
-    // Stopped: Sets all robot settings to defaults, a soft e-stop.
-    public static class Mode {
-        public final int mode;
-        private Mode(int _mode) { mode = _mode; }
+    protected Controller autoController;
+    protected Controller teleopController;
+    protected OperatorInterface oi;
 
-        private static final int DISABLED = 0;
-        private static final int AUTONOMOUS = 1;
-        private static final int TELEOP = 2;
-        private static final int STOPPED = 3;
+    protected Vector views = new Vector();
 
-        public static final Mode disabled = new Mode(DISABLED);
-        public static final Mode autonomous = new Mode(AUTONOMOUS);
-        public static final Mode teleop = new Mode(TELEOP);
-        public static final Mode stopped = new Mode(STOPPED);
+    public void autonomous() {
+        autoController.start();
+        while(isAutonomous() && !isDisabled()) {
+            getWatchdog().feed();
+
+            update();
+            autoController.run();
+            render();
+        }
     }
-
-    // Spawns threads for the different modes. Each thread is a controller which
-    // has complete control over the robot until stopped.
-    public void startCompetition() {
-        while(true) {
-
-            // Nothing to do while disabled.
-            while(isDisabled()) { Timer.delay(.01); }
-
-            if(isAutonomous())
-            // Now enabled - check if we should run Autonomous code
-            if(isAutonomous()) {
-                autoController.init();
-                while(isAutonomous() && !isDisabled()) {
-                    getWatchdog().feed();
-                    update();
-                    autoController.refresh();
-                    render();
-                }
-                autoController.shutdown();
+    
+    public void operatorControl() {
+        teleopController.start();
+        while(isOperatorControl() && !isDisabled()) {
+            getWatchdog().feed();
+            
+            // Check for new data
+            boolean newData = isNewDataAvailable();
+            if(newData) { oi.refresh(); }
+            
+            update();
+            if(oi.getStopped()) {
+                if(newData) { teleopController.newData(); }
+                teleopController.run();
             }else{
-                teleopController.init();
-                while(isOperatorControl() && !isDisabled()) {
-                    getWatchdog().feed();
-                    update();
-                    
-                    // Check for new data
-                    if(isNewDataAvailable()) {
-                        oi.refresh();
-                    }
-
-                    teleopController.refresh();
-                    render();
-                }
-                teleopController.shutdown();
+                teleopController.stop();
             }
+            render();
         }
     }
 
-    public Mode getMode() {
-        if(isDisabled()) { return Mode.disabled; }
-        if(isAutonomous()) { return Mode.autonomous; }
+    protected void addView(View view) {
+        views.addElement(view);
+    }
 
-        oi.refresh();
-        if(oi.isStopped()) { return Mode.stopped; }
+    private void update() {
+        Enumeration en = views.elements();
+        while(en.hasMoreElements()) {
+            View view = (View) en.nextElement();
+            view.update();
+        }
+    }
 
-        return Mode.teleop;
+    private void render() {
+        Enumeration en = views.elements();
+        while(en.hasMoreElements()) {
+            View view = (View) en.nextElement();
+            view.render();
+        }
     }
 }

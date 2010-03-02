@@ -14,8 +14,9 @@ public class Widowmaker extends Robot {
 
     public Widowmaker() {
 
-        autoController = new AutoController(oi, driveTrain, carney, roller, deflector);
+        autoController = new AutoController(driveTrain, carney, roller, deflector);
         teleopController = new TeleopController(oi, driveTrain, carney, roller, deflector);
+        oi = new TouchInterface();
 
         addView(new DashboardView(crio));
         addView(new CompressorView());

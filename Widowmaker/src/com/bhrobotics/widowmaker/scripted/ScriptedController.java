@@ -25,7 +25,6 @@ public class ScriptedController extends Controller {
      */
     public ScriptedController(DriveTrain _driveTrain,
             Carney _carney, Roller _roller) {
-        super(null);
         driveTrain = _driveTrain;
         carney = _carney;
         roller = _roller;
