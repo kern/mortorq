@@ -51,7 +51,7 @@ public class OperatorInterface {
 
     public boolean inputOff(int in) { return !inputOn(in); }
     public boolean inputOff(int _screen, int in) {
-        return !inputOn(_screen, in);
+        return screen == _screen && inputOff(in);
     }
 
     public boolean getStopped() { return screen == 0; }

@@ -8,7 +8,10 @@ public class Compressor implements Model {
     private boolean auto = true;
 
     public void start() {}
-    public void stop() {}
+    public void stop() {
+        auto = false;
+        manual = false;
+    }
 
     public void setManual(boolean _manual) { manual = _manual; }
     public void setSensor(boolean _sensor) { sensor = _sensor; }

@@ -62,6 +62,19 @@ public class Carney implements Model {
         }
     }
 
+    public void forceFire() {
+        fireTwo = true;
+        fireFour = true;
+    }
+
+    public void forceRetract() {
+        timer.stop();
+        timer.reset();
+
+        fireTwo = false;
+        fireFour = false;
+    }
+
     //**************************************************************************
     // Getters
     //**************************************************************************

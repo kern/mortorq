@@ -40,31 +40,35 @@ public class TeleopController extends Controller {
     public void newData() {
 
         // Compressor
-        compressor.setAuto(oi.getCompressorAuto());
-        compressor.setManual(oi.getCompressor());
+        compressor.setAuto(!oi.compressorManual());
+        compressor.setManual(oi.compressor());
 
         // Drive train
-        if(oi.getDriveAuto()) {
-            double strafe = oi.getStrafe();
-            double speed = oi.getSpeed();
-            double rotation = oi.getRotation();
-            driveTrain.mecanum(strafe, speed, rotation);
+        if(oi.driveManual()) {
+            driveTrain.setRightFront(oi.rightFront());
+            driveTrain.setRightBack(oi.rightBack());
+            driveTrain.setLeftFront(oi.leftFront());
+            driveTrain.setLeftBack(oi.leftBack());
         }else{
-            driveTrain.setRightFront(oi.getFrontRight());
-            driveTrain.setRightBack(oi.getBackRight());
-            driveTrain.setLeftFront(oi.getFrontLeft());
-            driveTrain.setLeftBack(oi.getBackLeft());
+            double strafe = oi.strafe();
+            double speed = oi.speed();
+            double rotation = oi.rotation();
+            driveTrain.mecanum(strafe, speed, rotation);
         }
 
         // Carney controls
-        if(oi.getKick()) {
+        if(oi.kick()) {
             carney.fireSix();
+        }else if(oi.extend()) {
+            carney.forceFire();
+        }else if(oi.retract()) {
+            carney.forceRetract();
         }else{
             carney.retract();
         }
 
-        roller.set(oi.getRoller());
-        deflector.set(oi.getDeflector());
+        roller.set(oi.roller());
+        deflector.set(oi.deflector());
     }
 
     public void stop() {
