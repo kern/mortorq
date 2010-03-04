@@ -7,6 +7,7 @@ import com.bhrobotics.widowmaker.views.*;
 public class Widowmaker extends Robot {
 
     private Crio crio = new Crio();
+    private Compressor compressor = new Compressor();
     private DriveTrain driveTrain = new DriveTrain();
     private Carney carney = new Carney();
     private Roller roller = new Roller();
@@ -14,12 +15,12 @@ public class Widowmaker extends Robot {
 
     public Widowmaker() {
 
-        autoController = new AutoController(driveTrain, carney, roller, deflector);
-        teleopController = new TeleopController(oi, driveTrain, carney, roller, deflector);
+        autoController = new AutoController(compressor, driveTrain, carney, roller, deflector);
+        teleopController = new TeleopController(oi, compressor, driveTrain, carney, roller, deflector);
         oi = new TouchInterface();
 
         addView(new DashboardView(crio));
-        addView(new CompressorView());
+        addView(new CompressorView(compressor));
         addView(new FourWheelView(driveTrain));
         addView(new CarneyView(carney));
         addView(new RollerView(roller));

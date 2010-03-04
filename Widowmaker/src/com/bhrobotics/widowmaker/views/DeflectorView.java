@@ -31,7 +31,7 @@ public class DeflectorView implements View {
     public void update() {}
 
     public void render() {
-        downSolenoid.set(deflector.getDeflector());
-        upSolenoid.set(!deflector.getDeflector());
+        downSolenoid.set(!deflector.get());
+        upSolenoid.set(deflector.get());
     }
 }

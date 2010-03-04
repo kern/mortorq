@@ -29,6 +29,6 @@ public class RollerView implements View {
     public void update() {}
 
     public void render() {
-        cim.set(roller.getRoller() * POLARITY);
+        cim.set(roller.get() * POLARITY);
     }
 }

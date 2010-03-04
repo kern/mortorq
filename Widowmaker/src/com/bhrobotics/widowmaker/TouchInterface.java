@@ -10,12 +10,12 @@ public class TouchInterface extends OperatorInterface {
     // Joystick
     //**************************************************************************
 
-    public double getX() { return joysticks[DRIVE_STICK].getX(); }
-    public double getY() { return joysticks[DRIVE_STICK].getY(); }
-    public double getZ() { return joysticks[DRIVE_STICK].getZ(); }
+    public double getStrafe() { return joysticks[DRIVE_STICK].getX(); }
+    public double getSpeed() { return joysticks[DRIVE_STICK].getY(); }
+    public double getRotation() { return joysticks[DRIVE_STICK].getZ(); }
 
     public boolean getCarneyAuto() {
-        return false;
+         return false;
     }
 
     public boolean getKick() {
@@ -38,51 +38,31 @@ public class TouchInterface extends OperatorInterface {
         return false;
     }
 
-    public boolean getLeftDeflector() {
+    public boolean getDeflector() {
         return false;
     }
 
-    public boolean getRightDeflector() {
-        return false;
-    }
-
-    public int getRollerDirection() {
-        return 0;
-    }
-
-    public double getRollerSpeed() {
+    public double getRoller() {
         return 0.0;
     }
 
-    public int getFrontLeftDirection() {
-        return 0;
+    public boolean getDriveAuto() {
+        return true;
     }
 
-    public double getFrontLeftSpeed() {
+    public double getFrontLeft() {
         return 0.0;
     }
 
-    public int getFrontRightDirection() {
-        return 0;
-    }
-
-    public double getFrontRightSpeed() {
-        return 0.0;
-    }
-    
-    public int getBackLeftDirection() {
-        return 0;
-    }
-
-    public double getBackLeftSpeed() {
+    public double getFrontRight() {
         return 0.0;
     }
 
-    public int getBackRightDirection() {
-        return 0;
+    public double getBackLeft() {
+        return 0.0;
     }
 
-    public double getBackRightSpeed() {
+    public double getBackRight() {
         return 0.0;
     }
 }

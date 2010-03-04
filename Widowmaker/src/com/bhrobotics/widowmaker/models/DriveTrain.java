@@ -44,6 +44,12 @@ public class DriveTrain {
         leftBack = Math.min(1.0, Math.max(-1.0, leftBackTarget));
     }
 
+    // For manually setting the wheels during maintenance mode
+    public void setRightFront(double speed) { rightFront = speed; }
+    public void setRightBack(double speed) { rightBack = speed; }
+    public void setLeftFront(double speed) { leftFront = speed; }
+    public void setLeftBack(double speed)  { leftBack = speed; }
+
     //**************************************************************************
     // Internal
     //*************************************************************************

@@ -8,25 +8,21 @@ import com.bhrobotics.morlib.OperatorInterface;
 public class TeleopController extends Controller {
 
     private TouchInterface oi;
+    private Compressor compressor;
     private DriveTrain driveTrain;
     private Carney carney;
     private Roller roller;
     private Deflector deflector;
 
     //**************************************************************************
-    // Button State
-    //**************************************************************************
-
-    private boolean previous_deflector = false;
-
-    //**************************************************************************
     // Interface
     //**************************************************************************
 
-    public TeleopController(OperatorInterface _oi, DriveTrain _driveTrain,
-                            Carney _carney, Roller _roller,
-                            Deflector _deflector) {
+    public TeleopController(OperatorInterface _oi, Compressor _compressor,
+                            DriveTrain _driveTrain, Carney _carney,
+                            Roller _roller, Deflector _deflector) {
         oi = (TouchInterface) _oi;
+        compressor = _compressor;
         driveTrain = _driveTrain;
         carney = _carney;
         roller = _roller;
@@ -34,6 +30,7 @@ public class TeleopController extends Controller {
     }
 
     public void start() {
+        compressor.start();
         driveTrain.start();
         carney.start();
         roller.start();
@@ -42,11 +39,22 @@ public class TeleopController extends Controller {
 
     public void newData() {
 
-        // Drive train controls
-        double x = oi.getX();
-        double y = oi.getY();
-        double rotation = oi.getZ();
-        driveTrain.mecanum(x, y, rotation);
+        // Compressor
+        compressor.setAuto(oi.getCompressorAuto());
+        compressor.setManual(oi.getCompressor());
+
+        // Drive train
+        if(oi.getDriveAuto()) {
+            double strafe = oi.getStrafe();
+            double speed = oi.getSpeed();
+            double rotation = oi.getRotation();
+            driveTrain.mecanum(strafe, speed, rotation);
+        }else{
+            driveTrain.setRightFront(oi.getFrontRight());
+            driveTrain.setRightBack(oi.getBackRight());
+            driveTrain.setLeftFront(oi.getFrontLeft());
+            driveTrain.setLeftBack(oi.getBackLeft());
+        }
 
         // Carney controls
         if(oi.getKick()) {
@@ -55,27 +63,12 @@ public class TeleopController extends Controller {
             carney.retract();
         }
 
-        // Roller controls
-        if(oi.getRollerDirection() == 1) {
-            roller.rollIn();
-        }else if(oi.getRollerDirection() == -1) {
-            roller.rollOut();
-        }else{
-            roller.stop();
-        }
-
-        // Deflector controls
-        if(previous_deflector == false && oi.getLeftDeflector()) {
-            if(deflector.getDeflector()) {
-                deflector.up();
-            }else{
-                deflector.down();
-            }
-        }
-        previous_deflector = oi.getLeftDeflector();
+        roller.set(oi.getRoller());
+        deflector.set(oi.getDeflector());
     }
 
     public void stop() {
+        compressor.stop();
         driveTrain.stop();
         carney.stop();
         roller.stop();
