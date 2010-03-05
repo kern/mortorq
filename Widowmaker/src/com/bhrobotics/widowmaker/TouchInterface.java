@@ -65,8 +65,8 @@ public class TouchInterface extends OperatorInterface {
                 direction = -1;
             }
 
-            double speed = 0.5;
-            if(inputOn(GAME, 6) || inputOn(MANIPULATORS, 14)) {
+            double speed = 0.75;
+            if(inputOff(GAME, 6) || inputOn(MANIPULATORS, 14)) {
                 speed = 1.0;
             }
 

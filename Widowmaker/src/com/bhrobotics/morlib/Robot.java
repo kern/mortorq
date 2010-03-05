@@ -22,6 +22,7 @@ public abstract class Robot extends SimpleRobot {
             autoController.run();
             render();
         }
+        autoController.stop();
     }
     
     public void operatorControl() {
