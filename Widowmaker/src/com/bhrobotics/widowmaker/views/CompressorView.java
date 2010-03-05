@@ -34,7 +34,7 @@ public class CompressorView implements View {
     public void update() { compressor.setSensor(sensor.get()); }
     public void render() {
         if(compressor.get()) {
-            relay.set(Relay.Value.kOn);
+            relay.set(Relay.Value.kForward);
         }else{
             relay.set(Relay.Value.kOff);
         }

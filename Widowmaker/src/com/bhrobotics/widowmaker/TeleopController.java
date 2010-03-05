@@ -2,7 +2,7 @@ package com.bhrobotics.widowmaker;
 
 import com.bhrobotics.morlib.Controller;
 import com.bhrobotics.widowmaker.models.*;
-import com.bhrobotics.morlib.OperatorInterface;
+import edu.wpi.first.wpilibj.DriverStation;
 
 // Controls the robot during teleop mode.
 public class TeleopController extends Controller {
@@ -18,10 +18,10 @@ public class TeleopController extends Controller {
     // Interface
     //**************************************************************************
 
-    public TeleopController(OperatorInterface _oi, Compressor _compressor,
+    public TeleopController(TouchInterface _oi, Compressor _compressor,
                             DriveTrain _driveTrain, Carney _carney,
                             Roller _roller, Deflector _deflector) {
-        oi = (TouchInterface) _oi;
+        oi = _oi;
         compressor = _compressor;
         driveTrain = _driveTrain;
         carney = _carney;
@@ -35,6 +35,7 @@ public class TeleopController extends Controller {
         carney.start();
         roller.start();
         deflector.start();
+        DriverStation.getInstance().setDigitalOut(1, true);
     }
 
     public void newData() {
@@ -57,14 +58,20 @@ public class TeleopController extends Controller {
         }
 
         // Carney controls
-        if(oi.kick()) {
-            carney.fireSix();
-        }else if(oi.extend()) {
-            carney.forceFire();
-        }else if(oi.retract()) {
-            carney.forceRetract();
+        if(oi.carneyManual()) {
+            if(oi.extend()) {
+                carney.forceFire();
+            }else if(oi.retract()) {
+                carney.forceRetract();
+            }
         }else{
-            carney.retract();
+            if(oi.kick()) {
+                carney.fireSix();
+            }else if(oi.retract()) {
+                carney.forceRetract();
+            }else{
+                carney.retract();
+            }
         }
 
         roller.set(oi.roller());

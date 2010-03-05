@@ -1,5 +1,6 @@
 package com.bhrobotics.morlib;
 
+import com.bhrobotics.widowmaker.TouchInterface;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import java.util.Vector;
 import java.util.Enumeration;
@@ -8,7 +9,7 @@ public abstract class Robot extends SimpleRobot {
 
     protected Controller autoController;
     protected Controller teleopController;
-    protected OperatorInterface oi;
+    protected TouchInterface oi;
 
     protected Vector views = new Vector();
 
@@ -33,7 +34,7 @@ public abstract class Robot extends SimpleRobot {
             if(newData) { oi.refresh(); }
             
             update();
-            if(oi.getStopped()) {
+            if(!oi.getStopped()) {
                 if(newData) { teleopController.newData(); }
                 teleopController.run();
             }else{
