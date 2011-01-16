@@ -14,14 +14,19 @@ class MecanumDriveListener extends Listener {
     private static final int ENCODER_SLOT = 4;
     
     private static final int RIGHT_FRONT = 4;
-    private static final int RIGHT_BACK  = 2;
+    private static final int RIGHT_BACK  = 3;
     private static final int LEFT_FRONT  = 5;
-    private static final int LEFT_BACK   = 3;
+    private static final int LEFT_BACK   = 2;
+    
+    private static final double SCALE_RIGHT_FRONT = 1.0;
+    private static final double SCALE_RIGHT_BACK  = 1.0;
+    private static final double SCALE_LEFT_FRONT  = -1.0;
+    private static final double SCALE_LEFT_BACK   = -1.0;
     
     private static final double MAX_PWM      = 1.0;
     private static final double MIN_PWM      = -1.0;
-    private static final double MAX_DEADBAND = 0.1;
-    private static final double MIN_DEADBAND = -0.1;
+    private static final double MAX_DEADBAND = 0.2;
+    private static final double MIN_DEADBAND = -0.2;
     
     private static final int SIDE_A_RIGHT_FRONT          = 1;
     private static final int SIDE_B_RIGHT_FRONT          = 2;
@@ -74,9 +79,9 @@ class MecanumDriveListener extends Listener {
         double rotation = joystick.getZ();
         
         double rightFrontSetpoint = bound(y + x + rotation);
-        double rightBackSetpoint  = bound(-y - x + rotation);
+        double rightBackSetpoint  = bound(y - x + rotation);
         double leftFrontSetpoint  = bound(y - x - rotation);
-        double leftBackSetpoint   = bound(-y + x - rotation);
+        double leftBackSetpoint   = bound(y + x - rotation);
         
         if(USE_PID) {
             rightFrontController.setSetpoint(rightFrontSetpoint);
@@ -84,10 +89,10 @@ class MecanumDriveListener extends Listener {
             leftFrontController.setSetpoint(leftFrontSetpoint);
             leftBackController.setSetpoint(leftBackSetpoint);
         } else {
-            rightFrontMotor.set(rightFrontSetpoint);
-            rightBackMotor.set(rightBackSetpoint);
-            leftFrontMotor.set(leftFrontSetpoint);
-            leftBackMotor.set(leftBackSetpoint);
+            rightFrontMotor.set(rightFrontSetpoint * SCALE_RIGHT_FRONT);
+            rightBackMotor.set(rightBackSetpoint * SCALE_RIGHT_BACK);
+            leftFrontMotor.set(leftFrontSetpoint * SCALE_LEFT_FRONT);
+            leftBackMotor.set(leftBackSetpoint * SCALE_LEFT_BACK);
         }
     }
     
