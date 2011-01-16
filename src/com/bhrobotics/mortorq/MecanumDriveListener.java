@@ -84,10 +84,10 @@ class MecanumDriveListener extends Listener {
         double leftBackSetpoint   = bound(y + x - rotation);
         
         if(USE_PID) {
-            rightFrontController.setSetpoint(rightFrontSetpoint);
-            rightBackController.setSetpoint(rightBackSetpoint);
-            leftFrontController.setSetpoint(leftFrontSetpoint);
-            leftBackController.setSetpoint(leftBackSetpoint);
+            rightFrontController.setSetpoint(rightFrontSetpoint * SCALE_RIGHT_FRONT);
+            rightBackController.setSetpoint(rightBackSetpoint * SCALE_RIGHT_BACK);
+            leftFrontController.setSetpoint(leftFrontSetpoint * SCALE_LEFT_FRONT);
+            leftBackController.setSetpoint(leftBackSetpoint * SCALE_LEFT_BACK);
         } else {
             rightFrontMotor.set(rightFrontSetpoint * SCALE_RIGHT_FRONT);
             rightBackMotor.set(rightBackSetpoint * SCALE_RIGHT_BACK);
