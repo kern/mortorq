@@ -5,12 +5,7 @@ import java.util.Vector;
 import java.util.Enumeration;
 
 public class EventEmitter {
-    private Queue queue;
     private Hashtable listeners = new Hashtable();
-    
-    public EventEmitter(Queue q) {
-        queue = q;
-    }
     
     public Hashtable getListeners() {
         return listeners;
@@ -61,6 +56,7 @@ public class EventEmitter {
         
         Enumeration e = eventListeners.elements();
         while(e.hasMoreElements()) {
+            Queue queue = Reactor.getInstance().getQueue();
             queue.addTail(event, (Listener) e.nextElement());
         }
         

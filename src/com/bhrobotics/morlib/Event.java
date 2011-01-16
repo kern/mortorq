@@ -18,4 +18,8 @@ public class Event {
     public Hashtable getData() {
         return data;
     }
+    
+    public Object getData(String key) {
+        return data.get(key);
+    }
 }

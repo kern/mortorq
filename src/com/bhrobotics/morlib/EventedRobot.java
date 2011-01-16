@@ -3,47 +3,61 @@ package com.bhrobotics.morlib;
 import edu.wpi.first.wpilibj.SimpleRobot;
 
 public class EventedRobot extends SimpleRobot {
-    private Reactor reactor = new Reactor();
-    private Listener controlListener;
+    protected Reactor reactor = Reactor.getInstance();
+    protected EventEmitter process = reactor.getProcess();
     
     public EventedRobot() {
-        getProcess().addListener("start", controlListener);
-        getProcess().addListener("stop", controlListener);
-        getProcess().addListener("startAutonomous", controlListener);
-        getProcess().addListener("stopAutonomous", controlListener);
-        getProcess().addListener("startOperatorControl", controlListener);
-        getProcess().addListener("stopOperatorControl", controlListener);
+        reactor.start();
+    }
+    
+    public void addControlListener(ControlListener listener) {
+        process.addListener("start", listener);
+        process.addListener("stop", listener);
+        process.addListener("startAutonomous", listener);
+        process.addListener("stopAutonomous", listener);
+        process.addListener("startOperatorControl", listener);
+        process.addListener("stopOperatorControl", listener);
+    }
+    
+    protected void robotInit() {
+        System.out.println("[morlib] Robot started.");
     }
     
     public void autonomous() {
-        getProcess().emit("startAutonomous");
+        System.out.println("[morlib] Autonomous started.");
         reactor.startTicking();
+        process.emit("startAutonomous");
         
         while(isAutonomous() && isSystemActive()) {
             getWatchdog().feed();
         }
         
-        getProcess().emit("stopAutonomous");
+        process.emit("stopAutonomous");
         reactor.stopTicking();
+        System.out.println("[morlib] Autonomous stopped.");
     }
     
     public void operatorControl() {
-        getProcess().emit("startOperatorControl");
+        System.out.println("[morlib] Operator control started.");
         reactor.startTicking();
+        process.emit("startOperatorControl");
         
         while(isOperatorControl() && isSystemActive()) {
+            if(isNewDataAvailable()) {
+                process.emit("newDataAvailable");
+            }
+            
             getWatchdog().feed();
         }
         
-        getProcess().emit("stopOperatorControl");
+        process.emit("stopOperatorControl");
         reactor.stopTicking();
+        System.out.println("[morlib] Operator control stopped.");
     }
     
-    public Reactor getReactor() {
-        return reactor;
-    }
-    
-    public EventEmitter getProcess() {
-        return reactor.getProcess();
+    protected void disabled() {
+        System.out.println("[morlib] Disabled started.");
+        while(isDisabled()) {}
+        System.out.println("[morlib] Disabled stopped.");
     }
 }

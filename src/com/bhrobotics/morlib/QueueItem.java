@@ -16,4 +16,8 @@ public class QueueItem {
     public Listener getListener() {
         return listener;
     }
+    
+    public void handle() {
+        listener.handle(event);
+    }
 }

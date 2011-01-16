@@ -43,7 +43,7 @@ public class Queue extends Vector {
         
         for(int i = 0; i < currentTickItems.length; i++) {
             QueueItem item = currentTickItems[i];
-            item.getListener().handle(item.getEvent());
+            item.handle();
         }
     }
 }
