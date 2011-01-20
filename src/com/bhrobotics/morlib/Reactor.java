@@ -9,6 +9,8 @@ public class Reactor extends Thread {
     private EventEmitter process    = new EventEmitter();
     private static Reactor instance = new Reactor();
     
+    private Reactor() {}
+    
     public synchronized void run() {
         while (true) {
             if (ticking || forceTick) {
