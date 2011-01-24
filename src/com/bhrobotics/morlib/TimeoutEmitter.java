@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class TimeoutEmitter extends EventEmitter {
     private EventEmitter process = Reactor.getInstance().getProcess();
-    private TListener listener;
     private Timer timer = new Timer();
+    private TListener listener;
     private double timeout;
     private boolean periodic;
     
@@ -37,12 +37,12 @@ public class TimeoutEmitter extends EventEmitter {
     public void start(double t, boolean p) {
         timeout = t;
         periodic = p;
-        process.addListener("tick", listener);
+        process.bind("tick", listener);
         timer.start();
     }
     
     public void stop() {
-        process.removeListener("tick", listener);
+        process.unbind("tick", listener);
         timer.stop();
         timer.reset();
     }
@@ -65,7 +65,7 @@ public class TimeoutEmitter extends EventEmitter {
                     emitter.stop();
                 }
                 
-                emitter.emit("timeout", data);
+                emitter.trigger("timeout", data);
             }
         }
     }

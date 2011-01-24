@@ -11,12 +11,12 @@ public class EventedRobot extends SimpleRobot {
     }
     
     public void addControlListener(ControlListener listener) {
-        process.addListener("start", listener);
-        process.addListener("stop", listener);
-        process.addListener("startAutonomous", listener);
-        process.addListener("stopAutonomous", listener);
-        process.addListener("startOperatorControl", listener);
-        process.addListener("stopOperatorControl", listener);
+        process.bind("start", listener);
+        process.bind("stop", listener);
+        process.bind("startAutonomous", listener);
+        process.bind("stopAutonomous", listener);
+        process.bind("startOperatorControl", listener);
+        process.bind("stopOperatorControl", listener);
     }
     
     protected void robotInit() {
@@ -26,13 +26,13 @@ public class EventedRobot extends SimpleRobot {
     public void autonomous() {
         System.out.println("[morlib] Autonomous started.");
         reactor.startTicking();
-        process.emit("startAutonomous");
+        process.trigger("startAutonomous");
         
         while(isAutonomous() && isSystemActive()) {
             getWatchdog().feed();
         }
         
-        process.emit("stopAutonomous");
+        process.trigger("stopAutonomous");
         reactor.stopTicking();
         System.out.println("[morlib] Autonomous stopped.");
     }
@@ -40,17 +40,17 @@ public class EventedRobot extends SimpleRobot {
     public void operatorControl() {
         System.out.println("[morlib] Operator control started.");
         reactor.startTicking();
-        process.emit("startOperatorControl");
+        process.trigger("startOperatorControl");
         
         while(isOperatorControl() && isSystemActive()) {
             if(isNewDataAvailable()) {
-                process.emit("newDataAvailable");
+                process.trigger("newDataAvailable");
             }
             
             getWatchdog().feed();
         }
         
-        process.emit("stopOperatorControl");
+        process.trigger("stopOperatorControl");
         reactor.stopTicking();
         System.out.println("[morlib] Operator control stopped.");
     }

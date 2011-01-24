@@ -1,7 +1,61 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 
 <project basedir="." default="help" name="MorTorq">
   <property name="user.properties.file" value="build.properties" />
   <property file="${user.home}/.sunspotfrc.properties" />
   <import file="${sunspot.home}/build.xml" />
+  
+  <target name="compile-junit" depends="compile">
+    <mkdir dir="${build.dir}" />
+    
+    <javac
+      srcdir="${test.dir}"
+      destdir="${build.dir}"
+      includeantruntime="no"
+      includejavaruntime="no"
+      target="1.2"
+      source="1.3"
+      debug="true"
+      fork="yes"
+      includes="${spot.javac.include.src}"
+      excludes="${spot.javac.exclude.src}">
+      
+      <bootclasspath>
+        <pathelement location="${sunspot.bootclasspath}" />
+      </bootclasspath>
+      
+      <classpath>
+        <pathelement location="${build.dir}" />
+        <pathelement location="${lib.dir}" />
+        <pathelement location="${sunspot.classpath}" />
+        <pathelement location="${utility.jars.on.classpath}" />
+        <pathelement location="${junit.path}" />
+        <pathelement location="${mockito.path}" />
+      </classpath>
+    </javac>
+  </target>
+  
+  <target name="run-junit" depends="compile-junit">
+    <mkdir dir="${junit.reports.dir}" />
+    
+    <junit printsummary="yes" haltonfailure="no">
+      <classpath>
+        <pathelement location="${build.dir}" />
+        <pathelement location="${lib.dir}" />
+        <pathelement location="${sunspot.classpath}" />
+        <pathelement location="${utility.jars.on.classpath}" />
+        <pathelement location="${junit.path}" />
+        <pathelement location="${mockito.path}" />
+      </classpath>
+      
+      <formatter type="plain" />
+      <formatter type="plain" usefile="false"/>
+      
+      <batchtest fork="yes" todir="${junit.reports.dir}">
+        <fileset dir="${build.dir}">
+          <include name="**/*Test.class" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
 </project>

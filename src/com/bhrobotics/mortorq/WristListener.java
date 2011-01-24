@@ -5,8 +5,9 @@ import com.bhrobotics.morlib.Event;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class WristListener extends Listener{
-    private static final int SLOT = 1;
+    private static final int SLOT    = 1;
     private static final int CHANNEL = 1;
+    
     Solenoid solenoid = new Solenoid(SLOT, CHANNEL);
     
     public WristListener() {

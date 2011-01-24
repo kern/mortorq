@@ -3,13 +3,13 @@ package com.bhrobotics.morlib;
 import java.util.Hashtable;
 
 public class ControlListener extends Listener {
-    private JoystickListener joystickListener             = new JoystickListener();
-    protected EventEmitter joystickEmitter                = joystickListener.getEmitter();
+    private JoystickListener joystickListener = new JoystickListener();
+    protected EventEmitter joystickEmitter    = joystickListener.getEmitter();
     
-    private DSDigitalInputListener dsDigitalInputListener = new DSDigitalInputListener();
-    protected EventEmitter dsDigitalInputEmitter          = dsDigitalInputListener.getEmitter();
+    private DSInputListener dsInputListener = new DSInputListener();
+    protected EventEmitter dsInputEmitter   = dsInputListener.getEmitter();
     
-    private Hashtable eventHandlers                       = new Hashtable();
+    private Hashtable eventHandlers = new Hashtable();
     
     public ControlListener() {
         eventHandlers.put("start", new StartHandler());
@@ -64,16 +64,16 @@ public class ControlListener extends Listener {
     
     private class StartOperatorControlHandler implements EventHandler {
         public void execute() {
-            process.addListener("newDataAvailable", joystickListener);
-            process.addListener("newDataAvailable", dsDigitalInputListener);
+            process.bind("newDataAvailable", joystickListener);
+            process.bind("newDataAvailable", dsInputListener);
             startOperatorControl();
         }
     }
     
     private class StopOperatorControlHandler implements EventHandler {
         public void execute() {
-            process.removeListener("newDataAvailable", joystickListener);
-            process.removeListener("newDataAvailable", dsDigitalInputListener);
+            process.unbind("newDataAvailable", joystickListener);
+            process.unbind("newDataAvailable", dsInputListener);
             stopOperatorControl();
         }
     }

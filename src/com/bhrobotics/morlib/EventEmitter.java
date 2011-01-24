@@ -21,37 +21,39 @@ public class EventEmitter {
         }
     }
     
-    public void addListener(String event, Listener listener) {
+    public void bind(String event, Listener listener) {
         Vector eventListeners = getListeners(event);
         eventListeners.addElement(listener);
+        listener.bound(event, this);
     }
     
-    public void removeListener(String event, Listener listener) {
+    public void unbind(String event, Listener listener) {
         Vector eventListeners = getListeners(event);
         eventListeners.removeElement(listener);
+        listener.unbound(event, this);
     }
     
-    public void emit(String name) {
-        emit(new Event(name, new Hashtable()), false);
+    public void trigger(String name) {
+        trigger(new Event(name, new Hashtable()), false);
     }
     
-    public void emit(String name, Hashtable data) {
-        emit(new Event(name, data), false);
+    public void trigger(String name, Hashtable data) {
+        trigger(new Event(name, data), false);
     }
     
-    public void emit(String name, boolean flush) {
-        emit(new Event(name, new Hashtable()), flush);
+    public void trigger(String name, boolean flush) {
+        trigger(new Event(name, new Hashtable()), flush);
     }
     
-    public void emit(String name, Hashtable data, boolean flush) {
-        emit(new Event(name, data), flush);
+    public void trigger(String name, Hashtable data, boolean flush) {
+        trigger(new Event(name, data), flush);
     }
     
-    public void emit(Event event) {
-        emit(event, false);
+    public void trigger(Event event) {
+        trigger(event, false);
     }
     
-    public void emit(Event event, boolean flush) {
+    public void trigger(Event event, boolean flush) {
         Vector eventListeners = getListeners(event.getName());
         
         Enumeration e = eventListeners.elements();

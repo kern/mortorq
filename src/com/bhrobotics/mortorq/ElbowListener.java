@@ -14,7 +14,7 @@ public class ElbowListener extends Listener {
     }
     
     public void raise() {
-        solenoid.set(true);    
+        solenoid.set(true);
     }
     
     public void handle(Event event) {

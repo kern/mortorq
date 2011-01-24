@@ -16,22 +16,22 @@ public class JoystickListener extends Listener {
     }
     
     public void handle(Event event) {
-        emitter.emit("updateJoysticks");
+        emitter.trigger("updateJoysticks");
         
         Hashtable joystick1Data = new Hashtable();
         joystick1Data.put("joystick", joystick1);
-        emitter.emit("updateJoystick1", joystick1Data);
+        emitter.trigger("updateJoystick1", joystick1Data);
         
         Hashtable joystick2Data = new Hashtable();
         joystick2Data.put("joystick", joystick2);
-        emitter.emit("updateJoystick2", joystick2Data);
+        emitter.trigger("updateJoystick2", joystick2Data);
         
         Hashtable joystick3Data = new Hashtable();
         joystick3Data.put("joystick", joystick3);
-        emitter.emit("updateJoystick3", joystick3Data);
+        emitter.trigger("updateJoystick3", joystick3Data);
         
         Hashtable joystick4Data = new Hashtable();
         joystick4Data.put("joystick", joystick4);
-        emitter.emit("updateJoystick4", joystick4Data);
+        emitter.trigger("updateJoystick4", joystick4Data);
     }
 }

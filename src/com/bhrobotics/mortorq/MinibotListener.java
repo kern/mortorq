@@ -5,10 +5,11 @@ import com.bhrobotics.morlib.Event;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class MinibotListener extends Listener {
-    private static final int SLOT = 1;
+    private static final int SLOT    = 1;
     private static final int CHANNEL = 1;
-    private Solenoid solenoid = new Solenoid(SLOT, CHANNEL);
-    private boolean timedOut = false;
+    private Solenoid solenoid        = new Solenoid(SLOT, CHANNEL);
+    
+    private boolean timedOut      = false;
     private boolean safetyEngaged = true;
     
     public MinibotListener() {

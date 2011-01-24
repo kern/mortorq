@@ -27,20 +27,20 @@ public class Reactor extends Thread {
     }
     
     public void startTicking() {
-        process.emit("start");
+        process.trigger("start");
         ticking = true;
         forceTick();
     }
     
     public void stopTicking() {
-        process.emit("stop");
+        process.trigger("stop");
         ticking = false;
         forceTick();
     }
     
     public void tick() {
-        process.emit("tick");
-        process.emit("nextTick", true);
+        process.trigger("tick");
+        process.trigger("nextTick", true);
         queue.flush();
     }
     

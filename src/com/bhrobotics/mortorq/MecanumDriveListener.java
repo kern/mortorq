@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 class MecanumDriveListener extends Listener {
     private static final boolean USE_PID = false;
     
-    private static final int SLOT         = 6;
+    private static final int MOTOR_SLOT   = 6;
     private static final int ENCODER_SLOT = 4;
     
     private static final int RIGHT_FRONT = 4;
@@ -61,10 +61,10 @@ class MecanumDriveListener extends Listener {
     RateEncoder leftFrontEncoder  = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_LEFT_FRONT, ENCODER_SLOT, SIDE_B_LEFT_FRONT, REVERSE_DIR_LEFT_FRONT) : null;
     RateEncoder leftBackEncoder   = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_LEFT_BACK, ENCODER_SLOT, SIDE_B_LEFT_BACK, REVERSE_DIR_LEFT_BACK) : null;
     
-    Jaguar rightFrontMotor = new Jaguar(SLOT, RIGHT_FRONT);
-    Jaguar rightBackMotor  = new Jaguar(SLOT, RIGHT_BACK);
-    Jaguar leftFrontMotor  = new Jaguar(SLOT, LEFT_FRONT);
-    Jaguar leftBackMotor   = new Jaguar(SLOT, LEFT_BACK);
+    PIDJaguar rightFrontMotor = new PIDJaguar(MOTOR_SLOT, RIGHT_FRONT);
+    PIDJaguar rightBackMotor  = new PIDJaguar(MOTOR_SLOT, RIGHT_BACK);
+    PIDJaguar leftFrontMotor  = new PIDJaguar(MOTOR_SLOT, LEFT_FRONT);
+    PIDJaguar leftBackMotor   = new PIDJaguar(MOTOR_SLOT, LEFT_BACK);
     
     PIDController rightFrontController = USE_PID ? new PIDController(KP_RIGHT_FRONT, KI_RIGHT_FRONT, KD_RIGHT_FRONT, rightFrontEncoder, rightFrontMotor) : null;
     PIDController rightBackController  = USE_PID ? new PIDController(KP_RIGHT_BACK, KI_RIGHT_BACK, KD_RIGHT_BACK, rightBackEncoder, rightBackMotor) : null;
@@ -78,10 +78,10 @@ class MecanumDriveListener extends Listener {
         double y        = joystick.getY();
         double rotation = joystick.getZ();
         
-        double rightFrontSetpoint = bound(y + x + rotation);
-        double rightBackSetpoint  = bound(y - x + rotation);
-        double leftFrontSetpoint  = bound(y - x - rotation);
-        double leftBackSetpoint   = bound(y + x - rotation);
+        double rightFrontSetpoint = applyBounds(y + x + rotation);
+        double rightBackSetpoint  = applyBounds(y - x + rotation);
+        double leftFrontSetpoint  = applyBounds(y - x - rotation);
+        double leftBackSetpoint   = applyBounds(y + x - rotation);
         
         if(USE_PID) {
             rightFrontController.setSetpoint(rightFrontSetpoint * SCALE_RIGHT_FRONT);
@@ -96,7 +96,7 @@ class MecanumDriveListener extends Listener {
         }
     }
     
-    private double bound(double input) {
+    private double applyBounds(double input) {
         input = Math.min(MAX_PWM, Math.max(MIN_PWM, input));
         
         if(input >= MIN_DEADBAND && input <= MAX_DEADBAND) {

@@ -7,26 +7,32 @@ import com.bhrobotics.morlib.TimeoutEmitter;
 import com.bhrobotics.morlib.HelloListener;
 
 class MorTorqControlListener extends ControlListener {
-    private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
-    private TimeoutEmitter endGameTimer = new TimeoutEmitter();
-    private MinibotListener minibotListener = new MinibotListener();
-    private ElbowListener elbowListener = new ElbowListener();
-    private ClawListener clawListener = new ClawListener();
-    private WristListener wristListener = new WristListener();
+    // private TimeoutEmitter endGameTimer               = new TimeoutEmitter();
+    // private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
+    // private MinibotListener minibotListener           = new MinibotListener();
+    // private ElbowListener elbowListener               = new ElbowListener();
+    // private ClawListener clawListener                 = new ClawListener();
+    // private WristListener wristListener               = new WristListener();
+    private EncoderTestListener encoderTestListener   = new EncoderTestListener();
+    private HelloListener helloListener = new HelloListener();
     
     public void startAutonomous() {
-        elbowListener.lower();
+        // elbowListener.lower();
     }
     
     public void startOperatorControl() {
-        joystickEmitter.addListener("updateJoystick1", mecanumDriveListener);
-        endGameTimer.addListener("timeout", minibotListener);
-        endGameTimer.start(110);
+        joystickEmitter.bind("updateJoystick1", encoderTestListener);
+        dsInputEmitter.bind("updateDigital1", helloListener);
+        // joystickEmitter.bind("updateJoystick1", mecanumDriveListener);
+        // endGameTimer.bind("timeout", minibotListener);
+        // endGameTimer.start(110);
     }
     
     public void stopOperatorControl() {
-        joystickEmitter.removeListener("updateJoystick1", mecanumDriveListener);
-        endGameTimer.removeListener("timeout", minibotListener);
-        minibotListener.reset();
+        joystickEmitter.unbind("updateJoystick1", encoderTestListener);
+        dsInputEmitter.unbind("updateDigital1", helloListener);
+        // joystickEmitter.unbind("updateJoystick1", mecanumDriveListener);
+        // endGameTimer.unbind("timeout", minibotListener);
+        // minibotListener.reset();
     }
 }
