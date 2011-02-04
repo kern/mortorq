@@ -7,18 +7,35 @@ import java.util.Enumeration;
 public class EventEmitter {
     private Hashtable listeners = new Hashtable();
     
+    public EventEmitter() {
+        listeners.put("all", new Vector());
+    }
+    
     public Hashtable getListeners() {
         return listeners;
     }
     
     public Vector getListeners(String event) {
-        if(listeners.containsKey(event)) {
-            return (Vector) listeners.get(event);
-        } else {
-            Vector v = new Vector();
-            listeners.put(event, v);
-            return v;
+        Vector allListeners = (Vector) listeners.get("all");
+        
+        if (event == "all") {
+            return allListeners;
         }
+        
+        Vector v;
+        if(listeners.containsKey(event)) {
+            v = (Vector) listeners.get(event);
+        } else {
+            v = new Vector();
+            listeners.put(event, v);
+        }
+        
+        Enumeration e = allListeners.elements();
+        while(e.hasMoreElements()) {
+            v.addElement(e.nextElement());
+        }
+        
+        return v;
     }
     
     public void bind(String event, Listener listener) {

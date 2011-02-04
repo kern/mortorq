@@ -2,11 +2,12 @@ package com.bhrobotics.mortorq;
 
 import junit.framework.*;
 import com.bhrobotics.morlib.Event;
+import com.bhrobotics.morlib.EventEmitter;
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
 import java.util.Hashtable;
 
-public class TouchPanelListenerTest extends TestCase {
+public class TouchpanelListenerTest extends TestCase {
     public void suiteSetUp() {
         Reactor.getInstance().start();
     }
@@ -19,12 +20,12 @@ public class TouchPanelListenerTest extends TestCase {
     }
     
     public void testCtor() {
-        TouchPanelListener screen = new TouchPanelListener();
-        Assert.assertNotNull(screen);
+        TouchpanelListener panel = new TouchpanelListener();
+        Assert.assertNotNull(panel);
     }
     
     public void testScreenChoose() {
-        TouchPanelListener panel = new TouchPanelListener();
+        TouchpanelListener panel = new TouchpanelListener();
         StubScreen screen1 = new StubScreen();
         StubScreen screen2 = new StubScreen();
         Hashtable data = new Hashtable();
@@ -41,6 +42,8 @@ public class TouchPanelListenerTest extends TestCase {
         
         Assert.assertTrue(screen1.received);
         Assert.assertFalse(screen2.received);
+        Assert.assertSame(screen1.emitter, panel.getEmitter());
+        Assert.assertSame(screen1, panel.getCurrentScreen());
         
         data.put("oldDigitals", new Short((short) 0x8000));
         data.put("newDigitals", new Short((short) 0xA000));
@@ -49,17 +52,20 @@ public class TouchPanelListenerTest extends TestCase {
         panel.handle(event);
         panel.handle(screenEvent);
         Reactor.getInstance().tick();
-
+        
         Assert.assertTrue(screen2.received);
         Assert.assertFalse(screen1.received);
+        Assert.assertSame(screen2.emitter, panel.getEmitter());
+        Assert.assertSame(screen2, panel.getCurrentScreen());
     }
     
     public void testBadScreenNumber() {
-        TouchPanelListener panel = new TouchPanelListener();
+        TouchpanelListener panel = new TouchpanelListener();
+        
         try {
-            panel.addScreen(10,null);
+            panel.addScreen(10, null);
             Assert.fail("Exepected Exception not thrown.");
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             // Ignore.
         }
     }
@@ -72,10 +78,12 @@ public class TouchPanelListenerTest extends TestCase {
         }
     }
     
-    private class StubScreen implements TouchPanelListener.Screen {
+    private class StubScreen implements TouchpanelListener.Screen {
+        public EventEmitter emitter;
         public boolean received;
-
-        public void handle(TouchPanelListener p, Event e) {
+        
+        public void handle(EventEmitter em, Event e) {
+            emitter = em;
             received = true;
         } 
     }
