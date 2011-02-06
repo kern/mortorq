@@ -58,20 +58,7 @@ public class TouchPanelListener implements Listener {
         return screens; 
     }
     
-    public void bind(String event, Listener listener) {
-        emitter.bind(event, listener);
-    }
-    
     public interface Screen {
         public void handle(EventEmitter emitter, Event event);
-    }
-    
-    public class StopScreen implements Screen {
-        private EventEmitter em;
-        public boolean received;
-        
-        public void handle(EventEmitter em, Event e){
-            // Ignore.
-        }
     }
 }
