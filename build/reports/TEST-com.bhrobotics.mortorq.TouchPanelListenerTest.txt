@@ -1,10 +1,10 @@
 Testsuite: com.bhrobotics.mortorq.TouchPanelListenerTest
-Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.015 sec
+Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.016 sec
 
 Testcase: testCtor took 0.005 sec
 Testcase: testScreenChoose took 0.001 sec
-Testcase: testTouchScreenBind took 0 sec
+Testcase: testTouchScreenBind took 0.001 sec
 Testcase: testScreen took 0.001 sec
-Testcase: testStop took 0.001 sec
+Testcase: testStop took 0 sec
 Testcase: testBadScreenNumber took 0 sec
 Testcase: testScreenAdd took 0 sec

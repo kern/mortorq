@@ -51,6 +51,7 @@ public class StutterListener implements Listener {
     }
     
     public void handle(Event event) {
+        emitter.cancelAll();
         Hashtable highData = event.getData();
         
         Hashtable lowData = new Hashtable();

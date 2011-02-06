@@ -76,6 +76,23 @@ public class StutterListenerTest extends TestCase {
         assertCycles(event, listener, 10);
     }
     
+    public void testCancel() {
+        StutterListener stutter = new StutterListener(0.1, 0.1, 2);
+        StubListener listener = new StubListener();
+        stutter.getEmitter().bind("update", listener);
+        
+        Hashtable data = new Hashtable();
+        data.put("oldValue", new Boolean(false));
+        data.put("newValue", new Boolean(true));
+        Event event = new Event("update", data);
+        
+        stutter.handle(event);
+        assertEquals(1, listener.calls);
+        stutter.handle(event);
+        sleep(500);
+        assertEquals(6, listener.calls);
+    }
+    
     private void assertCycles(Event event, StubListener listener, int cycles) {
         int toggles = 1 + (cycles * 2);
         assertEquals(toggles, listener.calls);

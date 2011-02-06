@@ -1,8 +1,9 @@
 Testsuite: com.bhrobotics.mortorq.StutterListenerTest
-Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 1.015 sec
+Tests run: 6, Failures: 0, Errors: 0, Time elapsed: 1.516 sec
 
 Testcase: testCtor took 0.004 sec
-Testcase: testEmitter took 0.001 sec
-Testcase: testIntervals took 0.001 sec
+Testcase: testEmitter took 0 sec
+Testcase: testIntervals took 0 sec
 Testcase: testCycles took 0 sec
-Testcase: testHandle took 1.002 sec
+Testcase: testHandle took 1.003 sec
+Testcase: testCancel took 0.501 sec
