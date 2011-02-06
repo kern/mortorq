@@ -4,12 +4,14 @@ import java.util.Vector;
 
 public class Reactor extends Thread {
     private boolean ticking         = false;
-    private boolean forceTick       = false;
+    public boolean forceTick       = false;
     private Queue queue             = new Queue();
     private EventEmitter process    = new EventEmitter();
     private static Reactor instance = new Reactor();
     
-    private Reactor() {}
+    private Reactor() {
+        start();
+    }
     
     public synchronized void run() {
         while (true) {

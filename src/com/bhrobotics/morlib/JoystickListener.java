@@ -3,7 +3,8 @@ package com.bhrobotics.morlib;
 import edu.wpi.first.wpilibj.Joystick;
 import java.util.Hashtable;
 
-public class JoystickListener extends Listener {
+// TODO: Test me.
+public class JoystickListener implements Listener {
     private Joystick joystick1 = new Joystick(1);
     private Joystick joystick2 = new Joystick(2);
     private Joystick joystick3 = new Joystick(3);
@@ -34,4 +35,7 @@ public class JoystickListener extends Listener {
         joystick4Data.put("joystick", joystick4);
         emitter.trigger("updateJoystick4", joystick4Data);
     }
+    
+    public void bound(String event, EventEmitter emitter) {}
+    public void unbound(String event, EventEmitter emitter) {}
 }

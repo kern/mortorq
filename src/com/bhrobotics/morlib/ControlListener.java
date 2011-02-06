@@ -2,12 +2,16 @@ package com.bhrobotics.morlib;
 
 import java.util.Hashtable;
 
-public class ControlListener extends Listener {
+// TODO: Test me.
+public class ControlListener implements Listener {
+    private Reactor reactor = Reactor.getInstance();
+    private EventEmitter process = reactor.getProcess();
+    
     private JoystickListener joystickListener = new JoystickListener();
-    protected EventEmitter joystickEmitter    = joystickListener.getEmitter();
+    protected EventEmitter joystickEmitter = joystickListener.getEmitter();
     
     private DSInputListener dsInputListener = new DSInputListener();
-    protected EventEmitter dsInputEmitter   = dsInputListener.getEmitter();
+    protected EventEmitter dsInputEmitter = dsInputListener.getEmitter();
     
     private Hashtable eventHandlers = new Hashtable();
     
@@ -26,6 +30,9 @@ public class ControlListener extends Listener {
         EventHandler h = (EventHandler) eventHandlers.get(name);
         h.execute();
     }
+    
+    public void bound(String event, EventEmitter emitter) {}
+    public void unbound(String event, EventEmitter emitter) {}
     
     public void start() {}
     public void stop() {}

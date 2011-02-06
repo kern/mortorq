@@ -4,7 +4,7 @@ import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 
-public class TouchpanelListener extends Listener {
+public class TouchpanelListener implements Listener {
     private static final int NUM_SCREENS = 8;
     private EventEmitter emitter = new EventEmitter();
     private Screen[] screens = new Screen[NUM_SCREENS];
@@ -22,6 +22,9 @@ public class TouchpanelListener extends Listener {
             currentScreen.handle(emitter, event);
         }
     }
+    
+    public void bound(String event, EventEmitter emitter) {}
+    public void unbound(String event, EventEmitter emitter) {}
     
     public void addScreen(int tag, Screen screen) {
         screens[tag] = screen;
