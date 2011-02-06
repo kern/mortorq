@@ -36,7 +36,7 @@ public class Queue extends Vector {
         removeAllElements();
     }
     
-    public void flush() {
+    public synchronized void flush() {
         QueueItem[] currentTickItems = new QueueItem[size()];
         copyInto(currentTickItems);
         clear();

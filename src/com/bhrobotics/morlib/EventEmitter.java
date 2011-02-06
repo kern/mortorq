@@ -7,32 +7,38 @@ import java.util.Enumeration;
 public class EventEmitter {
     private Hashtable listeners = new Hashtable();
     
-    public EventEmitter() {
-        listeners.put("all", new Vector());
-    }
-    
     public Hashtable getListeners() {
         return listeners;
     }
     
     public Vector getListeners(String event) {
-        Vector allListeners = (Vector) listeners.get("all");
-        
-        if (event == "all") {
-            return allListeners;
-        }
-        
+        return getListeners(event, false);
+    }
+    
+    public Vector getListeners(String event, boolean includeAll) {
         Vector v;
-        if(listeners.containsKey(event)) {
-            v = (Vector) listeners.get(event);
+        
+        if (!includeAll || event == "all") {
+            if (listeners.containsKey(event)) {
+                v = (Vector) listeners.get(event);
+            } else {
+                v = new Vector();
+                listeners.put(event, v);
+            }
         } else {
             v = new Vector();
-            listeners.put(event, v);
-        }
-        
-        Enumeration e = allListeners.elements();
-        while(e.hasMoreElements()) {
-            v.addElement(e.nextElement());
+            Vector specificListener = getListeners(event);
+            Vector allListeners = getListeners("all");
+            
+            Enumeration e = specificListener.elements();
+            while(e.hasMoreElements()) {
+                v.addElement(e.nextElement());
+            }
+            
+            e = allListeners.elements();
+            while(e.hasMoreElements()) {
+                v.addElement(e.nextElement());
+            }
         }
         
         return v;
@@ -71,16 +77,17 @@ public class EventEmitter {
     }
     
     public void trigger(Event event, boolean flush) {
-        Vector eventListeners = getListeners(event.getName());
+        Queue queue = Reactor.getInstance().getQueue();
+        Vector eventListeners = getListeners(event.getName(), true);
         
         Enumeration e = eventListeners.elements();
         while(e.hasMoreElements()) {
-            Queue queue = Reactor.getInstance().getQueue();
-            queue.addTail(event, (Listener) e.nextElement());
+            Listener asdf = (Listener) e.nextElement();
+            queue.addTail(event, asdf);
         }
         
-        if(flush) {
-            eventListeners.removeAllElements();
+        if(flush && !eventListeners.isEmpty()) {
+            getListeners(event.getName()).removeAllElements();
         }
     }
 }

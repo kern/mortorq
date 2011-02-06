@@ -2,12 +2,13 @@ package com.bhrobotics.mortorq;
 
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Event;
+import com.bhrobotics.morlib.EventEmitter;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 
-class MecanumDriveListener extends Listener {
+class MecanumDriveListener implements Listener {
     private static final boolean USE_PID = false;
     
     private static final int MOTOR_SLOT   = 6;
@@ -95,6 +96,9 @@ class MecanumDriveListener extends Listener {
             leftBackMotor.set(leftBackSetpoint * SCALE_LEFT_BACK);
         }
     }
+    
+    public void bound(String event, EventEmitter emitter) {}
+    public void unbound(String event, EventEmitter emitter) {}
     
     private double applyBounds(double input) {
         input = Math.min(MAX_PWM, Math.max(MIN_PWM, input));

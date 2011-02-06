@@ -13,7 +13,6 @@ class MorTorqControlListener extends ControlListener {
     // private ElbowListener elbowListener               = new ElbowListener();
     // private ClawListener clawListener                 = new ClawListener();
     // private WristListener wristListener               = new WristListener();
-    private EncoderTestListener encoderTestListener   = new EncoderTestListener();
     private HelloListener helloListener = new HelloListener();
     
     public void startAutonomous() {
@@ -21,7 +20,6 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void startOperatorControl() {
-        joystickEmitter.bind("updateJoystick1", encoderTestListener);
         dsInputEmitter.bind("updateDigital1", helloListener);
         // joystickEmitter.bind("updateJoystick1", mecanumDriveListener);
         // endGameTimer.bind("timeout", minibotListener);
@@ -29,7 +27,6 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void stopOperatorControl() {
-        joystickEmitter.unbind("updateJoystick1", encoderTestListener);
         dsInputEmitter.unbind("updateDigital1", helloListener);
         // joystickEmitter.unbind("updateJoystick1", mecanumDriveListener);
         // endGameTimer.unbind("timeout", minibotListener);

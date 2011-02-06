@@ -8,9 +8,7 @@ import com.bhrobotics.morlib.Reactor;
 import java.util.Hashtable;
 
 public class TouchPanelListenerTest extends TestCase {
-    public void suiteSetUp() {
-        Reactor.getInstance().start();
-    }
+	
     public void setUp() {
         Reactor.getInstance().startTicking();
     }
@@ -65,7 +63,7 @@ public class TouchPanelListenerTest extends TestCase {
         
         assertTrue(screen2.received);
         assertFalse(screen1.received);
-        assertSame(screen2.emitter,panel.getEmitter());
+        assertSame(screen2.emitter, panel.getEmitter());
         assertSame(screen2, panel.getCurrentScreen());
     }
 	
@@ -157,7 +155,7 @@ public class TouchPanelListenerTest extends TestCase {
    
         try {
             panel.addScreen(10, null);
-            Assert.fail("Exepected Exception not thrown.");
+            fail("Exepected Exception not thrown.");
         } catch (ArrayIndexOutOfBoundsException e) {
             // Ignore.
         }
@@ -175,10 +173,9 @@ public class TouchPanelListenerTest extends TestCase {
 		
 		assertSame(screen1,panel.getScreens()[i1]);
 		assertSame(screen2,panel.getScreens()[i2]);			
-	
 	}
 	
-    private class StubListener extends Listener {
+    private class StubListener implements Listener {
         public boolean received;
 		private boolean bound;
         private EventEmitter emit;
@@ -190,9 +187,11 @@ public class TouchPanelListenerTest extends TestCase {
 		public void bound(String event, EventEmitter emit){
 			bound = true;
 		}
+		
+		public void unbound(String event,EventEmitter emit) {}
     }
 	
-	private class StopListener extends Listener {
+	private class StopListener implements Listener {
 		public boolean received;
 		private boolean bound;
         private EventEmitter emit;
@@ -204,6 +203,7 @@ public class TouchPanelListenerTest extends TestCase {
 		public void bound(String event, EventEmitter emit){
 			bound = true;
 		}
+        public void unbound(String event, EventEmitter emitter) {}
     }
 		
     

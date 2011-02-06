@@ -1,7 +1,17 @@
 package com.bhrobotics.morlib;
 
-public class HelloListener extends Listener {
+public class HelloListener implements Listener {
+    private boolean triggered = false;
+    
     public void handle(Event event) {
         System.out.println("Hello world!");
+        triggered = true;
     }
+    
+    public boolean wasTriggered() {
+        return triggered;
+    }
+    
+    public void bound(String event, EventEmitter emitter) {}
+    public void unbound(String event, EventEmitter emitter) {}
 }

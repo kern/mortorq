@@ -2,6 +2,7 @@ package com.bhrobotics.morlib;
 
 import edu.wpi.first.wpilibj.SimpleRobot;
 
+// TODO: Test me.
 public class EventedRobot extends SimpleRobot {
     protected Reactor reactor = Reactor.getInstance();
     protected EventEmitter process = reactor.getProcess();

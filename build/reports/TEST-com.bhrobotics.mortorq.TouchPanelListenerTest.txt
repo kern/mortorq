@@ -1,5 +1,5 @@
 Testsuite: com.bhrobotics.mortorq.TouchPanelListenerTest
-Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.015 sec
+Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.125 sec
 ------------- Standard Output ---------------
 ScreenChange event received by panel
 Changing to: 1
@@ -37,7 +37,7 @@ Robot has been stopped
 Testcase: testCtor took 0 sec
 Testcase: testScreenChoose took 0 sec
 Testcase: testTouchScreenBind took 0 sec
-Testcase: testScreen took 0 sec
+Testcase: testScreen took 0.093 sec
 Testcase: testStop took 0 sec
 Testcase: testBadScreenNumber took 0 sec
 Testcase: testScreenAdd took 0 sec

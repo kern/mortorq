@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import java.util.Hashtable;
 
-public class DSInputListener extends Listener {
+// TODO: Test me.
+public class DSInputListener implements Listener {
     private short oldDigitals;
     
     private DSAnalogInput analog1 = new DSAnalogInput(1);
@@ -47,6 +48,8 @@ public class DSInputListener extends Listener {
     public void bound(String event, EventEmitter emitter) {
         updateAll(false);
     }
+    
+    public void unbound(String event, EventEmitter emitter) {}
     
     private void updateAll(boolean shouldEmit) {
         analog1.update(shouldEmit);
