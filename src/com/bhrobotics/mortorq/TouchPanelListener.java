@@ -3,28 +3,49 @@ package com.bhrobotics.mortorq;
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
+import com.bhrobotics.morlib.Reactor;
 
-public class TouchpanelListener extends Listener {
-    private static final int NUM_SCREENS = 8;
+public class TouchPanelListener extends Listener {
+	private boolean stopped = false;
+    private static final int NUM_SCREENS = 5;
     private EventEmitter emitter = new EventEmitter();
     private Screen[] screens = new Screen[NUM_SCREENS];
     private Screen currentScreen;
     
+	public TouchPanelListener() {
+		screens[0] = new StopScreen();
+		currentScreen = screens[0];
+	}
+	
     public void handle(Event event) {
-        Short digitals = (Short) event.getData().get("newDigitals");
-        int digits = digitals.shortValue();
-        int newScreenTag = (digits & 0xE000) >> 13;
-        Screen newScreen = screens[newScreenTag];
-        
-        if (newScreen != currentScreen) {
-            currentScreen = newScreen;
-        } else {
-            currentScreen.handle(emitter, event);
-        }
+		if((event.getName()).equals("updateDigitals")) {
+			//
+			System.out.println("ScreenChange event received by panel");
+			if((((Short)(event.getData().get("newDigitals"))).shortValue() & 0x0001) == 0) {	
+				Short digitals = (Short) event.getData().get("newDigitals");
+				int digits = digitals.shortValue();
+				int newScreenTag = ((digits & 0xC000) >> 14)+1;
+				Screen newScreen = screens[newScreenTag];
+				//
+				System.out.println("Changing to: " + newScreenTag); 
+				if (newScreen != currentScreen) {
+					currentScreen = newScreen;
+				}
+			} else {
+				currentScreen = screens[0];
+				Reactor.getInstance().stopTicking();
+				System.out.println("Robot has been stopped");
+			}		
+		} else {
+			if(event.getName().startsWith("updateDigital")) {
+				System.out.println("UpdateDigitals event received by panel"); 
+				currentScreen.handle(emitter,event); 
+			}
+		}
     }
     
     public void addScreen(int tag, Screen screen) {
-        screens[tag] = screen;
+		screens[tag] = screen;
     }
     
     public EventEmitter getEmitter() {
@@ -34,8 +55,25 @@ public class TouchpanelListener extends Listener {
     public Screen getCurrentScreen() {
         return currentScreen;
     }
+	
+	public Screen[] getScreens() {
+		return screens; 
+	}
     
+	public void bind(String event, Listener listener) {
+		emitter.bind(event, listener);
+	}
+			
     public interface Screen {
-        public void handle(EventEmitter p, Event event);
+        public void handle(EventEmitter em, Event event);
     }
+	
+	public class StopScreen implements Screen {
+		private EventEmitter em;
+		public boolean received;
+		
+		public void handle(EventEmitter em, Event e){
+			//Ignore
+		}
+	}
 }
