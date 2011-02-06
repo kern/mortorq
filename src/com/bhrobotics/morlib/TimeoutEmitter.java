@@ -13,7 +13,6 @@ public class TimeoutEmitter extends EventEmitter {
     }
     
     public void schedule(String event, Hashtable data, double delay) {
-        System.out.println("Scheduled.");
         TimeoutTask task = new TimeoutTask(event, data);
         timer.schedule(task, (long) (delay * 1000));
     }
@@ -28,7 +27,7 @@ public class TimeoutEmitter extends EventEmitter {
         }
         
         public void run() {
-            TimeoutEmitter.this.trigger(event, data);
+            trigger(event, data);
         }
     }
 }

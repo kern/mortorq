@@ -1,20 +1,8 @@
 Testsuite: com.bhrobotics.mortorq.StutterListenerTest
-Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 0.516 sec
-------------- Standard Output ---------------
-Scheduled.
-Scheduled.
-Scheduled.
-Scheduled.
-altered
-altered
-altered
-altered
-altered
-altered
-------------- ---------------- ---------------
+Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 1.014 sec
 
-Testcase: testCtor took 0.006 sec
+Testcase: testCtor took 0.005 sec
 Testcase: testEmitter took 0 sec
-Testcase: testIntervals took 0 sec
+Testcase: testIntervals took 0.001 sec
 Testcase: testCycles took 0.001 sec
-Testcase: testHandle took 0.502 sec
+Testcase: testHandle took 1.002 sec

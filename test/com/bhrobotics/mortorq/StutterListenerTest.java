@@ -55,7 +55,7 @@ public class StutterListenerTest extends TestCase {
     }
     
     public void testHandle() {
-        StutterListener stutter = new StutterListener(0.05, 0.05, 2);
+        StutterListener stutter = new StutterListener(0.01, 0.01, 2);
         StubListener listener = new StubListener();
         stutter.getEmitter().bind("update", listener);
         
@@ -66,24 +66,22 @@ public class StutterListenerTest extends TestCase {
         
         stutter.handle(event);
         sleep(500);
+        assertCycles(event, listener, 2);
         
-        //assertCycles(event, listener, 2);
+        listener.reset();
+        stutter.setCycles(10);
         
-        // listener.reset();
-        // stutter.setCycles(10);
-        // 
-        // stutter.handle(event);
-        // sleep(500);
-        // 
-        // assertCycles(event, listener, 10);
+        stutter.handle(event);
+        sleep(500);
+        assertCycles(event, listener, 10);
     }
     
     private void assertCycles(Event event, StubListener listener, int cycles) {
-        int alternations = 1 + (cycles * 2);
-        assertEquals(alternations, listener.calls);
+        int toggles = 1 + (cycles * 2);
+        assertEquals(toggles, listener.calls);
         
-        // Check to make sure the value is alternating.
-        for (int i = 0; i < alternations; i++) {
+        // Check to make sure the value is toggling.
+        for (int i = 0; i < toggles; i++) {
             boolean isEven = i % 2 == 0;
             Hashtable data = (Hashtable) listener.data.elementAt(i);
             boolean oldValue = ((Boolean) data.get("oldValue")).booleanValue();
