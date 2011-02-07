@@ -89,8 +89,30 @@ public class StutterListenerTest extends TestCase {
         stutter.handle(event);
         assertEquals(1, listener.calls);
         stutter.handle(event);
-        sleep(500);
+        sleep(600);
         assertEquals(6, listener.calls);
+    }
+    
+    public void testTiming() {
+        StutterListener stutter = new StutterListener(0.1, 0.2, 1);
+        StubListener listener = new StubListener();
+        stutter.getEmitter().bind("update", listener);
+        
+        Hashtable data = new Hashtable();
+        data.put("oldValue", new Boolean(false));
+        data.put("newValue", new Boolean(true));
+        Event event = new Event("update", data);
+        
+        stutter.handle(event);
+        assertEquals(1, listener.calls);
+        sleep(200);
+        assertEquals(2, listener.calls);
+        sleep(50);
+        assertEquals(2, listener.calls);
+        sleep(100);
+        assertEquals(3, listener.calls);
+        sleep(300);
+        assertEquals(3, listener.calls);
     }
     
     private void assertCycles(Event event, StubListener listener, int cycles) {

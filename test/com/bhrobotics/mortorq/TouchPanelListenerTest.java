@@ -29,7 +29,7 @@ public class TouchPanelListenerTest extends TestCase {
         panel.addScreen(1, screen1);
         panel.addScreen(2, screen2);
         
-        Event otherEvent = new Event("updateDigital5", null);
+        Event otherEvent = new Event("bar", null);
         
         Hashtable screenChange1Data = new Hashtable();
         screenChange1Data.put("oldDigitals", new Short((short) 0));
@@ -71,7 +71,7 @@ public class TouchPanelListenerTest extends TestCase {
         panel.addScreen(2, screen2);
         panel.addScreen(3, screen3);
         
-        Event otherEvent = new Event("updateDigital1", null);
+        Event otherEvent = new Event("foo", null);
         
         Hashtable screenChange1Data = new Hashtable();
         screenChange1Data.put("oldDigitals", new Short((short) 0x0000));
@@ -133,9 +133,13 @@ public class TouchPanelListenerTest extends TestCase {
     }
     
     public void testStop() {
-        StubScreen screen = new StubScreen();
+        StubScreen stopScreen = new StubScreen("test");
+        StubScreen otherScreen = new StubScreen();
         StubListener listener = new StubListener();
-        panel.addScreen(1, screen);
+        panel.addScreen(0, stopScreen);
+        panel.addScreen(1, otherScreen);
+        
+        Event otherEvent = new Event("foo", null);
         
         Hashtable screenChange1Data = new Hashtable();
         screenChange1Data.put("oldDigitals", new Short((short) 0x0000));
@@ -147,11 +151,14 @@ public class TouchPanelListenerTest extends TestCase {
         screenChange2Data.put("newDigitals", new Short((short) 0x3009));
         Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
         
+        panel.getEmitter().bind("test", listener);
+        
         panel.handle(screenChange1Event);
         panel.handle(screenChange2Event);
+        panel.handle(otherEvent);
         Reactor.getInstance().tick();
         
-        assertTrue(kill.received);
+        assertTrue(listener.received);
     }
     
     public void testBadScreenNumber() {
@@ -166,17 +173,13 @@ public class TouchPanelListenerTest extends TestCase {
     }
     
     public void testScreenAdd () {
-        TouchPanelListener panel = new TouchPanelListener();
-        int i1                   = 1;
-        int i2                   = 2;
-        StubScreen screen1       = new StubScreen();
-        StubScreen screen2       = new StubScreen();
+        StubScreen screen1 = new StubScreen();
+        StubScreen screen2 = new StubScreen();
+        panel.addScreen(1, screen1);
+        panel.addScreen(2, screen2);
         
-        panel.addScreen(i1, screen1);
-        panel.addScreen(i2, screen2);
-        
-        assertSame(screen1, panel.getScreens()[i1]);
-        assertSame(screen2, panel.getScreens()[i2]);			
+        assertSame(screen1, panel.getScreens()[1]);
+        assertSame(screen2, panel.getScreens()[2]);			
     }
     
     private class StubListener implements Listener {
@@ -209,7 +212,7 @@ public class TouchPanelListenerTest extends TestCase {
             received = true;
             emitter = em;
             
-            if (event.getName() == "updateDigital1") {
+            if (event.getName() == "foo") {
                 emitter.trigger(name, event.getData());
             }
         }

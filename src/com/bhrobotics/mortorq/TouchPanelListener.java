@@ -7,35 +7,22 @@ import com.bhrobotics.morlib.Reactor;
 
 public class TouchPanelListener implements Listener {
     private static final int NUM_SCREENS = 5;
-    private boolean stopped              = false;
     private EventEmitter emitter         = new EventEmitter();
     private Screen[] screens             = new Screen[NUM_SCREENS];
     private Screen currentScreen;
     
-    public TouchPanelListener() {
-        screens[0]    = new StopScreen();
-        currentScreen = screens[0];
-    }
-    
     public void handle(Event event) {
-        if((event.getName()).equals("updateDigitals")) {
-            if((((Short)(event.getData().get("newDigitals"))).shortValue() & 0x0001) == 0) {	
-                Short digitals   = (Short) event.getData().get("newDigitals");
-                int digits       = digitals.shortValue();
-                int newScreenTag = ((digits & 0xC000) >> 14) + 1;
-                Screen newScreen = screens[newScreenTag];
-                
-                if (newScreen != currentScreen) {
-                    currentScreen = newScreen;
-                }
+        if(event.getName() == "updateDigitals") {
+            int digitals = ((Short) event.getData().get("newDigitals")).shortValue();
+            
+            if ((digitals & 0x0001) == 0) {
+                int newScreenTag = ((digitals & 0xC000) >> 14) + 1;
+                currentScreen = screens[newScreenTag];
             } else {
                 currentScreen = screens[0];
-                Reactor.getInstance().stopTicking();
             }
         } else {
-            if(event.getName().startsWith("updateDigital")) {
-                currentScreen.handle(emitter, event); 
-            }
+            currentScreen.handle(emitter, event);
         }
     }
     
