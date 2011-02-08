@@ -23,163 +23,143 @@ public class TouchPanelListenerTest extends TestCase {
         assertNotNull(panel);
     }
     
-    public void testScreenChoose() {
-        StubScreen screen1 = new StubScreen();
-        StubScreen screen2 = new StubScreen();
-        panel.addScreen(1, screen1);
-        panel.addScreen(2, screen2);
-        
-        Event otherEvent = new Event("bar", null);
-        
-        Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0));
-        screenChange1Data.put("newDigitals", new Short((short) 0x1544));
-        
-        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
-        
-        panel.handle(screenChange1Event);
-        panel.handle(otherEvent);
-        Reactor.getInstance().tick();
-        
-        assertTrue(screen1.received);
-        assertFalse(screen2.received);
-        assertSame(screen1.emitter, panel.getEmitter());
-        assertSame(screen1, panel.getCurrentScreen());
-        
-        screen1.reset();
-        
-        Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x1544));
-        screenChange2Data.put("newDigitals", new Short((short) 0x4236));
-        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
-        
-        panel.handle(screenChange2Event);
-        panel.handle(otherEvent);
-        Reactor.getInstance().tick();
-        
-        assertFalse(screen1.received);
-        assertTrue(screen2.received);
-        assertSame(screen2.emitter, panel.getEmitter());
-        assertSame(screen2, panel.getCurrentScreen());
-    }
-    
     public void testScreen() {
-        StubScreen screen1 = new StubScreen("test1");
-        StubScreen screen2 = new StubScreen("test2");
-        StubScreen screen3 = new StubScreen("test3");
-        panel.addScreen(1, screen1);
-        panel.addScreen(2, screen2);
-        panel.addScreen(3, screen3);
-        
-        Event otherEvent = new Event("foo", null);
-        
-        Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0000));
-        screenChange1Data.put("newDigitals", new Short((short) 0x1544));
-        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
-        
-        Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x1544));
-        screenChange2Data.put("newDigitals", new Short((short) 0x4236));
-        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
-        
-        Hashtable screenChange3Data = new Hashtable();
-        screenChange3Data.put("oldDigitals", new Short((short) 0x4236));
-        screenChange3Data.put("newDigitals", new Short((short) 0x8454));
-        Event screenChange3Event = new Event("updateDigitals", screenChange3Data);
-        
-        StubListener listener1 = new StubListener();
-        StubListener listener2 = new StubListener();
-        StubListener listener3 = new StubListener();
-        panel.getEmitter().bind("test1", listener1);
-        panel.getEmitter().bind("test2", listener2);
-        panel.getEmitter().bind("test3", listener3);
-        
-        panel.handle(screenChange1Event);
-        panel.handle(otherEvent);
-        Reactor.getInstance().tick();
-        assertTrue(screen1.received);
-        assertTrue(listener1.received);
-        assertFalse(screen2.received);
-        assertFalse(listener2.received);
-        assertFalse(screen3.received);
-        assertFalse(listener3.received);
-        
-        screen1.reset();
-        listener1.reset();
-        
-        panel.handle(screenChange2Event);
-        panel.handle(otherEvent);
-        Reactor.getInstance().tick();
-        assertFalse(screen1.received);
-        assertFalse(listener1.received);
-        assertTrue(screen2.received);
-        assertTrue(listener2.received);
-        assertFalse(screen3.received);
-        assertFalse(listener3.received);
-        
-        screen2.reset();
-        listener2.reset();
-        
-        panel.handle(screenChange3Event);
-        panel.handle(otherEvent);
-        Reactor.getInstance().tick();
-        assertFalse(screen1.received);
-        assertFalse(listener1.received);
-        assertFalse(screen2.received);
-        assertFalse(listener2.received);
-        assertTrue(screen3.received);
-        assertTrue(listener3.received);
+        StubScreen screen = new StubScreen();
+        assertNull(panel.getScreen(0));
+        panel.setScreen(0, screen);
+        assertSame(screen, panel.getScreen(0));
+        assertSame(panel, screen.getPanel());
     }
     
-    public void testStop() {
-        StubScreen stopScreen = new StubScreen("test");
-        StubScreen otherScreen = new StubScreen();
-        StubListener listener = new StubListener();
-        panel.addScreen(0, stopScreen);
-        panel.addScreen(1, otherScreen);
-        
-        Event otherEvent = new Event("foo", null);
-        
-        Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0000));
-        screenChange1Data.put("newDigitals", new Short((short) 0x4F9A));
-        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
-        
-        Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x2000));
-        screenChange2Data.put("newDigitals", new Short((short) 0x3009));
-        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
-        
-        panel.getEmitter().bind("test", listener);
-        
-        panel.handle(screenChange1Event);
-        panel.handle(screenChange2Event);
-        panel.handle(otherEvent);
-        Reactor.getInstance().tick();
-        
-        assertTrue(listener.received);
-    }
-    
-    public void testBadScreenNumber() {
-        TouchPanelListener panel = new TouchPanelListener();
+    public void testBadScreenTag() {
+        StubScreen screen = new StubScreen();
         
         try {
-            panel.addScreen(10, null);
-            fail("Exepected Exception not thrown.");
+            panel.setScreen(10, screen);
+            fail("Expected ArrayIndexOutOfBoundsException not thrown.");
         } catch (ArrayIndexOutOfBoundsException e) {
             // Ignore.
         }
     }
     
-    public void testScreenAdd () {
+    public void testCurrentScreen() {
+        StubScreen screen0 = new StubScreen();
         StubScreen screen1 = new StubScreen();
-        StubScreen screen2 = new StubScreen();
-        panel.addScreen(1, screen1);
-        panel.addScreen(2, screen2);
+        panel.setScreen(0, screen0);
+        panel.setScreen(1, screen1);
         
-        assertSame(screen1, panel.getScreens()[1]);
-        assertSame(screen2, panel.getScreens()[2]);			
+        assertNull(panel.getCurrentScreen());
+        assertFalse(screen0.isBound());
+        assertFalse(screen1.isBound());
+        
+        panel.setCurrentScreen(0);
+        
+        assertSame(screen0, panel.getCurrentScreen());
+        assertTrue(screen0.isBound());
+        assertFalse(screen1.isBound());
+        
+        panel.setCurrentScreen(1);
+        
+        assertSame(screen1, panel.getCurrentScreen());
+        assertFalse(screen0.isBound());
+        assertTrue(screen1.isBound());
+    }
+    
+    public void testScreenChoose() {
+        StubScreen screen0 = new StubScreen();
+        StubScreen screen1 = new StubScreen();
+        panel.setScreen(0, screen0);
+        panel.setScreen(1, screen1);
+        
+        Hashtable screenChange1Data = new Hashtable();
+        screenChange1Data.put("oldDigitals", new Short((short) 0));
+        screenChange1Data.put("newDigitals", new Short((short) 0x0001));
+        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
+        
+        Hashtable screenChange2Data = new Hashtable();
+        screenChange2Data.put("oldDigitals", new Short((short) 0x0001));
+        screenChange2Data.put("newDigitals", new Short((short) 0x0100));
+        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
+        
+        panel.handle(screenChange1Event);
+        Reactor.getInstance().tick();
+        
+        assertSame(screen0, panel.getCurrentScreen());
+        
+        screen0.reset();
+        
+        panel.handle(screenChange2Event);
+        Reactor.getInstance().tick();
+        
+        assertSame(screen1, panel.getCurrentScreen());
+    }
+    
+    public void testScreenProxy() {
+        StubScreen screen0 = new StubScreen("test0");
+        StubScreen screen1 = new StubScreen("test1");
+        panel.setScreen(0, screen0);
+        panel.setScreen(1, screen1);
+        
+        Event otherEvent = new Event("foo", null);
+        
+        Hashtable screenChange1Data = new Hashtable();
+        screenChange1Data.put("oldDigitals", new Short((short) 0x0000));
+        screenChange1Data.put("newDigitals", new Short((short) 0x0001));
+        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
+        
+        Hashtable screenChange2Data = new Hashtable();
+        screenChange2Data.put("oldDigitals", new Short((short) 0x0001));
+        screenChange2Data.put("newDigitals", new Short((short) 0x0100));
+        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
+        
+        StubListener listener0 = new StubListener();
+        StubListener listener1 = new StubListener();
+        panel.getEmitter().bind("test0", listener0);
+        panel.getEmitter().bind("test1", listener1);
+        
+        panel.handle(screenChange1Event);
+        panel.handle(otherEvent);
+        Reactor.getInstance().tick();
+        
+        assertTrue(screen0.received);
+        assertTrue(listener0.received);
+        assertFalse(screen1.received);
+        assertFalse(listener1.received);
+        
+        screen0.reset();
+        listener0.reset();
+        
+        panel.handle(screenChange2Event);
+        panel.handle(otherEvent);
+        Reactor.getInstance().tick();
+        
+        assertFalse(screen0.received);
+        assertFalse(listener0.received);
+        assertTrue(screen1.received);
+        assertTrue(listener1.received);
+    }
+    
+    public void testStop() {
+        StubScreen stopScreen = new StubScreen();
+        StubScreen otherScreen = new StubScreen();
+        panel.setScreen(0, stopScreen);
+        panel.setScreen(1, otherScreen);
+        
+        Hashtable screenChange1Data = new Hashtable();
+        screenChange1Data.put("oldDigitals", new Short((short) 0x0100));
+        screenChange1Data.put("newDigitals", new Short((short) 0x0200));
+        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
+        
+        Hashtable screenChange2Data = new Hashtable();
+        screenChange2Data.put("oldDigitals", new Short((short) 0x0200));
+        screenChange2Data.put("newDigitals", new Short((short) 0x0AA1));
+        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
+        
+        panel.handle(screenChange1Event);
+        panel.handle(screenChange2Event);
+        Reactor.getInstance().tick();
+        
+        assertSame(stopScreen, panel.getCurrentScreen());
     }
     
     private class StubListener implements Listener {
@@ -194,12 +174,11 @@ public class TouchPanelListenerTest extends TestCase {
         }
         
         public void bound(String event, EventEmitter emitter) {}
-        public void unbound(String event,EventEmitter emitter) {}
+        public void unbound(String event, EventEmitter emitter) {}
     }
     
-    private class StubScreen implements TouchPanelListener.Screen {
+    private class StubScreen extends TouchPanelScreen {
         public boolean received = false;
-        public EventEmitter emitter;
         private String name;
         
         public StubScreen() {}
@@ -208,18 +187,16 @@ public class TouchPanelListenerTest extends TestCase {
             name = n;
         }
         
-        public void handle(EventEmitter em, Event event) {
+        public void handle(Event event) {
             received = true;
-            emitter = em;
             
             if (event.getName() == "foo") {
-                emitter.trigger(name, event.getData());
+                panel.getEmitter().trigger(name, event.getData());
             }
         }
         
         public void reset() {
             received = false;
-            emitter = null;
         }
     }
 }

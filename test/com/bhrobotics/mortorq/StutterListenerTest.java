@@ -104,6 +104,7 @@ public class StutterListenerTest extends TestCase {
         Event event = new Event("update", data);
         
         stutter.handle(event);
+        sleep(10);
         assertEquals(1, listener.calls);
         sleep(200);
         assertEquals(2, listener.calls);

@@ -8,44 +8,52 @@ import com.bhrobotics.morlib.Reactor;
 public class TouchPanelListener implements Listener {
     private static final int NUM_SCREENS = 5;
     private EventEmitter emitter         = new EventEmitter();
-    private Screen[] screens             = new Screen[NUM_SCREENS];
-    private Screen currentScreen;
+    private TouchPanelScreen[] screens   = new TouchPanelScreen[NUM_SCREENS];
+    private TouchPanelScreen currentScreen;
     
     public void handle(Event event) {
         if(event.getName() == "updateDigitals") {
             int digitals = ((Short) event.getData().get("newDigitals")).shortValue();
             
             if ((digitals & 0x0001) == 0) {
-                int newScreenTag = ((digitals & 0xC000) >> 14) + 1;
-                currentScreen = screens[newScreenTag];
+                setCurrentScreen(((digitals & 0xC000) >> 14) + 1);
             } else {
-                currentScreen = screens[0];
+                setCurrentScreen(0);
             }
         } else {
-            currentScreen.handle(emitter, event);
+            currentScreen.handle(event);
         }
     }
     
     public void bound(String event, EventEmitter emitter) {}
     public void unbound(String event, EventEmitter emitter) {}
     
-    public void addScreen(int tag, Screen screen) {
-        screens[tag] = screen;
-    }
-    
     public EventEmitter getEmitter() {
         return emitter;
     }
     
-    public Screen getCurrentScreen() {
+    public TouchPanelScreen getScreen(int tag) {
+        return screens[tag];
+    }
+    
+    public void setScreen(int tag, TouchPanelScreen screen) {
+        screen.setPanel(this);
+        screens[tag] = screen;
+    }
+    
+    public TouchPanelScreen getCurrentScreen() {
         return currentScreen;
     }
     
-    public Screen[] getScreens() {
-        return screens; 
-    }
-    
-    public interface Screen {
-        public void handle(EventEmitter emitter, Event event);
+    public void setCurrentScreen(int tag) {
+        if (currentScreen != null) {
+            currentScreen.unbound();
+        }
+        
+        currentScreen = screens[tag];
+        
+        if (currentScreen != null) {
+            currentScreen.bound();
+        }
     }
 }
