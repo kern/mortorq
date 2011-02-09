@@ -47,13 +47,13 @@ public class EventEmitter {
     public void bind(String event, Listener listener) {
         Vector eventListeners = getListeners(event);
         eventListeners.addElement(listener);
-        listener.bound(event, this);
+        listener.bound(this, event);
     }
     
     public void unbind(String event, Listener listener) {
         Vector eventListeners = getListeners(event);
         eventListeners.removeElement(listener);
-        listener.unbound(event, this);
+        listener.unbound(this, event);
     }
     
     public void trigger(String name) {

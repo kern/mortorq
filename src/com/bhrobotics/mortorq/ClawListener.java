@@ -5,7 +5,7 @@ import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 import edu.wpi.first.wpilibj.Solenoid;
 
-public class ClawListener implements Listener{
+public class ClawListener implements Listener {
     private static final int SLOT = 1;
     private static final int CHANNEL = 1;
     Solenoid solenoid = new Solenoid(SLOT, CHANNEL);
@@ -18,8 +18,8 @@ public class ClawListener implements Listener{
         solenoid.set(!solenoid.get());
     }
     
-    public void bound(String event, EventEmitter emitter) {}
-    public void unbound(String event, EventEmitter emitter) {}
+    public void bound(EventEmitter emitter, String event) {}
+    public void unbound(EventEmitter emitter, String event) {}
     
     public void reset() {
         solenoid.set(false);

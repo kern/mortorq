@@ -7,11 +7,8 @@ public class ControlListener implements Listener {
     private Reactor reactor = Reactor.getInstance();
     private EventEmitter process = reactor.getProcess();
     
-    private JoystickListener joystickListener = new JoystickListener();
-    protected EventEmitter joystickEmitter = joystickListener.getEmitter();
-    
-    private DSInputListener dsInputListener = new DSInputListener();
-    protected EventEmitter dsInputEmitter = dsInputListener.getEmitter();
+    private JoystickFilter joystickFilter = new JoystickFilter();
+    protected DSInputFilter dsInputFilter = new DSInputFilter();
     
     private Hashtable eventHandlers = new Hashtable();
     
@@ -31,8 +28,8 @@ public class ControlListener implements Listener {
         h.execute();
     }
     
-    public void bound(String event, EventEmitter emitter) {}
-    public void unbound(String event, EventEmitter emitter) {}
+    public void bound(EventEmitter emitter, String event) {}
+    public void unbound(EventEmitter emitter, String event) {}
     
     public void start() {}
     public void stop() {}
@@ -71,16 +68,16 @@ public class ControlListener implements Listener {
     
     private class StartOperatorControlHandler implements EventHandler {
         public void execute() {
-            process.bind("newDataAvailable", joystickListener);
-            process.bind("newDataAvailable", dsInputListener);
+            process.bind("newDataAvailable", joystickFilter);
+            process.bind("newDataAvailable", dsInputFilter);
             startOperatorControl();
         }
     }
     
     private class StopOperatorControlHandler implements EventHandler {
         public void execute() {
-            process.unbind("newDataAvailable", joystickListener);
-            process.unbind("newDataAvailable", dsInputListener);
+            process.unbind("newDataAvailable", joystickFilter);
+            process.unbind("newDataAvailable", dsInputFilter);
             stopOperatorControl();
         }
     }

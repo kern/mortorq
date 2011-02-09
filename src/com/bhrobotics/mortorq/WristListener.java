@@ -19,8 +19,8 @@ public class WristListener implements Listener{
         solenoid.set(!solenoid.get());
     }
     
-    public void bound(String event, EventEmitter emitter) {}
-    public void unbound(String event, EventEmitter emitter) {}
+    public void bound(EventEmitter emitter, String event) {}
+    public void unbound(EventEmitter emitter, String event) {}
     
     public void reset() {
         solenoid.set(false);

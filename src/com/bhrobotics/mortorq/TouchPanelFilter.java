@@ -1,11 +1,11 @@
 package com.bhrobotics.mortorq;
 
-import com.bhrobotics.morlib.Listener;
+import com.bhrobotics.morlib.Filter;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 import com.bhrobotics.morlib.Reactor;
 
-public class TouchPanelListener implements Listener {
+public class TouchPanelFilter extends Filter {
     private static final int NUM_SCREENS = 5;
     private EventEmitter emitter         = new EventEmitter();
     private TouchPanelScreen[] screens   = new TouchPanelScreen[NUM_SCREENS];
@@ -25,8 +25,8 @@ public class TouchPanelListener implements Listener {
         }
     }
     
-    public void bound(String event, EventEmitter emitter) {}
-    public void unbound(String event, EventEmitter emitter) {}
+    public void bound(EventEmitter emitter, String event) {}
+    public void unbound(EventEmitter emitter, String event) {}
     
     public EventEmitter getEmitter() {
         return emitter;

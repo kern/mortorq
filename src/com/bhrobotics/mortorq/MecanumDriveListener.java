@@ -97,8 +97,8 @@ class MecanumDriveListener implements Listener {
         }
     }
     
-    public void bound(String event, EventEmitter emitter) {}
-    public void unbound(String event, EventEmitter emitter) {}
+    public void bound(EventEmitter emitter, String event) {}
+    public void unbound(EventEmitter emitter, String event) {}
     
     private double applyBounds(double input) {
         input = Math.min(MAX_PWM, Math.max(MIN_PWM, input));

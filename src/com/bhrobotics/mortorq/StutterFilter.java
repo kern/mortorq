@@ -1,29 +1,33 @@
 package com.bhrobotics.mortorq;
 
-import com.bhrobotics.morlib.Listener;
+import com.bhrobotics.morlib.Filter;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 import com.bhrobotics.morlib.TimeoutEmitter;
 import java.util.Hashtable;
 
-public class StutterListener implements Listener {
+public class StutterFilter extends Filter {
     private TimeoutEmitter emitter = new TimeoutEmitter();
     private double highInterval;
     private double lowInterval;
     private int cycles;
     
-    public StutterListener() {
+    public StutterFilter() {
         this(0.0, 0.0, 0);
     }
     
-    public StutterListener(double h, double l, int c) {
+    public StutterFilter(double h, double l, int c) {
         setHighInterval(h);
         setLowInterval(l);
         setCycles(c);
     }
     
     public EventEmitter getEmitter() {
-        return (EventEmitter) emitter;
+        return emitter;
+    }
+    
+    public TimeoutEmitter getTimeoutEmitter() {
+        return emitter;
     }
     
     public double getHighInterval() {
@@ -58,7 +62,7 @@ public class StutterListener implements Listener {
         lowData.put("oldValue", event.getData("newValue"));
         lowData.put("newValue", event.getData("oldValue"));
         
-        emitter.trigger("update", highData);
+        trigger("update", highData);
         
         for (int i = 0; i < cycles; i++) {
             int j = i + 1;
@@ -68,6 +72,6 @@ public class StutterListener implements Listener {
         }
     }
     
-    public void bound(String event, EventEmitter emitter) {}
-    public void unbound(String event, EventEmitter emitter) {}
+    public void bound(EventEmitter emitter, String event) {}
+    public void unbound(EventEmitter emitter, String event) {}
 }

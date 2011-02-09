@@ -6,7 +6,11 @@ import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import java.util.Hashtable;
 
 // TODO: Test me.
-public class DSInputListener implements Listener {
+public class DSInputFilter extends Filter {
+    protected DriverStation ds = DriverStation.getInstance();
+    protected DriverStationEnhancedIO dsEIO = ds.getEnhancedIO();
+    private EventEmitter emitter = new EventEmitter();
+    
     private short oldDigitals;
     
     private DSAnalogInput analog1 = new DSAnalogInput(1);
@@ -35,21 +39,19 @@ public class DSInputListener implements Listener {
     private DSDigitalInput digital15 = new DSDigitalInput(15);
     private DSDigitalInput digital16 = new DSDigitalInput(16);
     
-    private EventEmitter emitter = new EventEmitter();
-    
-    public EventEmitter getEmitter() {
-        return emitter;
-    }
-    
     public void handle(Event event) {
         updateAll(true);
     }
     
-    public void bound(String event, EventEmitter emitter) {
+    public void bound(EventEmitter emitter, String event) {
         updateAll(false);
     }
     
-    public void unbound(String event, EventEmitter emitter) {}
+    public void unbound(EventEmitter emitter, String event) {}
+    
+    public EventEmitter getEmitter() {
+        return emitter;
+    }
     
     private void updateAll(boolean shouldEmit) {
         analog1.update(shouldEmit);
@@ -62,14 +64,16 @@ public class DSInputListener implements Listener {
         analog8.update(shouldEmit);
         
         try {
-            short newDigitals = DriverStation.getInstance().getEnhancedIO().getDigitals();
+            short newDigitals = dsEIO.getDigitals();
+            
             if (newDigitals != oldDigitals) {
                 Hashtable data = new Hashtable();
                 data.put("oldDigitals", new Short(oldDigitals));
                 data.put("newDigitals", new Short(newDigitals));
-            
+                
                 emitter.trigger("updateDigitals", data);
             }
+            
             oldDigitals = newDigitals;
         } catch (DriverStationEnhancedIO.EnhancedIOException e) {
             // Ignore.
@@ -93,26 +97,23 @@ public class DSInputListener implements Listener {
         digital16.update(shouldEmit);
     }
     
-    public void emitAnalogUpdate(int channel, double oldValue, double newValue) {
+    public void triggerAnalogUpdate(int channel, double oldValue, double newValue) {
         Hashtable data = new Hashtable();
         data.put("oldValue", new Double(oldValue));
         data.put("newValue", new Double(newValue));
         
-        emitter.trigger("updateAnalog" + channel, data);
+        trigger("updateAnalog" + channel, data);
     }
     
-    public void emitDigitalUpdate(int channel, boolean oldValue, boolean newValue) {
+    public void triggerDigitalUpdate(int channel, boolean oldValue, boolean newValue) {
         Hashtable data = new Hashtable();
         data.put("oldValue", new Boolean(oldValue));
         data.put("newValue", new Boolean(newValue));
         
-        emitter.trigger("updateDigital" + channel, data);
+        trigger("updateDigital" + channel, data);
     }
     
     private abstract class DSInput {
-        protected DriverStation ds = DriverStation.getInstance();
-        protected DriverStationEnhancedIO dsEIO = ds.getEnhancedIO();
-        
         protected int channel;
         
         public DSInput(int c) {
@@ -134,7 +135,7 @@ public class DSInputListener implements Listener {
                 double newValue = dsEIO.getAnalogIn(channel);
                 
                 if (oldValue != newValue && shouldEmit) {
-                    DSInputListener.this.emitAnalogUpdate(channel, oldValue, newValue);
+                    triggerAnalogUpdate(channel, oldValue, newValue);
                 }
                 
                 oldValue = newValue;
@@ -156,7 +157,7 @@ public class DSInputListener implements Listener {
                 boolean newValue = dsEIO.getDigital(channel);
                 
                 if (oldValue != newValue && shouldEmit) {
-                    DSInputListener.this.emitDigitalUpdate(channel, oldValue, newValue);
+                    triggerDigitalUpdate(channel, oldValue, newValue);
                 }
                 
                 oldValue = newValue;

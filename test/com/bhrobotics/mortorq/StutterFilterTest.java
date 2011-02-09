@@ -8,7 +8,7 @@ import com.bhrobotics.morlib.EventEmitter;
 import java.util.Hashtable;
 import java.util.Vector;
 
-public class StutterListenerTest extends TestCase {
+public class StutterFilterTest extends TestCase {
     public void setUp() {
         Reactor.getInstance().startTicking();
     }
@@ -18,21 +18,21 @@ public class StutterListenerTest extends TestCase {
     }
     
     public void testCtor() {
-        StutterListener stutter = new StutterListener();
+        StutterFilter stutter = new StutterFilter();
         assertNotNull(stutter);
     }
     
-    public void testEmitter() {
-        StutterListener stutter = new StutterListener();
-        assertNotNull(stutter.getEmitter());
+    public void testTimeoutEmitter() {
+        StutterFilter stutter = new StutterFilter();
+        assertNotNull(stutter.getTimeoutEmitter());
     }
     
     public void testIntervals() {
-        StutterListener stutter = new StutterListener();
+        StutterFilter stutter = new StutterFilter();
         assertEquals(0.0, stutter.getHighInterval(), 0.05);
         assertEquals(0.0, stutter.getLowInterval(), 0.05);
         
-        stutter = new StutterListener(7.0, 8.0, 0);
+        stutter = new StutterFilter(7.0, 8.0, 0);
         assertEquals(7.0, stutter.getHighInterval(), 0.05);
         assertEquals(8.0, stutter.getLowInterval(), 0.05);
         
@@ -44,10 +44,10 @@ public class StutterListenerTest extends TestCase {
     }
     
     public void testCycles() {
-        StutterListener stutter = new StutterListener();
+        StutterFilter stutter = new StutterFilter();
         assertEquals(0, stutter.getCycles());
         
-        stutter = new StutterListener(7.0, 8.0, 6);
+        stutter = new StutterFilter(7.0, 8.0, 6);
         assertEquals(6, stutter.getCycles());
         
         stutter.setCycles(9);
@@ -55,9 +55,9 @@ public class StutterListenerTest extends TestCase {
     }
     
     public void testHandle() {
-        StutterListener stutter = new StutterListener(0.01, 0.01, 2);
+        StutterFilter stutter = new StutterFilter(0.01, 0.01, 2);
         StubListener listener = new StubListener();
-        stutter.getEmitter().bind("update", listener);
+        stutter.bind("update", listener);
         
         Hashtable data = new Hashtable();
         data.put("oldValue", new Boolean(false));
@@ -77,9 +77,9 @@ public class StutterListenerTest extends TestCase {
     }
     
     public void testCancel() {
-        StutterListener stutter = new StutterListener(0.1, 0.1, 2);
+        StutterFilter stutter = new StutterFilter(0.1, 0.1, 2);
         StubListener listener = new StubListener();
-        stutter.getEmitter().bind("update", listener);
+        stutter.bind("update", listener);
         
         Hashtable data = new Hashtable();
         data.put("oldValue", new Boolean(false));
@@ -94,9 +94,9 @@ public class StutterListenerTest extends TestCase {
     }
     
     public void testTiming() {
-        StutterListener stutter = new StutterListener(0.1, 0.2, 1);
+        StutterFilter stutter = new StutterFilter(0.1, 0.2, 1);
         StubListener listener = new StubListener();
-        stutter.getEmitter().bind("update", listener);
+        stutter.bind("update", listener);
         
         Hashtable data = new Hashtable();
         data.put("oldValue", new Boolean(false));
@@ -154,8 +154,8 @@ public class StutterListenerTest extends TestCase {
             data.addElement(event.getData());
         }
         
-        public void bound(String event, EventEmitter emitter) {}
-        public void unbound(String event, EventEmitter emitter) {}
+        public void bound(EventEmitter emitter, String event) {}
+        public void unbound(EventEmitter emitter, String event) {}
         
         public void reset() {
             calls = 0;

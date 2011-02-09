@@ -17,7 +17,7 @@ public class TouchPanelScreenTest extends TestCase {
     }
     
     public void testPanel() {
-        TouchPanelListener panel = new TouchPanelListener();
+        TouchPanelFilter panel = new TouchPanelFilter();
         assertNull(screen.getPanel());
         screen.setPanel(panel);
         assertSame(panel, screen.getPanel());
