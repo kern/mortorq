@@ -74,11 +74,10 @@ class MecanumDriveListener implements Listener {
     
     public void handle(Event event) {
         Joystick joystick = (Joystick) event.getData("joystick");
-        
-        double x        = joystick.getX();
-        double y        = joystick.getY();
-        double rotation = joystick.getZ();
-        
+        drive(joystick.getX(), joystick.getY(), joystick.getZ());
+    }
+    
+    public void drive(double x, double y, double rotation) {
         double rightFrontSetpoint = applyBounds(y + x + rotation);
         double rightBackSetpoint  = applyBounds(y - x + rotation);
         double leftFrontSetpoint  = applyBounds(y - x - rotation);
