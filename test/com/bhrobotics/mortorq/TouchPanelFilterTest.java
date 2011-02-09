@@ -72,13 +72,13 @@ public class TouchPanelFilterTest extends TestCase {
         panel.setScreen(1, screen1);
         
         Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0));
+        screenChange1Data.put("oldDigitals", new Short((short) 0x0AA0));
         screenChange1Data.put("newDigitals", new Short((short) 0x0001));
         Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
         
         Hashtable screenChange2Data = new Hashtable();
         screenChange2Data.put("oldDigitals", new Short((short) 0x0001));
-        screenChange2Data.put("newDigitals", new Short((short) 0x0100));
+        screenChange2Data.put("newDigitals", new Short((short) 0x0000));
         Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
         
         panel.handle(screenChange1Event);
@@ -103,13 +103,13 @@ public class TouchPanelFilterTest extends TestCase {
         Event otherEvent = new Event("foo", null);
         
         Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0000));
+        screenChange1Data.put("oldDigitals", new Short((short) 0x0002));
         screenChange1Data.put("newDigitals", new Short((short) 0x0001));
         Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
         
         Hashtable screenChange2Data = new Hashtable();
         screenChange2Data.put("oldDigitals", new Short((short) 0x0001));
-        screenChange2Data.put("newDigitals", new Short((short) 0x0100));
+        screenChange2Data.put("newDigitals", new Short((short) 0x0000));
         Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
         
         StubListener listener0 = new StubListener();
@@ -146,13 +146,13 @@ public class TouchPanelFilterTest extends TestCase {
         panel.setScreen(1, otherScreen);
         
         Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0100));
-        screenChange1Data.put("newDigitals", new Short((short) 0x0200));
+        screenChange1Data.put("oldDigitals", new Short((short) 0x0AA0));
+        screenChange1Data.put("newDigitals", new Short((short) 0x0000));
         Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
         
         Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x0200));
-        screenChange2Data.put("newDigitals", new Short((short) 0x0AA1));
+        screenChange2Data.put("oldDigitals", new Short((short) 0x0000));
+        screenChange2Data.put("newDigitals", new Short((short) 0x0003));
         Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
         
         panel.handle(screenChange1Event);

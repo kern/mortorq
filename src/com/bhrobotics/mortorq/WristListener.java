@@ -5,9 +5,13 @@ import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 import edu.wpi.first.wpilibj.Solenoid;
 
-public class WristListener implements Listener{
+public class WristListener implements Listener {
     private static final int SLOT    = 1;
     private static final int CHANNEL = 1;
+    
+    private static final boolean RAISED  = false;
+    private static final boolean LOWERED = true;
+    private static final boolean DEFAULT = RAISED;
     
     Solenoid solenoid = new Solenoid(SLOT, CHANNEL);
     
@@ -16,13 +20,33 @@ public class WristListener implements Listener{
     }
     
     public void handle(Event event) {
-        solenoid.set(!solenoid.get());
+        toggle();
     }
     
     public void bound(EventEmitter emitter, String event) {}
     public void unbound(EventEmitter emitter, String event) {}
     
+    public boolean get() {
+        return solenoid.get();
+    }
+    
+    public void set(boolean value) {
+        solenoid.set(value);
+    }
+    
+    public void toggle() {
+        set(!get());
+    }
+    
     public void reset() {
-        solenoid.set(false);
+        set(DEFAULT);
+    }
+    
+    public void raise() {
+        set(RAISED);
+    }
+    
+    public void lower() {
+        set(LOWERED);
     }
 }

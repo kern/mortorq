@@ -22,14 +22,15 @@ class MorTorqControlListener extends ControlListener {
     public void startOperatorControl() {
         dsInputFilter.bind("updateDigital1", helloListener);
         // joystickEmitter.bind("updateJoystick1", mecanumDriveListener);
-        // endGameTimer.bind("timeout", minibotListener);
-        // endGameTimer.start(110);
+        // endGameTimeout.bind("startEndGame", minibotListener);
+        // endGameTimer.schedule("startEndGame", 110);
     }
     
     public void stopOperatorControl() {
         dsInputFilter.unbind("updateDigital1", helloListener);
         // joystickEmitter.unbind("updateJoystick1", mecanumDriveListener);
-        // endGameTimer.unbind("timeout", minibotListener);
+        // endGameTimer.unbind("startEndGame", minibotListener);
+        // endGameTImer.cancelAll();
         // minibotListener.reset();
     }
 }
