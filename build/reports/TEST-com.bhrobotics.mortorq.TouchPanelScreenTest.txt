@@ -2,5 +2,5 @@ Testsuite: com.bhrobotics.mortorq.TouchPanelScreenTest
 Tests run: 3, Failures: 0, Errors: 0, Time elapsed: 0.009 sec
 
 Testcase: testCtor took 0.002 sec
-Testcase: testPanel took 0.003 sec
+Testcase: testPanel took 0.002 sec
 Testcase: testBound took 0 sec

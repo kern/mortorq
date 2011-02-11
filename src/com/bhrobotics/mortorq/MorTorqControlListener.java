@@ -15,6 +15,7 @@ class MorTorqControlListener extends ControlListener {
     private ElbowListener elbowListener               = new ElbowListener();
     private ClawListener clawListener                 = new ClawListener();
     private WristListener wristListener               = new WristListener();
+    private CompressorListener compressorListener     = new CompressorListener();
     
     public void startAutonomous() {
         mecanumDriveListener.stop();
@@ -23,6 +24,12 @@ class MorTorqControlListener extends ControlListener {
         elbowListener.reset();
         clawListener.reset();
         wristListener.reset();
+        compressorListener.auto();
+    }
+    
+    public void stopAutonomous() {
+        mecanumDriveListener.stop();
+        mastListener.stop();
     }
     
     public void startOperatorControl() {
@@ -38,6 +45,7 @@ class MorTorqControlListener extends ControlListener {
         panelFilter.bind("all", elbowListener);
         panelFilter.bind("all", clawListener);
         panelFilter.bind("all", wristListener);
+        panelFilter.bind("all", compressorListener);
     }
     
     public void stopOperatorControl() {
@@ -53,5 +61,6 @@ class MorTorqControlListener extends ControlListener {
         panelFilter.unbind("all", elbowListener);
         panelFilter.unbind("all", clawListener);
         panelFilter.unbind("all", wristListener);
+        panelFilter.unbind("all", compressorListener);
     }
 }

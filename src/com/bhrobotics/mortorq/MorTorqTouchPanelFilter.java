@@ -21,6 +21,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             panel.trigger("stopMotors");
             panel.trigger("mastStop");
+            panel.trigger("compressorStop");
         }
     }
     
@@ -28,6 +29,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             panel.trigger("stopMotors");
             panel.trigger("mastStop");
+            panel.trigger("compressorAuto");
         }
         
         public void handle(Event event) {
@@ -39,6 +41,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             panel.trigger("stopMotors");
             panel.trigger("mastStop");
+            panel.trigger("compressorStop");
         }
         
         public void handle(Event event) {
@@ -50,6 +53,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             panel.trigger("stopMotors");
             panel.trigger("mastStop");
+            panel.trigger("compressorManual");
         }
         
         public void handle(Event event) {
@@ -61,6 +65,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             panel.trigger("stopMotors");
             panel.trigger("mastStop");
+            panel.trigger("compressorStop");
         }
         
         public void handle(Event event) {
