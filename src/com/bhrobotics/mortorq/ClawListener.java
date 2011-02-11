@@ -20,13 +20,15 @@ public class ClawListener implements Listener {
     }
     
     public void handle(Event event) {
-        if (event.getName() == "clawNarrow") {
+        String name = event.getName();
+        
+        if (name == "clawNarrow") {
             narrow();
-        } else if (event.getName() == "clawWide") {
+        } else if (name == "clawWide") {
             wide();
-        } else if (event.getName() == "clawToggle") {
+        } else if (name == "clawToggle") {
             toggle();
-        } else if (event.getName() == "clawReset") {
+        } else if (name == "clawReset") {
             reset();
         }
     }

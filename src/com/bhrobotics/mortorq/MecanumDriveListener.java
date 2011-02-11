@@ -29,33 +29,45 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_DEADBAND = 0.2;
     private static final double MIN_DEADBAND = -0.2;
     
-    private static final int SIDE_A_RIGHT_FRONT          = 1;
-    private static final int SIDE_B_RIGHT_FRONT          = 2;
-    private static final boolean REVERSE_DIR_RIGHT_FRONT = false;
-    private static final int KP_RIGHT_FRONT              = 1;
-    private static final int KI_RIGHT_FRONT              = 1;
-    private static final int KD_RIGHT_FRONT              = 1;
+    private static final int SIDE_A_RIGHT_FRONT            = 1;
+    private static final int SIDE_B_RIGHT_FRONT            = 2;
+    private static final boolean REVERSE_DIR_RIGHT_FRONT   = false;
+    private static final int KP_RIGHT_FRONT                = 1;
+    private static final int KI_RIGHT_FRONT                = 1;
+    private static final int KD_RIGHT_FRONT                = 1;
+    private static final double PULSE_DISTANCE_RIGHT_FRONT = 1.0;
+    private static final double MAX_RATE_RIGHT_FRONT       = 1000;
+    private static final double MIN_RATE_RIGHT_FRONT       = -1000;
     
-    private static final int SIDE_A_RIGHT_BACK          = 3;
-    private static final int SIDE_B_RIGHT_BACK          = 4;
-    private static final boolean REVERSE_DIR_RIGHT_BACK = false;
-    private static final int KP_RIGHT_BACK              = 1;
-    private static final int KI_RIGHT_BACK              = 1;
-    private static final int KD_RIGHT_BACK              = 1;
+    private static final int SIDE_A_RIGHT_BACK            = 3;
+    private static final int SIDE_B_RIGHT_BACK            = 4;
+    private static final boolean REVERSE_DIR_RIGHT_BACK   = false;
+    private static final int KP_RIGHT_BACK                = 1;
+    private static final int KI_RIGHT_BACK                = 1;
+    private static final int KD_RIGHT_BACK                = 1;
+    private static final double PULSE_DISTANCE_RIGHT_BACK = 1.0;
+    private static final double MAX_RATE_RIGHT_BACK       = 1000;
+    private static final double MIN_RATE_RIGHT_BACK       = -1000;
     
-    private static final int SIDE_A_LEFT_FRONT          = 5;
-    private static final int SIDE_B_LEFT_FRONT          = 6;
-    private static final boolean REVERSE_DIR_LEFT_FRONT = false;
-    private static final int KP_LEFT_FRONT              = 1;
-    private static final int KI_LEFT_FRONT              = 1;
-    private static final int KD_LEFT_FRONT              = 1;
+    private static final int SIDE_A_LEFT_FRONT            = 5;
+    private static final int SIDE_B_LEFT_FRONT            = 6;
+    private static final boolean REVERSE_DIR_LEFT_FRONT   = false;
+    private static final int KP_LEFT_FRONT                = 1;
+    private static final int KI_LEFT_FRONT                = 1;
+    private static final int KD_LEFT_FRONT                = 1;
+    private static final double PULSE_DISTANCE_LEFT_FRONT = 1.0;
+    private static final double MAX_RATE_LEFT_FRONT       = 1000;
+    private static final double MIN_RATE_LEFT_FRONT       = -1000;
     
-    private static final int SIDE_A_LEFT_BACK          = 7;
-    private static final int SIDE_B_LEFT_BACK          = 8;
-    private static final boolean REVERSE_DIR_LEFT_BACK = false;
-    private static final int KP_LEFT_BACK              = 1;
-    private static final int KI_LEFT_BACK              = 1;
-    private static final int KD_LEFT_BACK              = 1;
+    private static final int SIDE_A_LEFT_BACK            = 7;
+    private static final int SIDE_B_LEFT_BACK            = 8;
+    private static final boolean REVERSE_DIR_LEFT_BACK   = false;
+    private static final int KP_LEFT_BACK                = 1;
+    private static final int KI_LEFT_BACK                = 1;
+    private static final int KD_LEFT_BACK                = 1;
+    private static final double PULSE_DISTANCE_LEFT_BACK = 1.0;
+    private static final double MAX_RATE_LEFT_BACK       = 1000;
+    private static final double MIN_RATE_LEFT_BACK       = -1000;
     
     RateEncoder rightFrontEncoder = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_RIGHT_FRONT, ENCODER_SLOT, SIDE_B_RIGHT_FRONT, REVERSE_DIR_RIGHT_FRONT) : null;
     RateEncoder rightBackEncoder  = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_RIGHT_BACK, ENCODER_SLOT, SIDE_B_RIGHT_BACK, REVERSE_DIR_RIGHT_BACK) : null;
@@ -72,9 +84,49 @@ class MecanumDriveListener implements Listener {
     PIDController leftFrontController  = USE_PID ? new PIDController(KP_LEFT_FRONT, KI_LEFT_FRONT, KD_LEFT_FRONT, leftFrontEncoder, leftFrontMotor) : null;
     PIDController leftBackController   = USE_PID ? new PIDController(KP_LEFT_BACK, KI_LEFT_BACK, KD_LEFT_BACK, leftBackEncoder, leftBackMotor) : null;
     
+    public MecanumDriveListener() {
+        rightFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_FRONT);
+        rightFrontEncoder.start();
+        
+        rightBackEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_BACK);
+        rightBackEncoder.start();
+        
+        leftFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_FRONT);
+        leftFrontEncoder.start();
+        
+        leftBackEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_BACK);
+        leftBackEncoder.start();
+        
+        rightFrontController.setInputRange(MIN_RATE_RIGHT_FRONT, MAX_RATE_RIGHT_FRONT);
+        rightBackController.setInputRange(MIN_RATE_RIGHT_BACK, MAX_RATE_RIGHT_BACK);
+        leftFrontController.setInputRange(MIN_RATE_LEFT_FRONT, MAX_RATE_LEFT_FRONT);
+        leftBackController.setInputRange(MIN_RATE_LEFT_BACK, MAX_RATE_LEFT_BACK);
+    }
+    
     public void handle(Event event) {
-        Joystick joystick = (Joystick) event.getData("joystick");
-        drive(joystick.getX(), joystick.getY(), joystick.getZ());
+        String name = event.getName();
+        
+        if (name.startsWith("updateJoystick")) {
+            Joystick joystick = (Joystick) event.getData("joystick");
+            drive(joystick.getX(), joystick.getY(), joystick.getZ());
+        } else if (name.startsWith("updateMotor")) {
+            double setpoint = ((Double) event.getData("value")).doubleValue();
+            
+            if (name == "updateMotorRightFront") {
+                rightFrontController.setSetpoint(setpoint);
+            } else if (name == "updateMotorRightBack") {
+                rightBackController.setSetpoint(setpoint);
+            } else if (name == "updateMotorLeftFront") {
+                leftFrontController.setSetpoint(setpoint);
+            } else if (name == "updateMotorLeftBack") {
+                leftBackController.setSetpoint(setpoint);
+            }
+        } else if (name == "stopMotors") {
+            rightFrontController.setSetpoint(0.0);
+            rightBackController.setSetpoint(0.0);
+            leftFrontController.setSetpoint(0.0);
+            leftBackController.setSetpoint(0.0);
+        }
     }
     
     public void drive(double x, double y, double rotation) {
