@@ -20,7 +20,15 @@ public class WristListener implements Listener {
     }
     
     public void handle(Event event) {
-        toggle();
+        if (event.getName() == "wristRaise") {
+            raise();
+        } else if (event.getName() == "wristLower") {
+            lower();
+        } else if (event.getName() == "wristToggle") {
+            toggle();
+        } else if (event.getName() == "wristReset") {
+            reset();
+        }
     }
     
     public void bound(EventEmitter emitter, String event) {}

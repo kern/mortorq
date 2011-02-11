@@ -20,7 +20,15 @@ public class ElbowListener implements Listener {
     }
     
     public void handle(Event event) {
-        lower();
+        if (event.getName() == "elbowRaise") {
+            raise();
+        } else if (event.getName() == "elbowLower") {
+            lower();
+        } else if (event.getName() == "elbowToggle") {
+            toggle();
+        } else if (event.getName() == "elbowReset") {
+            reset();
+        }
     }
     
     public void bound(EventEmitter emitter, String event) {}

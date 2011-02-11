@@ -7,30 +7,30 @@ import com.bhrobotics.morlib.TimeoutEmitter;
 import com.bhrobotics.morlib.HelloListener;
 
 class MorTorqControlListener extends ControlListener {
-    // private TimeoutEmitter endGameTimer               = new TimeoutEmitter();
-    // private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
-    // private MinibotListener minibotListener           = new MinibotListener();
-    // private ElbowListener elbowListener               = new ElbowListener();
-    // private ClawListener clawListener                 = new ClawListener();
-    // private WristListener wristListener               = new WristListener();
-    private HelloListener helloListener = new HelloListener();
+    private TimeoutEmitter endGameTimeout             = new TimeoutEmitter();
+    private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
+    private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
+    private MinibotListener minibotListener           = new MinibotListener();
+    private ElbowListener elbowListener               = new ElbowListener();
+    private ClawListener clawListener                 = new ClawListener();
+    private WristListener wristListener               = new WristListener();
     
     public void startAutonomous() {
-        // elbowListener.lower();
+        elbowListener.lower();
     }
     
     public void startOperatorControl() {
-        dsInputFilter.bind("updateDigital1", helloListener);
-        // joystickEmitter.bind("updateJoystick1", mecanumDriveListener);
-        // endGameTimeout.bind("startEndGame", minibotListener);
-        // endGameTimer.schedule("startEndGame", 110);
+        joystickFilter.bind("updateJoystick1", mecanumDriveListener);
+        dsInputFilter.bind("all", panelFilter);
+        endGameTimeout.bind("startEndGame", minibotListener);
+        endGameTimeout.schedule("startEndGame", 110);
     }
     
     public void stopOperatorControl() {
-        dsInputFilter.unbind("updateDigital1", helloListener);
-        // joystickEmitter.unbind("updateJoystick1", mecanumDriveListener);
-        // endGameTimer.unbind("startEndGame", minibotListener);
-        // endGameTImer.cancelAll();
-        // minibotListener.reset();
+        joystickFilter.unbind("updateJoystick1", mecanumDriveListener);
+        dsInputFilter.unbind("all", panelFilter);
+        endGameTimeout.unbind("startEndGame", minibotListener);
+        endGameTimeout.cancelAll();
+        minibotListener.reset();
     }
 }
