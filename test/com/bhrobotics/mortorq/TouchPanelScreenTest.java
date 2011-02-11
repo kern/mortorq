@@ -4,12 +4,10 @@ import junit.framework.*;
 import com.bhrobotics.morlib.Event;
 
 public class TouchPanelScreenTest extends TestCase {
-    TouchPanelScreen screen;
+    StubScreen screen;
     
     public void setUp() {
-        screen = new TouchPanelScreen() {
-            public void handle(Event event) {}
-        };
+        screen = new StubScreen();
     }
     
     public void testCtor() {
@@ -23,15 +21,42 @@ public class TouchPanelScreenTest extends TestCase {
         assertSame(panel, screen.getPanel());
     }
     
-    public void testIsBound() {
+    public void testBound() {
+        assertEquals(0, screen.boundsReceived);
+        assertEquals(0, screen.unboundsReceived);
         assertFalse(screen.isBound());
-        screen.bound();
+        
+        screen.setBound(true);
         assertTrue(screen.isBound());
-        screen.bound();
+        assertEquals(1, screen.boundsReceived);
+        assertEquals(0, screen.unboundsReceived);
+        
+        screen.setBound(true);
         assertTrue(screen.isBound());
-        screen.unbound();
+        assertEquals(1, screen.boundsReceived);
+        assertEquals(0, screen.unboundsReceived);
+        
+        screen.setBound(false);
         assertFalse(screen.isBound());
-        screen.unbound();
+        assertEquals(1, screen.boundsReceived);
+        assertEquals(1, screen.unboundsReceived);
+        
+        screen.setBound(false);
         assertFalse(screen.isBound());
+        assertEquals(1, screen.boundsReceived);
+        assertEquals(1, screen.unboundsReceived);
+    }
+    
+    private class StubScreen extends TouchPanelScreen {
+        public int boundsReceived = 0;
+        public int unboundsReceived = 0;
+        
+        public void bound() {
+            boundsReceived++;
+        }
+        
+        public void unbound() {
+            unboundsReceived++;
+        }
     }
 }

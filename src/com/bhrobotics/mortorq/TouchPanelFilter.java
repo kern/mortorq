@@ -47,13 +47,13 @@ public class TouchPanelFilter extends Filter {
     
     public void setCurrentScreen(int tag) {
         if (currentScreen != null) {
-            currentScreen.unbound();
+            currentScreen.setBound(false);
         }
         
         currentScreen = screens[tag];
         
         if (currentScreen != null) {
-            currentScreen.bound();
+            currentScreen.setBound(true);
         }
     }
 }

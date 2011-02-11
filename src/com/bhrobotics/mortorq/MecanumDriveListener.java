@@ -110,6 +110,8 @@ class MecanumDriveListener implements Listener {
             Joystick joystick = (Joystick) event.getData("joystick");
             drive(joystick.getX(), joystick.getY(), joystick.getZ());
         } else if (name.startsWith("updateMotor")) {
+            enablePID();
+            
             double setpoint = ((Double) event.getData("value")).doubleValue();
             
             if (name == "updateMotorRightFront") {
@@ -122,14 +124,13 @@ class MecanumDriveListener implements Listener {
                 leftBackController.setSetpoint(setpoint);
             }
         } else if (name == "stopMotors") {
-            rightFrontController.setSetpoint(0.0);
-            rightBackController.setSetpoint(0.0);
-            leftFrontController.setSetpoint(0.0);
-            leftBackController.setSetpoint(0.0);
+            stop();
         }
     }
     
     public void drive(double x, double y, double rotation) {
+        enablePID();
+        
         double rightFrontSetpoint = applyBounds(y + x + rotation);
         double rightBackSetpoint  = applyBounds(y - x + rotation);
         double leftFrontSetpoint  = applyBounds(y - x - rotation);
@@ -146,6 +147,34 @@ class MecanumDriveListener implements Listener {
             leftFrontMotor.set(leftFrontSetpoint * SCALE_LEFT_FRONT);
             leftBackMotor.set(leftBackSetpoint * SCALE_LEFT_BACK);
         }
+    }
+    
+    public void stop() {
+        disablePID();
+        
+        rightFrontMotor.set(0.0);
+        rightBackMotor.set(0.0);
+        leftFrontMotor.set(0.0);
+        leftBackMotor.set(0.0);
+    }
+    
+    private void enablePID() {
+        rightFrontController.enable();
+        rightBackController.enable();
+        leftFrontController.enable();
+        leftBackController.enable();
+    }
+    
+    private void disablePID() {
+        rightFrontController.disable();
+        rightBackController.disable();
+        leftFrontController.disable();
+        leftBackController.disable();
+        
+        rightFrontController.setSetpoint(0.0);
+        rightBackController.setSetpoint(0.0);
+        leftFrontController.setSetpoint(0.0);
+        leftBackController.setSetpoint(0.0);
     }
     
     public void bound(EventEmitter emitter, String event) {}

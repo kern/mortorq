@@ -3,7 +3,7 @@ package com.bhrobotics.mortorq;
 import com.bhrobotics.morlib.Event;
 
 public abstract class TouchPanelScreen {
-    private TouchPanelFilter panel;
+    protected TouchPanelFilter panel;
     private boolean bound = false;
     
     public TouchPanelFilter getPanel() {
@@ -18,13 +18,17 @@ public abstract class TouchPanelScreen {
         return bound;
     }
     
-    public void bound() {
-        bound = true;
+    public void setBound(boolean b) {
+        if (b && !bound) {
+            bound = b;
+            bound();
+        } else if (!b && bound) {
+            bound = b;
+            unbound();
+        }
     }
     
-    public void unbound() {
-        bound = false;
-    }
-    
-    public abstract void handle(Event event);
+    public void handle(Event event) {}
+    public void bound() {}
+    public void unbound() {}
 }
