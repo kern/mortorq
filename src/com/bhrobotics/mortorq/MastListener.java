@@ -12,7 +12,7 @@ public class MastListener implements Listener {
     private static final int RIGHT_MOTOR_SLOT    = 6;
     private static final int RIGHT_MOTOR_CHANNEL = 4;
     
-    private static final int ENCODER_SLOT = 3;
+    private static final int ENCODER_SLOT = 4;
     
     private static final int SIDE_A          = 2;
     private static final int SIDE_B          = 3;

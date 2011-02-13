@@ -12,7 +12,7 @@ class MecanumDriveListener implements Listener {
     private static final boolean USE_PID = false;
     
     private static final int MOTOR_SLOT   = 6;
-    private static final int ENCODER_SLOT = 3;
+    private static final int ENCODER_SLOT = 4;
     
     private static final int RIGHT_FRONT = 2;
     private static final int RIGHT_BACK  = 6;

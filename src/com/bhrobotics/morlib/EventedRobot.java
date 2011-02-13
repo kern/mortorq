@@ -7,10 +7,6 @@ public class EventedRobot extends SimpleRobot {
     protected Reactor reactor = Reactor.getInstance();
     protected EventEmitter process = reactor.getProcess();
     
-    public EventedRobot() {
-        reactor.start();
-    }
-    
     public void addControlListener(ControlListener listener) {
         process.bind("start", listener);
         process.bind("stop", listener);
