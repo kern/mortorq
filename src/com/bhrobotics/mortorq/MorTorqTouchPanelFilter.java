@@ -19,17 +19,19 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private class StopScreen extends TouchPanelScreen {
         public void bound() {
-            panel.trigger("stopMotors");
-            panel.trigger("mastStop");
-            panel.trigger("compressorStop");
+            System.out.println("[mortouch] Stop screen bound.");
+            // panel.trigger("stopMotors");
+            // panel.trigger("mastStop");
+            // panel.trigger("compressorStop");
         }
     }
     
     private class GameScreen extends TouchPanelScreen {
         public void bound() {
-            panel.trigger("stopMotors");
-            panel.trigger("mastStop");
-            panel.trigger("compressorAuto");
+            System.out.println("[mortouch] Game screen bound.");
+            // panel.trigger("stopMotors");
+            // panel.trigger("mastStop");
+            // panel.trigger("compressorAuto");
         }
         
         public void handle(Event event) {
@@ -39,9 +41,10 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private class DriveTrainScreen extends TouchPanelScreen {
         public void bound() {
-            panel.trigger("stopMotors");
-            panel.trigger("mastStop");
-            panel.trigger("compressorStop");
+            System.out.println("[mortouch] Drive train screen bound.");
+            // panel.trigger("stopMotors");
+            // panel.trigger("mastStop");
+            // panel.trigger("compressorStop");
         }
         
         public void handle(Event event) {
@@ -51,9 +54,10 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private class ManipulatorsScreen extends TouchPanelScreen {
         public void bound() {
-            panel.trigger("stopMotors");
-            panel.trigger("mastStop");
-            panel.trigger("compressorManual");
+            System.out.println("[mortouch] Manipulators screen bound.");
+            // panel.trigger("stopMotors");
+            // panel.trigger("mastStop");
+            // panel.trigger("compressorManual");
         }
         
         public void handle(Event event) {
@@ -63,9 +67,10 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private class MastScreen extends TouchPanelScreen {
         public void bound() {
-            panel.trigger("stopMotors");
-            panel.trigger("mastStop");
-            panel.trigger("compressorStop");
+            System.out.println("[mortouch] Mast screen bound.");
+            // panel.trigger("stopMotors");
+            // panel.trigger("mastStop");
+            // panel.trigger("compressorStop");
         }
         
         public void handle(Event event) {
