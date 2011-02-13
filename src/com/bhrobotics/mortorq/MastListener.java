@@ -12,14 +12,14 @@ public class MastListener implements Listener {
     private static final int RIGHT_MOTOR_SLOT    = 6;
     private static final int RIGHT_MOTOR_CHANNEL = 4;
     
-    private static final int ENCODER_SLOT  = 4;
+    private static final int ENCODER_SLOT = 3;
     
-    private static final int SIDE_A          = 7;
-    private static final int SIDE_B          = 8;
+    private static final int SIDE_A          = 2;
+    private static final int SIDE_B          = 3;
     private static final boolean REVERSE_DIR = false;
     private static final int KP              = 1;
-    private static final int KI              = 1;
-    private static final int KD              = 1;
+    private static final int KI              = 0;
+    private static final int KD              = 0;
     
     private static final double PULSE_DISTANCE = 1.0;
     private static final double MAX_DISTANCE   = 1000;

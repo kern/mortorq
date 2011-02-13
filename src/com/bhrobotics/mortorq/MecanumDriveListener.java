@@ -12,7 +12,7 @@ class MecanumDriveListener implements Listener {
     private static final boolean USE_PID = false;
     
     private static final int MOTOR_SLOT   = 6;
-    private static final int ENCODER_SLOT = 4;
+    private static final int ENCODER_SLOT = 3;
     
     private static final int RIGHT_FRONT = 2;
     private static final int RIGHT_BACK  = 6;
@@ -21,8 +21,8 @@ class MecanumDriveListener implements Listener {
     
     private static final double SCALE_RIGHT_FRONT = 1.0;
     private static final double SCALE_RIGHT_BACK  = 1.0;
-    private static final double SCALE_LEFT_FRONT  = -1.0;
-    private static final double SCALE_LEFT_BACK   = -1.0;
+    private static final double SCALE_LEFT_FRONT  = 1.0;
+    private static final double SCALE_LEFT_BACK   = 1.0;
     
     private static final double SCALE_FAST = 1.0;
     private static final double SCALE_SLOW = 0.5;
@@ -32,42 +32,42 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_DEADBAND = 0.2;
     private static final double MIN_DEADBAND = -0.2;
     
-    private static final int SIDE_A_RIGHT_FRONT            = 1;
-    private static final int SIDE_B_RIGHT_FRONT            = 2;
+    private static final int SIDE_A_RIGHT_FRONT            = 4;
+    private static final int SIDE_B_RIGHT_FRONT            = 5;
     private static final boolean REVERSE_DIR_RIGHT_FRONT   = false;
     private static final int KP_RIGHT_FRONT                = 1;
-    private static final int KI_RIGHT_FRONT                = 1;
-    private static final int KD_RIGHT_FRONT                = 1;
+    private static final int KI_RIGHT_FRONT                = 0;
+    private static final int KD_RIGHT_FRONT                = 0;
     private static final double PULSE_DISTANCE_RIGHT_FRONT = 1.0;
     private static final double MAX_RATE_RIGHT_FRONT       = 1000;
     private static final double MIN_RATE_RIGHT_FRONT       = -1000;
     
-    private static final int SIDE_A_RIGHT_BACK            = 3;
-    private static final int SIDE_B_RIGHT_BACK            = 4;
+    private static final int SIDE_A_RIGHT_BACK            = 6;
+    private static final int SIDE_B_RIGHT_BACK            = 7;
     private static final boolean REVERSE_DIR_RIGHT_BACK   = false;
     private static final int KP_RIGHT_BACK                = 1;
-    private static final int KI_RIGHT_BACK                = 1;
-    private static final int KD_RIGHT_BACK                = 1;
+    private static final int KI_RIGHT_BACK                = 0;
+    private static final int KD_RIGHT_BACK                = 0;
     private static final double PULSE_DISTANCE_RIGHT_BACK = 1.0;
     private static final double MAX_RATE_RIGHT_BACK       = 1000;
     private static final double MIN_RATE_RIGHT_BACK       = -1000;
     
-    private static final int SIDE_A_LEFT_FRONT            = 5;
-    private static final int SIDE_B_LEFT_FRONT            = 6;
+    private static final int SIDE_A_LEFT_FRONT            = 8;
+    private static final int SIDE_B_LEFT_FRONT            = 9;
     private static final boolean REVERSE_DIR_LEFT_FRONT   = false;
     private static final int KP_LEFT_FRONT                = 1;
-    private static final int KI_LEFT_FRONT                = 1;
-    private static final int KD_LEFT_FRONT                = 1;
+    private static final int KI_LEFT_FRONT                = 0;
+    private static final int KD_LEFT_FRONT                = 0;
     private static final double PULSE_DISTANCE_LEFT_FRONT = 1.0;
     private static final double MAX_RATE_LEFT_FRONT       = 1000;
     private static final double MIN_RATE_LEFT_FRONT       = -1000;
     
-    private static final int SIDE_A_LEFT_BACK            = 7;
-    private static final int SIDE_B_LEFT_BACK            = 8;
+    private static final int SIDE_A_LEFT_BACK            = 10;
+    private static final int SIDE_B_LEFT_BACK            = 11;
     private static final boolean REVERSE_DIR_LEFT_BACK   = false;
     private static final int KP_LEFT_BACK                = 1;
-    private static final int KI_LEFT_BACK                = 1;
-    private static final int KD_LEFT_BACK                = 1;
+    private static final int KI_LEFT_BACK                = 0;
+    private static final int KD_LEFT_BACK                = 0;
     private static final double PULSE_DISTANCE_LEFT_BACK = 1.0;
     private static final double MAX_RATE_LEFT_BACK       = 1000;
     private static final double MIN_RATE_LEFT_BACK       = -1000;
