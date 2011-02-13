@@ -33,7 +33,7 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void startOperatorControl() {
-        joystickFilter.bind("updateJoystick1", mecanumDriveListener);
+        joystickFilter.bind("all", panelFilter);
         dsInputFilter.bind("all", panelFilter);
         
         // endGameTimeout.bind("startEndGame", minibotListener);
