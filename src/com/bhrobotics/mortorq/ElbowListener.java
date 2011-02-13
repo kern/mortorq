@@ -6,8 +6,8 @@ import com.bhrobotics.morlib.EventEmitter;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class ElbowListener implements Listener {
-    private static final int SLOT    = 2;
-    private static final int CHANNEL = 2;
+    private static final int SLOT    = 8;
+    private static final int CHANNEL = 1;
     
     private static final boolean RAISED  = true;
     private static final boolean LOWERED = false;

@@ -6,8 +6,8 @@ import com.bhrobotics.morlib.EventEmitter;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class MinibotListener implements Listener {
-    private static final int SLOT    = 1;
-    private static final int CHANNEL = 1;
+    private static final int SLOT    = 8;
+    private static final int CHANNEL = 4;
     
     private static final boolean REDACTED = false;
     private static final boolean DEPLOYED = true;
