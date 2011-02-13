@@ -10,11 +10,11 @@ import java.util.Vector;
 
 public class StutterFilterTest extends TestCase {
     public void setUp() {
-        Reactor.getInstance().startTicking();
+        Reactor.startTicking();
     }
     
     public void tearDown() {
-        Reactor.getInstance().stopTicking();
+        Reactor.stopTicking();
     }
     
     public void testCtor() {

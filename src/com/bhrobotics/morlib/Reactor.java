@@ -1,69 +1,33 @@
 package com.bhrobotics.morlib;
 
-import java.util.Vector;
-
-public class Reactor extends Thread {
-    private boolean ticking         = false;
-    public boolean forceTick       = false;
-    private Queue queue             = new Queue();
-    private EventEmitter process    = new EventEmitter();
-    private static Reactor instance = new Reactor();
+public abstract class Reactor {
+    private static ReactorInstance instance = ReactorInstance.getInstance();
     
-    private Reactor() {
-        start();
+    public static void startTicking() {
+        instance.startTicking();
     }
     
-    public synchronized void run() {
-        while (true) {
-            if (ticking || forceTick) {
-                forceTick = false;
-                tick();
-            } else {
-                try {
-                    wait(500);
-                } catch (InterruptedException e) {
-                    // Ignored.
-                }
-            }
-        }
+    public static void stopTicking() {
+        instance.stopTicking();
     }
     
-    public void startTicking() {
-        process.trigger("start");
-        ticking = true;
-        forceTick();
+    public static void tick() {
+        instance.tick();
     }
     
-    public void stopTicking() {
-        process.trigger("stop");
-        ticking = false;
-        forceTick();
+    public static boolean isTicking() {
+        return instance.isTicking();
     }
     
-    public void tick() {
-        process.trigger("tick");
-        process.trigger("nextTick", true);
-        queue.flush();
+    public static synchronized void forceTick() {
+        instance.forceTick();
     }
     
-    public boolean isTicking() {
-        return ticking;
+    public static Queue getQueue() {
+        return instance.getQueue();
     }
     
-    public synchronized void forceTick() {
-        forceTick = true;
-        notify();
-    }
-    
-    public Queue getQueue() {
-        return queue;
-    }
-    
-    public EventEmitter getProcess() {
-        return process;
-    }
-    
-    public static Reactor getInstance() {
-        return Reactor.instance;
+    public static EventEmitter getProcess() {
+        return instance.getProcess();
     }
 }

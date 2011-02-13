@@ -5,7 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimeoutEmitter extends EventEmitter {
-    private EventEmitter process = Reactor.getInstance().getProcess();
+    private EventEmitter process = Reactor.getProcess();
     private Timer timer = new Timer();
     
     public void schedule(String event, double delay) {
@@ -32,7 +32,7 @@ public class TimeoutEmitter extends EventEmitter {
         }
         
         public void run() {
-            TimeoutEmitter.this.trigger(event, data);
+            trigger(event, data);
         }
     }
 }

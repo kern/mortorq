@@ -77,7 +77,7 @@ public class EventEmitter {
     }
     
     public void trigger(Event event, boolean flush) {
-        Queue queue = Reactor.getInstance().getQueue();
+        Queue queue = Reactor.getQueue();
         Vector eventListeners = getListeners(event.getName(), true);
         
         Enumeration e = eventListeners.elements();

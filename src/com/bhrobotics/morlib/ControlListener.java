@@ -2,8 +2,7 @@ package com.bhrobotics.morlib;
 
 // TODO: Test me.
 public class ControlListener implements Listener {
-    private Reactor reactor = Reactor.getInstance();
-    private EventEmitter process = reactor.getProcess();
+    private EventEmitter process = Reactor.getProcess();
     
     protected JoystickFilter joystickFilter = new JoystickFilter();
     protected DSInputFilter dsInputFilter = new DSInputFilter();

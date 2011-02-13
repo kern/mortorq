@@ -11,12 +11,12 @@ public class TouchPanelFilterTest extends TestCase {
     TouchPanelFilter panel;
     
     public void setUp() {
-        Reactor.getInstance().startTicking();
+        Reactor.startTicking();
         panel = new TouchPanelFilter();
     }
     
     public void tearDown() {
-        Reactor.getInstance().stopTicking();
+        Reactor.stopTicking();
     }
     
     public void testCtor() {
@@ -82,14 +82,14 @@ public class TouchPanelFilterTest extends TestCase {
         Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
         
         panel.handle(screenChange1Event);
-        Reactor.getInstance().tick();
+        Reactor.tick();
         
         assertSame(screen0, panel.getCurrentScreen());
         
         screen0.reset();
         
         panel.handle(screenChange2Event);
-        Reactor.getInstance().tick();
+        Reactor.tick();
         
         assertSame(screen1, panel.getCurrentScreen());
     }
@@ -119,7 +119,7 @@ public class TouchPanelFilterTest extends TestCase {
         
         panel.handle(screenChange1Event);
         panel.handle(otherEvent);
-        Reactor.getInstance().tick();
+        Reactor.tick();
         
         assertTrue(screen0.received);
         assertTrue(listener0.received);
@@ -131,7 +131,7 @@ public class TouchPanelFilterTest extends TestCase {
         
         panel.handle(screenChange2Event);
         panel.handle(otherEvent);
-        Reactor.getInstance().tick();
+        Reactor.tick();
         
         assertFalse(screen0.received);
         assertFalse(listener0.received);
@@ -157,7 +157,7 @@ public class TouchPanelFilterTest extends TestCase {
         
         panel.handle(screenChange1Event);
         panel.handle(screenChange2Event);
-        Reactor.getInstance().tick();
+        Reactor.tick();
         
         assertSame(stopScreen, panel.getCurrentScreen());
     }
