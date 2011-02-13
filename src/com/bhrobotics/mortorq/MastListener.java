@@ -6,8 +6,6 @@ import com.bhrobotics.morlib.Event;
 import edu.wpi.first.wpilibj.PIDController;
 
 public class MastListener implements Listener {
-    private static final boolean USE_PID = false;
-    
     private static final int MOTOR_SLOT    = 6;
     private static final int MOTOR_CHANNEL = 4;
     private static final int ENCODER_SLOT  = 4;
@@ -35,9 +33,9 @@ public class MastListener implements Listener {
     private static final double RAISE_SPEED = 0.1;
     private static final double LOWER_SPEED = -0.1;
     
-    DistanceEncoder encoder  = USE_PID ? new DistanceEncoder(ENCODER_SLOT, SIDE_A, ENCODER_SLOT, SIDE_B, REVERSE_DIR) : null;
+    DistanceEncoder encoder  = new DistanceEncoder(ENCODER_SLOT, SIDE_A, ENCODER_SLOT, SIDE_B, REVERSE_DIR);
     PIDJaguar motor          = new PIDJaguar(MOTOR_SLOT, MOTOR_CHANNEL);
-    PIDController controller = USE_PID ? new PIDController(KP, KI, KD, encoder, motor) : null;
+    PIDController controller = new PIDController(KP, KI, KD, encoder, motor);
     
     public MastListener() {
         encoder.setDistancePerPulse(PULSE_DISTANCE);

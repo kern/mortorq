@@ -76,15 +76,15 @@ public class StutterFilterTest extends TestCase {
         assertCycles(event, listener, 10);
     }
     
-    public void testCancel() {
+    public void testInterrupt() {
         StutterFilter stutter = new StutterFilter(0.1, 0.1, 2);
         StubListener listener = new StubListener();
-        stutter.bind("update", listener);
+        stutter.bind("interruptMe", listener);
         
         Hashtable data = new Hashtable();
         data.put("oldValue", new Boolean(false));
         data.put("newValue", new Boolean(true));
-        Event event = new Event("update", data);
+        Event event = new Event("interruptMe", data);
         
         stutter.handle(event);
         assertEquals(1, listener.calls);

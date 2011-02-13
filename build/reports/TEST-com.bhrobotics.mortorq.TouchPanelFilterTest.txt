@@ -1,5 +1,5 @@
 Testsuite: com.bhrobotics.mortorq.TouchPanelFilterTest
-Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.012 sec
+Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.014 sec
 
 Testcase: testCtor took 0.004 sec
 Testcase: testScreen took 0 sec

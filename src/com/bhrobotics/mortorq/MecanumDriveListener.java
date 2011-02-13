@@ -24,6 +24,9 @@ class MecanumDriveListener implements Listener {
     private static final double SCALE_LEFT_FRONT  = -1.0;
     private static final double SCALE_LEFT_BACK   = -1.0;
     
+    private static final double SCALE_FAST = 1.0;
+    private static final double SCALE_SLOW = 0.5;
+    
     private static final double MAX_PWM      = 1.0;
     private static final double MIN_PWM      = -1.0;
     private static final double MAX_DEADBAND = 0.2;
@@ -108,7 +111,12 @@ class MecanumDriveListener implements Listener {
         
         if (name.startsWith("updateJoystick")) {
             Joystick joystick = (Joystick) event.getData("joystick");
-            drive(joystick.getX(), joystick.getY(), joystick.getZ());
+            
+            if (joystick.getTrigger()) {
+                drive(joystick.getX(), joystick.getY(), joystick.getZ(), SCALE_SLOW);
+            } else {
+                drive(joystick.getX(), joystick.getY(), joystick.getZ(), SCALE_FAST);
+            }
         } else if (name.startsWith("updateMotor")) {
             enablePID();
             
@@ -129,6 +137,10 @@ class MecanumDriveListener implements Listener {
     }
     
     public void drive(double x, double y, double rotation) {
+        drive(x, y, rotation, SCALE_FAST);
+    }
+    
+    public void drive(double x, double y, double rotation, double scale) {
         enablePID();
         
         double rightFrontSetpoint = applyBounds(y + x + rotation);
@@ -137,15 +149,15 @@ class MecanumDriveListener implements Listener {
         double leftBackSetpoint   = applyBounds(y + x - rotation);
         
         if(USE_PID) {
-            rightFrontController.setSetpoint(rightFrontSetpoint * SCALE_RIGHT_FRONT);
-            rightBackController.setSetpoint(rightBackSetpoint * SCALE_RIGHT_BACK);
-            leftFrontController.setSetpoint(leftFrontSetpoint * SCALE_LEFT_FRONT);
-            leftBackController.setSetpoint(leftBackSetpoint * SCALE_LEFT_BACK);
+            rightFrontController.setSetpoint(rightFrontSetpoint * SCALE_RIGHT_FRONT * scale);
+            rightBackController.setSetpoint(rightBackSetpoint * SCALE_RIGHT_BACK * scale);
+            leftFrontController.setSetpoint(leftFrontSetpoint * SCALE_LEFT_FRONT * scale);
+            leftBackController.setSetpoint(leftBackSetpoint * SCALE_LEFT_BACK * scale);
         } else {
-            rightFrontMotor.set(rightFrontSetpoint * SCALE_RIGHT_FRONT);
-            rightBackMotor.set(rightBackSetpoint * SCALE_RIGHT_BACK);
-            leftFrontMotor.set(leftFrontSetpoint * SCALE_LEFT_FRONT);
-            leftBackMotor.set(leftBackSetpoint * SCALE_LEFT_BACK);
+            rightFrontMotor.set(rightFrontSetpoint * SCALE_RIGHT_FRONT * scale);
+            rightBackMotor.set(rightBackSetpoint * SCALE_RIGHT_BACK * scale);
+            leftFrontMotor.set(leftFrontSetpoint * SCALE_LEFT_FRONT * scale);
+            leftBackMotor.set(leftBackSetpoint * SCALE_LEFT_BACK * scale);
         }
     }
     
