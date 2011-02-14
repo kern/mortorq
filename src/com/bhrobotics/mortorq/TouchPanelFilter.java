@@ -4,6 +4,7 @@ import com.bhrobotics.morlib.Filter;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 import com.bhrobotics.morlib.Reactor;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class TouchPanelFilter extends Filter {
     private static final int NUM_SCREENS = 5;
@@ -15,9 +16,9 @@ public class TouchPanelFilter extends Filter {
         if(event.getName() == "updateDigitals") {
             int digitals = ((Short) event.getData().get("newDigitals")).shortValue();
             
-            if ((digitals & 0x0001) == 0) {
-                int msb = ((digitals & 0x0002) >> 1) * 2;
-                int lsb = (digitals & 0x0004) >> 2;
+            if ((digitals & 0x0001) == 1) {
+                int msb = ((digitals & 0x0002) >> 1) == 1 ? 0 : 2;
+                int lsb = ((digitals & 0x0004) >> 2) == 1 ? 0 : 1;
                 
                 setCurrentScreen(msb + lsb + 1);
             } else {

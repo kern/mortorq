@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import java.util.Hashtable;
 
-// TODO: Test me.
 public class DSInputFilter extends Filter {
     protected DriverStation ds = DriverStation.getInstance();
     protected DriverStationEnhancedIO dsEIO = ds.getEnhancedIO();
@@ -63,22 +62,7 @@ public class DSInputFilter extends Filter {
         analog7.update(shouldEmit);
         analog8.update(shouldEmit);
         
-        try {
-            short newDigitals = dsEIO.getDigitals();
-            
-            if (newDigitals != oldDigitals) {
-                Hashtable data = new Hashtable();
-                data.put("oldDigitals", new Short(oldDigitals));
-                data.put("newDigitals", new Short(newDigitals));
-                
-                emitter.trigger("updateDigitals", data);
-            }
-            
-            oldDigitals = newDigitals;
-        } catch (DriverStationEnhancedIO.EnhancedIOException e) {
-            // Ignore.
-        }
-        
+        updateDigitals(shouldEmit, false);
         digital1.update(shouldEmit);
         digital2.update(shouldEmit);
         digital3.update(shouldEmit);
@@ -97,6 +81,20 @@ public class DSInputFilter extends Filter {
         digital16.update(shouldEmit);
     }
     
+    public void updateDigitals(boolean shouldEmit, boolean forceEmit) {
+        try {
+            short newDigitals = dsEIO.getDigitals();
+            
+            if (shouldEmit && (forceEmit || newDigitals != oldDigitals)) {
+                triggerDigitalsUpdate(oldDigitals, newDigitals);
+            }
+            
+            oldDigitals = newDigitals;
+        } catch (DriverStationEnhancedIO.EnhancedIOException e) {
+            // Ignore.
+        }
+    }
+    
     public void triggerAnalogUpdate(int channel, double oldValue, double newValue) {
         Hashtable data = new Hashtable();
         data.put("oldValue", new Double(oldValue));
@@ -111,6 +109,14 @@ public class DSInputFilter extends Filter {
         data.put("newValue", new Boolean(newValue));
         
         trigger("updateDigital" + channel, data);
+    }
+    
+    public void triggerDigitalsUpdate(short oldDigitals, short newDigitals) {
+        Hashtable data = new Hashtable();
+        data.put("oldDigitals", new Short(oldDigitals));
+        data.put("newDigitals", new Short(newDigitals));
+        
+        trigger("updateDigitals", data);
     }
     
     private abstract class DSInput {
