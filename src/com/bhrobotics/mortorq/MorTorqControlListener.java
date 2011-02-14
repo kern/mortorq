@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 class MorTorqControlListener extends ControlListener {
     // private TimeoutEmitter endGameTimeout             = new TimeoutEmitter();
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
-    // private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
+    private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
     // private MastListener mastListener                 = new MastListener();
     // private MinibotListener minibotListener           = new MinibotListener();
     // private ElbowListener elbowListener               = new ElbowListener();
@@ -34,7 +34,7 @@ class MorTorqControlListener extends ControlListener {
     
     public void startOperatorControl() {
         compressorListener.auto();
-        // joystickFilter.bind("updateJoystick1", mecanumDriveListener);
+        joystickFilter.bind("updateJoystick1", mecanumDriveListener);
         dsInputFilter.bind("all", panelFilter);
         
         // endGameTimeout.bind("startEndGame", minibotListener);
@@ -50,7 +50,7 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void stopOperatorControl() {
-        // joystickFilter.unbind("updateJoystick1", mecanumDriveListener);
+        joystickFilter.unbind("updateJoystick1", mecanumDriveListener);
         dsInputFilter.unbind("all", panelFilter);
         
         // endGameTimeout.unbind("startEndGame", minibotListener);

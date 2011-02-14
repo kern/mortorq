@@ -68,30 +68,50 @@ public class TouchPanelFilterTest extends TestCase {
     public void testScreenChoose() {
         StubScreen screen0 = new StubScreen();
         StubScreen screen1 = new StubScreen();
+        StubScreen screen2 = new StubScreen();
+        StubScreen screen3 = new StubScreen();
+        StubScreen screen4 = new StubScreen();
         panel.setScreen(0, screen0);
         panel.setScreen(1, screen1);
+        panel.setScreen(2, screen2);
+        panel.setScreen(3, screen3);
+        panel.setScreen(4, screen4);
         
-        Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0AA0));
-        screenChange1Data.put("newDigitals", new Short((short) 0x0001));
-        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
-        
-        Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x0001));
-        screenChange2Data.put("newDigitals", new Short((short) 0x0000));
-        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
-        
-        panel.handle(screenChange1Event);
+        panel.handle(screenChangeEvent(0));
         Reactor.tick();
-        
         assertSame(screen0, panel.getCurrentScreen());
         
-        screen0.reset();
-        
-        panel.handle(screenChange2Event);
+        panel.handle(screenChangeEvent(1));
         Reactor.tick();
-        
         assertSame(screen1, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(2));
+        Reactor.tick();
+        assertSame(screen2, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(3));
+        Reactor.tick();
+        assertSame(screen3, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(4));
+        Reactor.tick();
+        assertSame(screen4, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent((short) 0xABC8));
+        Reactor.tick();
+        assertSame(screen1, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent((short) 0xABCC));
+        Reactor.tick();
+        assertSame(screen2, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent((short) 0xABCA));
+        Reactor.tick();
+        assertSame(screen3, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent((short) 0xABCE));
+        Reactor.tick();
+        assertSame(screen4, panel.getCurrentScreen());
     }
     
     public void testScreenProxy() {
@@ -102,22 +122,12 @@ public class TouchPanelFilterTest extends TestCase {
         
         Event otherEvent = new Event("foo", null);
         
-        Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0002));
-        screenChange1Data.put("newDigitals", new Short((short) 0x0001));
-        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
-        
-        Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x0001));
-        screenChange2Data.put("newDigitals", new Short((short) 0x0000));
-        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
-        
         StubListener listener0 = new StubListener();
         StubListener listener1 = new StubListener();
         panel.bind("test0", listener0);
         panel.bind("test1", listener1);
         
-        panel.handle(screenChange1Event);
+        panel.handle(screenChangeEvent(0));
         panel.handle(otherEvent);
         Reactor.tick();
         
@@ -129,7 +139,7 @@ public class TouchPanelFilterTest extends TestCase {
         screen0.reset();
         listener0.reset();
         
-        panel.handle(screenChange2Event);
+        panel.handle(screenChangeEvent(1));
         panel.handle(otherEvent);
         Reactor.tick();
         
@@ -145,21 +155,49 @@ public class TouchPanelFilterTest extends TestCase {
         panel.setScreen(0, stopScreen);
         panel.setScreen(1, otherScreen);
         
-        Hashtable screenChange1Data = new Hashtable();
-        screenChange1Data.put("oldDigitals", new Short((short) 0x0AA0));
-        screenChange1Data.put("newDigitals", new Short((short) 0x0000));
-        Event screenChange1Event = new Event("updateDigitals", screenChange1Data);
-        
-        Hashtable screenChange2Data = new Hashtable();
-        screenChange2Data.put("oldDigitals", new Short((short) 0x0000));
-        screenChange2Data.put("newDigitals", new Short((short) 0x0003));
-        Event screenChange2Event = new Event("updateDigitals", screenChange2Data);
-        
-        panel.handle(screenChange1Event);
-        panel.handle(screenChange2Event);
+        panel.handle(screenChangeEvent(0));
         Reactor.tick();
-        
         assertSame(stopScreen, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(1));
+        Reactor.tick();
+        assertSame(otherScreen, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(0x000F));
+        Reactor.tick();
+        assertSame(stopScreen, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(0x0011));
+        Reactor.tick();
+        assertSame(stopScreen, panel.getCurrentScreen());
+        
+        panel.handle(screenChangeEvent(0xABCD));
+        Reactor.tick();
+        assertSame(stopScreen, panel.getCurrentScreen());
+    }
+    
+    private Event screenChangeEvent(int number) {
+        switch (number) {
+        case 0:
+            return screenChangeEvent((short) 0x0001);
+        case 1:
+            return screenChangeEvent((short) 0x0000);
+        case 2:
+            return screenChangeEvent((short) 0x0004);
+        case 3:
+            return screenChangeEvent((short) 0x0002);
+        case 4:
+            return screenChangeEvent((short) 0x0006);
+        default:
+            return screenChangeEvent((short) 0x000F);
+        }
+    }
+    
+    private Event screenChangeEvent(short tag) {
+        Hashtable data = new Hashtable();
+        data.put("oldDigitals", new Short((short) 0x0001));
+        data.put("newDigitals", new Short(tag));
+        return new Event("updateDigitals", data);
     }
     
     private class StubListener implements Listener {
