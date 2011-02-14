@@ -19,8 +19,8 @@ class MecanumDriveListener implements Listener {
     private static final int LEFT_FRONT  = 1;
     private static final int LEFT_BACK   = 5;
     
-    private static final double SCALE_RIGHT_FRONT = 1.0;
-    private static final double SCALE_RIGHT_BACK  = 1.0;
+    private static final double SCALE_RIGHT_FRONT = -1.0;
+    private static final double SCALE_RIGHT_BACK  = -1.0;
     private static final double SCALE_LEFT_FRONT  = 1.0;
     private static final double SCALE_LEFT_BACK   = 1.0;
     
@@ -32,8 +32,8 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_DEADBAND = 0.2;
     private static final double MIN_DEADBAND = -0.2;
     
-    private static final int SIDE_A_RIGHT_FRONT            = 4;
-    private static final int SIDE_B_RIGHT_FRONT            = 5;
+    private static final int SIDE_A_RIGHT_FRONT            = 9;
+    private static final int SIDE_B_RIGHT_FRONT            = 10;
     private static final boolean REVERSE_DIR_RIGHT_FRONT   = false;
     private static final int KP_RIGHT_FRONT                = 1;
     private static final int KI_RIGHT_FRONT                = 0;
@@ -42,8 +42,8 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_RIGHT_FRONT       = 1000;
     private static final double MIN_RATE_RIGHT_FRONT       = -1000;
     
-    private static final int SIDE_A_RIGHT_BACK            = 6;
-    private static final int SIDE_B_RIGHT_BACK            = 7;
+    private static final int SIDE_A_RIGHT_BACK            = 7;
+    private static final int SIDE_B_RIGHT_BACK            = 8;
     private static final boolean REVERSE_DIR_RIGHT_BACK   = false;
     private static final int KP_RIGHT_BACK                = 1;
     private static final int KI_RIGHT_BACK                = 0;
@@ -52,8 +52,8 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_RIGHT_BACK       = 1000;
     private static final double MIN_RATE_RIGHT_BACK       = -1000;
     
-    private static final int SIDE_A_LEFT_FRONT            = 8;
-    private static final int SIDE_B_LEFT_FRONT            = 9;
+    private static final int SIDE_A_LEFT_FRONT            = 3;
+    private static final int SIDE_B_LEFT_FRONT            = 4;
     private static final boolean REVERSE_DIR_LEFT_FRONT   = false;
     private static final int KP_LEFT_FRONT                = 1;
     private static final int KI_LEFT_FRONT                = 0;
@@ -62,8 +62,8 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_LEFT_FRONT       = 1000;
     private static final double MIN_RATE_LEFT_FRONT       = -1000;
     
-    private static final int SIDE_A_LEFT_BACK            = 10;
-    private static final int SIDE_B_LEFT_BACK            = 11;
+    private static final int SIDE_A_LEFT_BACK            = 5;
+    private static final int SIDE_B_LEFT_BACK            = 6;
     private static final boolean REVERSE_DIR_LEFT_BACK   = false;
     private static final int KP_LEFT_BACK                = 1;
     private static final int KI_LEFT_BACK                = 0;
@@ -88,22 +88,24 @@ class MecanumDriveListener implements Listener {
     PIDController leftBackController   = USE_PID ? new PIDController(KP_LEFT_BACK, KI_LEFT_BACK, KD_LEFT_BACK, leftBackEncoder, leftBackMotor) : null;
     
     public MecanumDriveListener() {
-        rightFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_FRONT);
-        rightFrontEncoder.start();
-        
-        rightBackEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_BACK);
-        rightBackEncoder.start();
-        
-        leftFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_FRONT);
-        leftFrontEncoder.start();
-        
-        leftBackEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_BACK);
-        leftBackEncoder.start();
-        
-        rightFrontController.setInputRange(MIN_RATE_RIGHT_FRONT, MAX_RATE_RIGHT_FRONT);
-        rightBackController.setInputRange(MIN_RATE_RIGHT_BACK, MAX_RATE_RIGHT_BACK);
-        leftFrontController.setInputRange(MIN_RATE_LEFT_FRONT, MAX_RATE_LEFT_FRONT);
-        leftBackController.setInputRange(MIN_RATE_LEFT_BACK, MAX_RATE_LEFT_BACK);
+        if (USE_PID) {
+            rightFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_FRONT);
+            rightFrontEncoder.start();
+            
+            rightBackEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_BACK);
+            rightBackEncoder.start();
+            
+            leftFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_FRONT);
+            leftFrontEncoder.start();
+            
+            leftBackEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_BACK);
+            leftBackEncoder.start();
+            
+            rightFrontController.setInputRange(MIN_RATE_RIGHT_FRONT, MAX_RATE_RIGHT_FRONT);
+            rightBackController.setInputRange(MIN_RATE_RIGHT_BACK, MAX_RATE_RIGHT_BACK);
+            leftFrontController.setInputRange(MIN_RATE_LEFT_FRONT, MAX_RATE_LEFT_FRONT);
+            leftBackController.setInputRange(MIN_RATE_LEFT_BACK, MAX_RATE_LEFT_BACK);
+        }
     }
     
     public void handle(Event event) {
@@ -141,14 +143,13 @@ class MecanumDriveListener implements Listener {
     }
     
     public void drive(double x, double y, double rotation, double scale) {
-        enablePID();
-        
         double rightFrontSetpoint = applyBounds(y + x + rotation);
         double rightBackSetpoint  = applyBounds(y - x + rotation);
         double leftFrontSetpoint  = applyBounds(y - x - rotation);
         double leftBackSetpoint   = applyBounds(y + x - rotation);
         
         if(USE_PID) {
+            enablePID();
             rightFrontController.setSetpoint(rightFrontSetpoint * SCALE_RIGHT_FRONT * scale);
             rightBackController.setSetpoint(rightBackSetpoint * SCALE_RIGHT_BACK * scale);
             leftFrontController.setSetpoint(leftFrontSetpoint * SCALE_LEFT_FRONT * scale);
@@ -162,7 +163,9 @@ class MecanumDriveListener implements Listener {
     }
     
     public void stop() {
-        disablePID();
+        if (USE_PID) {
+            disablePID();
+        }
         
         rightFrontMotor.set(0.0);
         rightBackMotor.set(0.0);

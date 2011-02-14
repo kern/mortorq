@@ -14,8 +14,8 @@ public class MastListener implements Listener {
     
     private static final int ENCODER_SLOT = 4;
     
-    private static final int SIDE_A          = 2;
-    private static final int SIDE_B          = 3;
+    private static final int SIDE_A          = 1;
+    private static final int SIDE_B          = 2;
     private static final boolean REVERSE_DIR = false;
     private static final int KP              = 1;
     private static final int KI              = 0;

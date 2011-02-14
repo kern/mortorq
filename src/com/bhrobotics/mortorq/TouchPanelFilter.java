@@ -16,12 +16,14 @@ public class TouchPanelFilter extends Filter {
             int digitals = ((Short) event.getData().get("newDigitals")).shortValue();
             
             if ((digitals & 0x0001) == 0) {
-                setCurrentScreen(((digitals & 0xC000) >> 14) + 1);
+                setCurrentScreen(((digitals & 0x0006) >> 14) + 1);
             } else {
                 setCurrentScreen(0);
             }
         } else {
-            currentScreen.handle(event);
+            if (currentScreen != null) {
+                currentScreen.handle(event);
+            }
         }
     }
     
