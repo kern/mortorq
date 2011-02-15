@@ -7,7 +7,6 @@ import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
 import java.util.Hashtable;
 
-// TODO: Negate all of the bitmasks.
 public class TouchPanelFilterTest extends TestCase {
     TouchPanelFilter panel;
     
