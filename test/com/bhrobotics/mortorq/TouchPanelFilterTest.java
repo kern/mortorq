@@ -98,19 +98,19 @@ public class TouchPanelFilterTest extends TestCase {
         Reactor.tick();
         assertSame(screen4, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent((short) 0xABC8));
+        panel.handle(screenChangeEvent((short) 0xABC7));
         Reactor.tick();
         assertSame(screen1, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent((short) 0xABCC));
+        panel.handle(screenChangeEvent((short) 0xABCB));
         Reactor.tick();
         assertSame(screen2, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent((short) 0xABCA));
+        panel.handle(screenChangeEvent((short) 0xABCD));
         Reactor.tick();
         assertSame(screen3, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent((short) 0xABCE));
+        panel.handle(screenChangeEvent((short) 0xABC9));
         Reactor.tick();
         assertSame(screen4, panel.getCurrentScreen());
     }
@@ -164,15 +164,15 @@ public class TouchPanelFilterTest extends TestCase {
         Reactor.tick();
         assertSame(otherScreen, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent(0x000F));
+        panel.handle(screenChangeEvent((short) 0x0000));
         Reactor.tick();
         assertSame(stopScreen, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent(0x0011));
+        panel.handle(screenChangeEvent((short) 0x0016));
         Reactor.tick();
         assertSame(stopScreen, panel.getCurrentScreen());
         
-        panel.handle(screenChangeEvent(0xABCD));
+        panel.handle(screenChangeEvent((short) 0xABCA));
         Reactor.tick();
         assertSame(stopScreen, panel.getCurrentScreen());
     }
@@ -180,25 +180,25 @@ public class TouchPanelFilterTest extends TestCase {
     private Event screenChangeEvent(int number) {
         switch (number) {
         case 0:
-            return screenChangeEvent((short) 0x0001);
-        case 1:
-            return screenChangeEvent((short) 0x0000);
-        case 2:
-            return screenChangeEvent((short) 0x0004);
-        case 3:
-            return screenChangeEvent((short) 0x0002);
-        case 4:
             return screenChangeEvent((short) 0x0006);
+        case 1:
+            return screenChangeEvent((short) 0x0007);
+        case 2:
+            return screenChangeEvent((short) 0x0003);
+        case 3:
+            return screenChangeEvent((short) 0x0005);
+        case 4:
+            return screenChangeEvent((short) 0x0001);
         default:
-            return screenChangeEvent((short) 0x000F);
+            return screenChangeEvent((short) 0x0000);
         }
     }
     
     private Event screenChangeEvent(short tag) {
         Hashtable data = new Hashtable();
-        data.put("oldDigitals", new Short((short) 0x0001));
-        data.put("newDigitals", new Short(tag));
-        return new Event("updateDigitals", data);
+        data.put("oldValue", new Short((short) 0x0001));
+        data.put("newValue", new Short(tag));
+        return new Event("changeDigitals", data);
     }
     
     private class StubListener implements Listener {

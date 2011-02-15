@@ -111,7 +111,7 @@ class MecanumDriveListener implements Listener {
     public void handle(Event event) {
         String name = event.getName();
         
-        if (name.startsWith("updateJoystick")) {
+        if (name.startsWith("changeJoystick")) {
             Joystick joystick = (Joystick) event.getData("joystick");
             
             if (joystick.getTrigger()) {
@@ -119,18 +119,18 @@ class MecanumDriveListener implements Listener {
             } else {
                 drive(joystick.getX(), joystick.getY(), joystick.getZ(), SCALE_FAST);
             }
-        } else if (name.startsWith("updateMotor")) {
+        } else if (name.startsWith("changeMotor")) {
             enablePID();
             
             double setpoint = ((Double) event.getData("value")).doubleValue();
             
-            if (name == "updateMotorRightFront") {
+            if (name == "changeMotorRightFront") {
                 rightFrontController.setSetpoint(setpoint);
-            } else if (name == "updateMotorRightBack") {
+            } else if (name == "changeMotorRightBack") {
                 rightBackController.setSetpoint(setpoint);
-            } else if (name == "updateMotorLeftFront") {
+            } else if (name == "changeMotorLeftFront") {
                 leftFrontController.setSetpoint(setpoint);
-            } else if (name == "updateMotorLeftBack") {
+            } else if (name == "changeMotorLeftBack") {
                 leftBackController.setSetpoint(setpoint);
             }
         } else if (name == "stopMotors") {

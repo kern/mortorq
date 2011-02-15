@@ -13,8 +13,8 @@ public class TouchPanelFilter extends Filter {
     private TouchPanelScreen currentScreen;
     
     public void handle(Event event) {
-        if(event.getName() == "updateDigitals") {
-            int digitals = ((Short) event.getData().get("newDigitals")).shortValue();
+        if(event.getName() == "changeDigitals") {
+            int digitals = ((Short) event.getData().get("newValue")).shortValue();
             
             if ((digitals & 0x0001) == 1) {
                 int msb = ((digitals & 0x0002) >> 1) == 1 ? 0 : 2;

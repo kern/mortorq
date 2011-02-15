@@ -1,10 +1,10 @@
 package com.bhrobotics.morlib;
 
-public class HelloListener implements Listener {
+public class EchoListener implements Listener {
     private boolean triggered = false;
     
     public void handle(Event event) {
-        System.out.println("Hello world!");
+        System.out.println("Event received: " + event.getName());
         triggered = true;
     }
     

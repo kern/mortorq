@@ -1,11 +1,10 @@
 package com.bhrobotics.morlib;
 
-// TODO: Test me.
 public class ControlListener implements Listener {
     private EventEmitter process = Reactor.getProcess();
     
     protected JoystickFilter joystickFilter = new JoystickFilter();
-    protected DSInputFilter dsInputFilter = new DSInputFilter();
+    protected DriverStationFilter dsFilter = new DriverStationFilter();
     
     public void handle(Event event) {
         String name = event.getName();
@@ -20,11 +19,11 @@ public class ControlListener implements Listener {
             stopAutonomous();
         } else if (name == "startOperatorControl") {
             process.bind("newDataAvailable", joystickFilter);
-            process.bind("newDataAvailable", dsInputFilter);
+            process.bind("newDataAvailable", dsFilter);
             startOperatorControl();
         } else if (name == "stopOperatorControl") {
             process.unbind("newDataAvailable", joystickFilter);
-            process.unbind("newDataAvailable", dsInputFilter);
+            process.unbind("newDataAvailable", dsFilter);
             stopOperatorControl();
         }
     }
