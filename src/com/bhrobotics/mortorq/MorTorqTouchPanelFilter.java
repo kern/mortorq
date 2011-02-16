@@ -49,21 +49,21 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     }
     
     private class DriveTrainScreen extends TouchPanelScreen {
-        private static final int LEFT_FRONT_STOP = 4;
+        private static final int LEFT_FRONT_STOP     = 4;
         private static final int LEFT_FRONT_BACKWARD = 5;
-        private static final int LEFT_FRONT_SPEED = 12;
+        private static final int LEFT_FRONT_SPEED    = 12;
         
-        private static final int RIGHT_FRONT_STOP = 6;
+        private static final int RIGHT_FRONT_STOP     = 6;
         private static final int RIGHT_FRONT_BACKWARD = 7;
-        private static final int RIGHT_FRONT_SPEED = 13;
+        private static final int RIGHT_FRONT_SPEED    = 13;
         
-        private static final int LEFT_BACK_STOP = 8;
+        private static final int LEFT_BACK_STOP     = 8;
         private static final int LEFT_BACK_BACKWARD = 9;
-        private static final int LEFT_BACK_SPEED = 14;
+        private static final int LEFT_BACK_SPEED    = 14;
         
-        private static final int RIGHT_BACK_STOP = 10;
+        private static final int RIGHT_BACK_STOP     = 10;
         private static final int RIGHT_BACK_BACKWARD = 11;
-        private static final int RIGHT_BACK_SPEED = 15;
+        private static final int RIGHT_BACK_SPEED    = 15;
         
         public void bound() {
             System.out.println("[mortouch] Drive train screen bound.");
