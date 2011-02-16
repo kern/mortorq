@@ -9,19 +9,19 @@ public class ControlListener implements Listener {
     public void handle(Event event) {
         String name = event.getName();
         
-        if (name.equals("start")) {
+        if (name == "start") {
             start();
-        } else if (name.equals("stop")) {
+        } else if (name == "stop") {
             stop();
-        } else if (name.equals("startAutonomous")) {
+        } else if (name == "startAutonomous") {
             startAutonomous();
-        } else if (name.equals("stopAutonomous")) {
+        } else if (name == "stopAutonomous") {
             stopAutonomous();
-        } else if (name.equals("startOperatorControl")) {
+        } else if (name == "startOperatorControl") {
             process.bind("newDataAvailable", joystickFilter);
             process.bind("newDataAvailable", dsFilter);
             startOperatorControl();
-        } else if (name.equals("stopOperatorControl")) {
+        } else if (name == "stopOperatorControl") {
             process.unbind("newDataAvailable", joystickFilter);
             process.unbind("newDataAvailable", dsFilter);
             stopOperatorControl();
