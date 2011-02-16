@@ -4,6 +4,7 @@ import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -13,11 +14,6 @@ class MecanumDriveListener implements Listener {
     
     private static final int MOTOR_SLOT   = 6;
     private static final int ENCODER_SLOT = 4;
-    
-    private static final int RIGHT_FRONT = 2;
-    private static final int RIGHT_BACK  = 6;
-    private static final int LEFT_FRONT  = 1;
-    private static final int LEFT_BACK   = 5;
     
     private static final double SCALE_RIGHT_FRONT = -1.0;
     private static final double SCALE_RIGHT_BACK  = -1.0;
@@ -32,6 +28,7 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_DEADBAND = 0.2;
     private static final double MIN_DEADBAND = -0.2;
     
+    private static final int RIGHT_FRONT                   = 2;
     private static final int SIDE_A_RIGHT_FRONT            = 9;
     private static final int SIDE_B_RIGHT_FRONT            = 10;
     private static final boolean REVERSE_DIR_RIGHT_FRONT   = false;
@@ -42,6 +39,7 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_RIGHT_FRONT       = 1000;
     private static final double MIN_RATE_RIGHT_FRONT       = -1000;
     
+    private static final int RIGHT_BACK                   = 6;
     private static final int SIDE_A_RIGHT_BACK            = 7;
     private static final int SIDE_B_RIGHT_BACK            = 8;
     private static final boolean REVERSE_DIR_RIGHT_BACK   = false;
@@ -52,6 +50,7 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_RIGHT_BACK       = 1000;
     private static final double MIN_RATE_RIGHT_BACK       = -1000;
     
+    private static final int LEFT_FRONT                   = 1;
     private static final int SIDE_A_LEFT_FRONT            = 3;
     private static final int SIDE_B_LEFT_FRONT            = 4;
     private static final boolean REVERSE_DIR_LEFT_FRONT   = false;
@@ -62,6 +61,7 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_LEFT_FRONT       = 1000;
     private static final double MIN_RATE_LEFT_FRONT       = -1000;
     
+    private static final int LEFT_BACK                   = 5;
     private static final int SIDE_A_LEFT_BACK            = 5;
     private static final int SIDE_B_LEFT_BACK            = 6;
     private static final boolean REVERSE_DIR_LEFT_BACK   = false;
@@ -72,10 +72,10 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_RATE_LEFT_BACK       = 1000;
     private static final double MIN_RATE_LEFT_BACK       = -1000;
     
-    RateEncoder rightFrontEncoder = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_RIGHT_FRONT, ENCODER_SLOT, SIDE_B_RIGHT_FRONT, REVERSE_DIR_RIGHT_FRONT) : null;
-    RateEncoder rightBackEncoder  = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_RIGHT_BACK, ENCODER_SLOT, SIDE_B_RIGHT_BACK, REVERSE_DIR_RIGHT_BACK) : null;
-    RateEncoder leftFrontEncoder  = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_LEFT_FRONT, ENCODER_SLOT, SIDE_B_LEFT_FRONT, REVERSE_DIR_LEFT_FRONT) : null;
-    RateEncoder leftBackEncoder   = USE_PID ? new RateEncoder(ENCODER_SLOT, SIDE_A_LEFT_BACK, ENCODER_SLOT, SIDE_B_LEFT_BACK, REVERSE_DIR_LEFT_BACK) : null;
+    Encoder rightFrontEncoder = USE_PID ? new Encoder(ENCODER_SLOT, SIDE_A_RIGHT_FRONT, ENCODER_SLOT, SIDE_B_RIGHT_FRONT, REVERSE_DIR_RIGHT_FRONT) : null;
+    Encoder rightBackEncoder  = USE_PID ? new Encoder(ENCODER_SLOT, SIDE_A_RIGHT_BACK, ENCODER_SLOT, SIDE_B_RIGHT_BACK, REVERSE_DIR_RIGHT_BACK) : null;
+    Encoder leftFrontEncoder  = USE_PID ? new Encoder(ENCODER_SLOT, SIDE_A_LEFT_FRONT, ENCODER_SLOT, SIDE_B_LEFT_FRONT, REVERSE_DIR_LEFT_FRONT) : null;
+    Encoder leftBackEncoder   = USE_PID ? new Encoder(ENCODER_SLOT, SIDE_A_LEFT_BACK, ENCODER_SLOT, SIDE_B_LEFT_BACK, REVERSE_DIR_LEFT_BACK) : null;
     
     PIDJaguar rightFrontMotor = new PIDJaguar(MOTOR_SLOT, RIGHT_FRONT);
     PIDJaguar rightBackMotor  = new PIDJaguar(MOTOR_SLOT, RIGHT_BACK);
@@ -89,15 +89,19 @@ class MecanumDriveListener implements Listener {
     
     public MecanumDriveListener() {
         if (USE_PID) {
+            rightFrontEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
             rightFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_FRONT);
             rightFrontEncoder.start();
             
+            rightBackEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
             rightBackEncoder.setDistancePerPulse(PULSE_DISTANCE_RIGHT_BACK);
             rightBackEncoder.start();
             
+            leftFrontEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
             leftFrontEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_FRONT);
             leftFrontEncoder.start();
             
+            leftBackEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
             leftBackEncoder.setDistancePerPulse(PULSE_DISTANCE_LEFT_BACK);
             leftBackEncoder.start();
             
@@ -124,16 +128,16 @@ class MecanumDriveListener implements Listener {
             
             double setpoint = ((Double) event.getData("value")).doubleValue();
             
-            if (name == "changeMotorRightFront") {
+            if (name.equals("changeMotorRightFront")) {
                 rightFrontController.setSetpoint(setpoint);
-            } else if (name == "changeMotorRightBack") {
+            } else if (name.equals("changeMotorRightBack")) {
                 rightBackController.setSetpoint(setpoint);
-            } else if (name == "changeMotorLeftFront") {
+            } else if (name.equals("changeMotorLeftFront")) {
                 leftFrontController.setSetpoint(setpoint);
-            } else if (name == "changeMotorLeftBack") {
+            } else if (name.equals("changeMotorLeftBack")) {
                 leftBackController.setSetpoint(setpoint);
             }
-        } else if (name == "stopMotors") {
+        } else if (name.equals("stopMotors")) {
             stop();
         }
     }
@@ -163,6 +167,8 @@ class MecanumDriveListener implements Listener {
     }
     
     public void stop() {
+        System.out.println("[mecanum] Stopping.");
+        
         if (USE_PID) {
             disablePID();
         }

@@ -3,6 +3,7 @@ package com.bhrobotics.mortorq;
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.EventEmitter;
 import com.bhrobotics.morlib.Event;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 
 public class MastListener implements Listener {
@@ -37,7 +38,7 @@ public class MastListener implements Listener {
     private static final double RAISE_SPEED = 0.1;
     private static final double LOWER_SPEED = -0.1;
     
-    DistanceEncoder encoder       = new DistanceEncoder(ENCODER_SLOT, SIDE_A, ENCODER_SLOT, SIDE_B, REVERSE_DIR);
+    Encoder encoder               = new Encoder(ENCODER_SLOT, SIDE_A, ENCODER_SLOT, SIDE_B, REVERSE_DIR);
     PIDJaguar leftMotor           = new PIDJaguar(LEFT_MOTOR_SLOT, LEFT_MOTOR_CHANNEL);
     PIDJaguar rightMotor          = new PIDJaguar(RIGHT_MOTOR_SLOT, RIGHT_MOTOR_CHANNEL);
     PIDController leftController  = new PIDController(KP, KI, KD, encoder, leftMotor);
@@ -53,27 +54,27 @@ public class MastListener implements Listener {
     public void handle(Event event) {
         String name = event.getName();
         
-        if (name == "mastCenterTop") {
+        if (name.equals("mastCenterTop")) {
             centerTop();
-        } else if (name == "mastCenterCenter") {
+        } else if (name.equals("mastCenterCenter")) {
             centerCenter();
-        } else if (name == "mastCenterBottom") {
+        } else if (name.equals("mastCenterBottom")) {
             centerBottom();
-        } else if (name == "mastSideTop") {
+        } else if (name.equals("mastSideTop")) {
             sideTop();
-        } else if (name == "mastSideCenter") {
+        } else if (name.equals("mastSideCenter")) {
             sideCenter();
-        } else if (name == "mastSideBottom") {
+        } else if (name.equals("mastSideBottom")) {
             sideBottom();
-        } else if (name == "mastFeed") {
+        } else if (name.equals("mastFeed")) {
             feed();
-        } else if (name == "mastGround") {
+        } else if (name.equals("mastGround")) {
             ground();
-        } else if (name == "mastRaise") {
+        } else if (name.equals("mastRaise")) {
             raise();
-        } else if (name == "mastLower") {
+        } else if (name.equals("mastLower")) {
             lower();
-        } else if (name == "mastStop") {
+        } else if (name.equals("mastStop")) {
             stop();
         }
     }

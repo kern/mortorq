@@ -25,23 +25,23 @@ public class CompressorListener implements Listener {
     public void handle(Event event) {
         String name = event.getName();
         
-        if (name == "compressorAuto") {
+        if (name.equals("compressorAuto")) {
             auto();
-        } else if (name == "compressorManual") {
+        } else if (name.equals("compressorManual")) {
             manual();
-        } else if (name == "compressorManualOn") {
+        } else if (name.equals("compressorManualOn")) {
             manualState = true;
             
             if (!auto) {
                 updateManual();
             }
-        } else if (name == "compressorManualOff") {
+        } else if (name.equals("compressorManualOff")) {
             manualState = false;
             
             if (!auto) {
                 updateManual();
             }
-        } else if (name == "compressorStop") {
+        } else if (name.equals("compressorStop")) {
             stop();
         }
     }

@@ -1,8 +1,11 @@
 package com.bhrobotics.mortorq;
 
 import com.bhrobotics.morlib.Event;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class MorTorqTouchPanelFilter extends TouchPanelFilter {
+    DriverStation ds = DriverStation.getInstance();
+    
     private StopScreen stopScreen                 = new StopScreen();
     private GameScreen gameScreen                 = new GameScreen();
     private DriveTrainScreen driveTrainScreen     = new DriveTrainScreen();
@@ -20,44 +23,65 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     private class StopScreen extends TouchPanelScreen {
         public void bound() {
             System.out.println("[mortouch] Stop screen bound.");
-            // panel.trigger("stopMotors");
-            // panel.trigger("mastStop");
-            // panel.trigger("compressorStop");
+            trigger("stopMotors");
+            // trigger("mastStop");
+            // trigger("compressorStop");
         }
     }
     
     private class GameScreen extends TouchPanelScreen {
         public void bound() {
             System.out.println("[mortouch] Game screen bound.");
-            // panel.trigger("stopMotors");
-            // panel.trigger("mastStop");
-            // panel.trigger("compressorAuto");
+            trigger("stopMotors");
+            // trigger("mastStop");
+            // trigger("compressorAuto");
         }
         
         public void handle(Event event) {
+            String name = event.getName();
             
+            if (name.startsWith("changeJoystick")) {
+                trigger(event);
+            }
         }
     }
     
     private class DriveTrainScreen extends TouchPanelScreen {
         public void bound() {
             System.out.println("[mortouch] Drive train screen bound.");
-            // panel.trigger("stopMotors");
-            // panel.trigger("mastStop");
-            // panel.trigger("compressorStop");
+            trigger("stopMotors");
+            // trigger("mastStop");
+            // trigger("compressorStop");
         }
         
         public void handle(Event event) {
+            String name = event.getName();
             
+            if (name.equals("changeDigital4")) {
+                System.out.println("[debug] Handling: " + name);
+            }
+            
+            if (name.equals("changeDigital4") || name.equals("changeDigital5")) {
+                boolean digital4 = ds.getDigitalIn(4);
+                boolean digital5 = ds.getDigitalIn(5);
+                
+                if (!digital4 && digital5) {
+                    System.out.println("[mecanum] Stopping front left.");
+                } else if (digital4 && digital5) {
+                    System.out.println("[mecanum] Forward front left.");
+                } else {
+                    System.out.println("[mecanum] Backward front left.");
+                }
+            }
         }
     }
     
     private class ManipulatorsScreen extends TouchPanelScreen {
         public void bound() {
             System.out.println("[mortouch] Manipulators screen bound.");
-            // panel.trigger("stopMotors");
-            // panel.trigger("mastStop");
-            // panel.trigger("compressorManual");
+            trigger("stopMotors");
+            // trigger("mastStop");
+            // trigger("compressorManual");
         }
         
         public void handle(Event event) {
@@ -68,7 +92,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     private class MastScreen extends TouchPanelScreen {
         public void bound() {
             System.out.println("[mortouch] Mast screen bound.");
-            // panel.trigger("stopMotors");
+            panel.trigger("stopMotors");
             // panel.trigger("mastStop");
             // panel.trigger("compressorStop");
         }

@@ -18,7 +18,7 @@ public class EventEmitter {
     public Vector getListeners(String event, boolean includeAll) {
         Vector v;
         
-        if (!includeAll || event == "all") {
+        if (!includeAll || event.equals("all")) {
             if (listeners.containsKey(event)) {
                 v = (Vector) listeners.get(event);
             } else {

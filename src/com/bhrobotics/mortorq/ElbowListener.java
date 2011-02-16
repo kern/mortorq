@@ -22,17 +22,17 @@ public class ElbowListener implements Listener {
     public void handle(Event event) {
         String name = event.getName();
         
-        if (name == "elbowRaise") {
+        if (name.equals("elbowRaise")) {
             raise();
-        } else if (name == "elbowLower") {
+        } else if (name.equals("elbowLower")) {
             lower();
-        } else if (name == "elbowToggle") {
+        } else if (name.equals("elbowToggle")) {
             toggle();
-        } else if (name == "elbowReset") {
+        } else if (name.equals("elbowReset")) {
             reset();
         }
     }
-    
+
     public void bound(EventEmitter emitter, String event) {}
     public void unbound(EventEmitter emitter, String event) {}
     

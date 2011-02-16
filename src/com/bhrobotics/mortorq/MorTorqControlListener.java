@@ -8,7 +8,7 @@ import com.bhrobotics.morlib.TimeoutEmitter;
 class MorTorqControlListener extends ControlListener {
     // private TimeoutEmitter endGameTimeout             = new TimeoutEmitter();
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
-    // private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
+    private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
     // private MastListener mastListener                 = new MastListener();
     // private MinibotListener minibotListener           = new MinibotListener();
     // private ElbowListener elbowListener               = new ElbowListener();
@@ -17,7 +17,7 @@ class MorTorqControlListener extends ControlListener {
     // private CompressorListener compressorListener     = new CompressorListener();
     
     public void startAutonomous() {
-        // mecanumDriveListener.stop();
+        mecanumDriveListener.stop();
         // mastListener.stop();
         // minibotListener.reset();
         // elbowListener.reset();
@@ -27,19 +27,19 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void stopAutonomous() {
-        // mecanumDriveListener.stop();
+        mecanumDriveListener.stop();
         // mastListener.stop();
     }
     
     public void startOperatorControl() {
-        joystickFilter.bind("all", panelFilter);
+        joystickFilter.bind("changeJoystick1", panelFilter);
         dsFilter.bind("all", panelFilter);
         dsFilter.update(true);
         
         // endGameTimeout.bind("startEndGame", minibotListener);
         // endGameTimeout.schedule("startEndGame", 110);
         
-        // panelFilter.bind("all", mecanumDriveListener);
+        panelFilter.bind("all", mecanumDriveListener);
         // panelFilter.bind("all", mastListener);
         // panelFilter.bind("all", minibotListener);
         // panelFilter.bind("all", elbowListener);
@@ -49,13 +49,13 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void stopOperatorControl() {
-        joystickFilter.unbind("all", panelFilter);
+        joystickFilter.unbind("changeJoystick1", panelFilter);
         dsFilter.unbind("all", panelFilter);
         
         // endGameTimeout.unbind("startEndGame", minibotListener);
         // endGameTimeout.cancelAll();
         
-        // panelFilter.unbind("all", mecanumDriveListener);
+        panelFilter.unbind("all", mecanumDriveListener);
         // panelFilter.unbind("all", mastListener);
         // panelFilter.unbind("all", minibotListener);
         // panelFilter.unbind("all", elbowListener);

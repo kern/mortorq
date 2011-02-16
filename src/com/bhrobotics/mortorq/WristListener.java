@@ -22,13 +22,13 @@ public class WristListener implements Listener {
     public void handle(Event event) {
         String name = event.getName();
         
-        if (name == "wristRaise") {
+        if (name.equals("wristRaise")) {
             raise();
-        } else if (name == "wristLower") {
+        } else if (name.equals("wristLower")) {
             lower();
-        } else if (name == "wristToggle") {
+        } else if (name.equals("wristToggle")) {
             toggle();
-        } else if (name == "wristReset") {
+        } else if (name.equals("wristReset")) {
             reset();
         }
     }
