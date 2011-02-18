@@ -13,7 +13,11 @@ public class TimeoutEmitter extends EventEmitter {
     }
     
     public void schedule(String event, Hashtable data, double delay) {
-        TimeoutTask task = new TimeoutTask(event, data);
+        schedule(new Event(event, data), delay);
+    }
+    
+    public void schedule(Event event, double delay) {
+        TimeoutTask task = new TimeoutTask(event);
         timer.schedule(task, (long) (delay * 1000));
     }
     
@@ -23,16 +27,14 @@ public class TimeoutEmitter extends EventEmitter {
     }
     
     private class TimeoutTask extends TimerTask {
-        private String event;
-        private Hashtable data;
+        private Event event;
         
-        public TimeoutTask(String e, Hashtable d) {
+        public TimeoutTask(Event e) {
             event = e;
-            data = d;
         }
         
         public void run() {
-            trigger(event, data);
+            trigger(event);
         }
     }
 }

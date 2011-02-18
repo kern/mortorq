@@ -9,8 +9,8 @@ public class ElbowListener implements Listener {
     private static final int SLOT    = 8;
     private static final int CHANNEL = 1;
     
-    private static final boolean RAISED  = true;
-    private static final boolean LOWERED = false;
+    private static final boolean RAISED  = false;
+    private static final boolean LOWERED = true;
     private static final boolean DEFAULT = RAISED;
     
     private Solenoid solenoid = new Solenoid(SLOT, CHANNEL);

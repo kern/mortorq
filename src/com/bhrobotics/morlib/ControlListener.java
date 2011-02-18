@@ -1,7 +1,7 @@
 package com.bhrobotics.morlib;
 
 public class ControlListener implements Listener {
-    private EventEmitter process = Reactor.getProcess();
+    protected EventEmitter process = Reactor.getProcess();
     
     protected JoystickFilter joystickFilter = new JoystickFilter();
     protected DriverStationFilter dsFilter = new DriverStationFilter();

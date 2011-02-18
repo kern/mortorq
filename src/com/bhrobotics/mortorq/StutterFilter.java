@@ -54,23 +54,31 @@ public class StutterFilter extends Filter {
         cycles = c;
     }
     
-    public void handle(Event event) {
+    public void handle(Event highEvent) {
         emitter.cancelAll();
-        String name = event.getName();
-        Hashtable highData = event.getData();
+        String name = highEvent.getName();
         
         Hashtable lowData = new Hashtable();
-        lowData.put("oldValue", event.getData("newValue"));
-        lowData.put("newValue", event.getData("oldValue"));
+        lowData.put("oldValue", highEvent.getData("newValue"));
+        lowData.put("newValue", highEvent.getData("oldValue"));
+        Event lowEvent = new Event(name, lowData);
         
-        trigger(name, highData);
+        stutter(highEvent, lowEvent);
+    }
+    
+    public void stutter(Event highEvent, Event lowEvent) {
+        trigger(highEvent);
         
         for (int i = 0; i < cycles; i++) {
             int j = i + 1;
             
-            emitter.schedule(name, lowData, (highInterval * j) + (lowInterval * i));
-            emitter.schedule(name, highData, (highInterval * j) + (lowInterval * j));
+            emitter.schedule(lowEvent, (highInterval * j) + (lowInterval * i));
+            emitter.schedule(highEvent, (highInterval * j) + (lowInterval * j));
         }
+    }
+    
+    public void cancelAll() {
+        emitter.cancelAll();
     }
     
     public void bound(EventEmitter emitter, String event) {}

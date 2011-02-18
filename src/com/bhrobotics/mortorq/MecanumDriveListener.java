@@ -178,8 +178,6 @@ class MecanumDriveListener implements Listener {
     }
     
     public void stop() {
-        System.out.println("[mecanum] Stopping.");
-        
         if (USE_PID) {
             disablePID();
         }

@@ -9,8 +9,8 @@ public class ClawListener implements Listener {
     private static final int SLOT    = 8;
     private static final int CHANNEL = 3;
     
-    private static final boolean NARROW  = true;
     private static final boolean WIDE    = false;
+    private static final boolean NARROW  = true;
     private static final boolean DEFAULT = WIDE;
     
     Solenoid solenoid = new Solenoid(SLOT, CHANNEL);

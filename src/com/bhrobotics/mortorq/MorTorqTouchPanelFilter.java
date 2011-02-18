@@ -1,6 +1,7 @@
 package com.bhrobotics.mortorq;
 
 import com.bhrobotics.morlib.Event;
+import com.bhrobotics.morlib.DuplicateFilter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import java.util.Hashtable;
@@ -26,17 +27,28 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             System.out.println("[mortouch] Stop screen bound.");
             trigger("stopMotors");
-            // trigger("mastStop");
-            // trigger("compressorStop");
+            trigger("compressorStop");
+            trigger("clawReset");
+            trigger("wristReset");
+            trigger("elbowReset");
+            trigger("minibotReset");
         }
     }
     
     private class GameScreen extends TouchPanelScreen {
+        private static final int MINIBOT = 10;
+        private static final int CLAW    = 11;
+        private static final int WRIST   = 12;
+        private static final int ELBOW   = 13;
+        
         public void bound() {
             System.out.println("[mortouch] Game screen bound.");
             trigger("stopMotors");
-            // trigger("mastStop");
-            // trigger("compressorAuto");
+            trigger("compressorAuto");
+            updateClaw(CLAW);
+            updateWrist(WRIST);
+            updateElbow(ELBOW);
+            updateMinibotAuto(MINIBOT);
         }
         
         public void handle(Event event) {
@@ -44,6 +56,14 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             if (name.startsWith("changeJoystick")) {
                 trigger(event);
+            } else if (name.equals("changeDigital11")) {
+                updateClaw(CLAW);
+            } else if (name.equals("changeDigital12")) {
+                updateWrist(WRIST);
+            } else if (name.equals("changeDigital13")) {
+                updateElbow(ELBOW);
+            } else if (name.equals("changeDigital10")) {
+                updateMinibotAuto(MINIBOT);
             }
         }
     }
@@ -68,92 +88,80 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             System.out.println("[mortouch] Drive train screen bound.");
             
-            updateLeftFront();
-            updateRightFront();
-            updateLeftBack();
-            updateRightBack();
+            updateLeftFront(LEFT_FRONT_STOP, LEFT_FRONT_BACKWARD, LEFT_FRONT_SPEED);
+            updateRightFront(RIGHT_FRONT_STOP, RIGHT_FRONT_BACKWARD, RIGHT_FRONT_SPEED);
+            updateLeftBack(LEFT_BACK_STOP, LEFT_BACK_BACKWARD, LEFT_BACK_SPEED);
+            updateRightBack(RIGHT_BACK_STOP, RIGHT_BACK_BACKWARD, RIGHT_BACK_SPEED);
             
-            // trigger("mastStop");
-            // trigger("compressorStop");
+            trigger("compressorStop");
+            trigger("clawReset");
+            trigger("wristReset");
+            trigger("elbowReset");
+            trigger("minibotReset");
         }
         
         public void handle(Event event) {
             String name = event.getName();
             
             if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital12")) {
-                updateLeftFront();
+                updateLeftFront(LEFT_FRONT_STOP, LEFT_FRONT_BACKWARD, LEFT_FRONT_SPEED);
+            } else if (name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital13")) {
+                updateRightFront(RIGHT_FRONT_STOP, RIGHT_FRONT_BACKWARD, RIGHT_FRONT_SPEED);
+            } else if (name.equals("changeDigital8") || name.equals("changeDigital9") || name.equals("changeDigital14")) {
+                updateLeftBack(LEFT_BACK_STOP, LEFT_BACK_BACKWARD, LEFT_BACK_SPEED);
+            } else if (name.equals("changeDigital10") || name.equals("changeDigital11") || name.equals("changeDigital15")) {
+                updateRightBack(RIGHT_BACK_STOP, RIGHT_BACK_BACKWARD, RIGHT_BACK_SPEED);
             }
-            
-            if (name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital13")) {
-                updateRightFront();
-            }
-            
-            if (name.equals("changeDigital8") || name.equals("changeDigital9") || name.equals("changeDigital14")) {
-                updateLeftBack();
-            }
-            
-            if (name.equals("changeDigital10") || name.equals("changeDigital11") || name.equals("changeDigital15")) {
-                updateRightBack();
-            }
-        }
-        
-        private void updateLeftFront() {
-            updateMotor("LeftFront", LEFT_FRONT_STOP, LEFT_FRONT_BACKWARD, LEFT_FRONT_SPEED);
-        }
-        
-        private void updateRightFront() {
-            updateMotor("RightFront", RIGHT_FRONT_STOP, RIGHT_FRONT_BACKWARD, RIGHT_FRONT_SPEED);
-        }
-        
-        private void updateLeftBack() {
-            updateMotor("LeftBack", LEFT_BACK_STOP, LEFT_BACK_BACKWARD, LEFT_BACK_SPEED);
-        }
-        
-        private void updateRightBack() {
-            updateMotor("RightBack", RIGHT_BACK_STOP, RIGHT_BACK_BACKWARD, RIGHT_BACK_SPEED);
-        }
-        
-        private void updateMotor(String name, int stopChannel, int backwardChannel, int speedChannel) {
-            double value;
-            
-            if (getDigital(backwardChannel)) {
-                value = 1.0;
-            } else if (getDigital(stopChannel)) {
-                value = 0.0;
-            } else {
-                value = -1.0;
-            }
-            
-            if (!getDigital(speedChannel)) {
-                value /= 2.0;
-            }
-            
-            Hashtable data = new Hashtable();
-            data.put("value", new Double(value));
-            
-            trigger("changeMotor" + name, data);
         }
     }
     
     private class ManipulatorsScreen extends TouchPanelScreen {
+        private static final int CLAW                    = 4;
+        private static final int WRIST                   = 5;
+        private static final int ELBOW                   = 6;
+        private static final int COMPRESSOR_AUTO         = 7;
+        private static final int COMPRESSOR_MANUAL_STATE = 8;
+        private static final int MINIBOT                 = 9;
+        
         public void bound() {
             System.out.println("[mortouch] Manipulators screen bound.");
             trigger("stopMotors");
-            // trigger("mastStop");
-            // trigger("compressorManual");
+            updateCompressorAuto(COMPRESSOR_AUTO);
+            updateCompressorManualState(COMPRESSOR_MANUAL_STATE);
+            updateClaw(CLAW);
+            updateWrist(WRIST);
+            updateElbow(ELBOW);
+            updateMinibotManual(MINIBOT);
         }
         
         public void handle(Event event) {
+            String name = event.getName();
             
+            if (name.equals("changeDigital7")) {
+                updateCompressorAuto(COMPRESSOR_AUTO);
+            } else if (name.equals("changeDigital8")) {
+                updateCompressorManualState(COMPRESSOR_MANUAL_STATE);
+            } else if (name.equals("changeDigital4")) {
+                updateClaw(CLAW);
+            } else if (name.equals("changeDigital5")) {
+                updateWrist(WRIST);
+            } else if (name.equals("changeDigital6")) {
+                updateElbow(ELBOW);
+            } else if (name.equals("changeDigital9")) {
+                updateMinibotManual(MINIBOT);
+            }
         }
     }
     
     private class MastScreen extends TouchPanelScreen {
         public void bound() {
             System.out.println("[mortouch] Mast screen bound.");
-            panel.trigger("stopMotors");
-            // panel.trigger("mastStop");
-            // panel.trigger("compressorStop");
+            trigger("stopMotors");
+            trigger("compressorStop");
+            trigger("clawReset");
+            trigger("wristReset");
+            trigger("elbowReset");
+            trigger("minibotReset");
         }
         
         public void handle(Event event) {
@@ -166,6 +174,99 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             return !ds.getDigital(channel);
         } catch (DriverStationEnhancedIO.EnhancedIOException e) {
             return false;
+        }
+    }
+    
+    private void updateLeftFront(int stopChannel, int backwardChannel, int speedChannel) {
+        updateMotor("LeftFront", stopChannel, backwardChannel, speedChannel);
+    }
+    
+    private void updateRightFront(int stopChannel, int backwardChannel, int speedChannel) {
+        updateMotor("RightFront", stopChannel, backwardChannel, speedChannel);
+    }
+    
+    private void updateLeftBack(int stopChannel, int backwardChannel, int speedChannel) {
+        updateMotor("LeftBack", stopChannel, backwardChannel, speedChannel);
+    }
+    
+    private void updateRightBack(int stopChannel, int backwardChannel, int speedChannel) {
+        updateMotor("RightBack", stopChannel, backwardChannel, speedChannel);
+    }
+    
+    private void updateMotor(String name, int stopChannel, int backwardChannel, int speedChannel) {
+        double value;
+        
+        if (getDigital(backwardChannel)) {
+            value = 1.0;
+        } else if (getDigital(stopChannel)) {
+            value = 0.0;
+        } else {
+            value = -1.0;
+        }
+        
+        if (!getDigital(speedChannel)) {
+            value /= 2.0;
+        }
+        
+        Hashtable data = new Hashtable();
+        data.put("value", new Double(value));
+        
+        trigger("changeMotor" + name, data);
+    }
+    
+    private void updateCompressorAuto(int channel) {
+        if (getDigital(channel)) {
+            trigger("compressorAuto");
+        } else {
+            trigger("compressorManual");
+        }
+    }
+    
+    private void updateCompressorManualState(int channel) {
+        if (getDigital(channel)) {
+            trigger("compressorManualOn");
+        } else {
+            trigger("compressorManualOff");
+        }
+    }
+    
+    private void updateClaw(int channel) {
+        if (getDigital(channel)) {
+            trigger("clawNarrow");
+        } else {
+            trigger("clawWide");
+        }
+    }
+    
+    private void updateWrist(int channel) {
+        if (getDigital(channel)) {
+            trigger("wristLower");
+        } else {
+            trigger("wristRaise");
+        }
+    }
+    
+    private void updateElbow(int channel) {
+        if (getDigital(channel)) {
+            trigger("elbowLower");
+        } else {
+            trigger("elbowRaise");
+        }
+    }
+    
+    private void updateMinibotAuto(int channel) {
+        if (getDigital(channel)) {
+            trigger("disengageSafety");
+        } else {
+            trigger("engageSafety");
+        }
+    }
+    
+    private void updateMinibotManual(int channel) {
+        if (getDigital(channel)) {
+            trigger("minibotDeploy");
+        } else {
+            trigger("minibotRedact");
         }
     }
 }

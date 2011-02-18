@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class TouchPanelFilter extends Filter {
     private static final int NUM_SCREENS = 5;
-    private EventEmitter emitter         = new EventEmitter();
+    protected EventEmitter emitter         = new EventEmitter();
     private TouchPanelScreen[] screens   = new TouchPanelScreen[NUM_SCREENS];
     private TouchPanelScreen currentScreen;
     

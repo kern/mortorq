@@ -23,19 +23,27 @@ public class MinibotListener implements Listener {
     }
     
     public void handle(Event event) {
-        if (event.getName().equals("startEndGame")) {
+        String name = event.getName();
+        
+        if (name.equals("startEndGame")) {
             endGame = true;
             
             if (isReady()) {
                 deploy();
             }
-        } else if (event.getName().equals("disengageSafety")) {
+        } else if (name.equals("disengageSafety")) {
             safetyEngaged = false;
             
             if (isReady()) {
                 deploy();
             }
-        } else if (event.getName().equals("minibotReset")) {
+        } else if (name.equals("engageSafety")) {
+            safetyEngaged = true;
+        } else if (name.equals("minibotDeploy")) {
+            deploy();
+        } else if (name.equals("minibotRedact")) {
+            redact();
+        } else if (name.equals("minibotReset")) {
             reset();
         }
     }
