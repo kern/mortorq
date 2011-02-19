@@ -312,9 +312,9 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             double value = 0.0;
             
             if (getDigital(upChannel)) {
-                value = 1.0;
+                value = -1.0;
             } else if (getDigital(downChannel)) {
-                value = -0.6;
+                value = 0.6;
             }
             
             Hashtable data = new Hashtable();

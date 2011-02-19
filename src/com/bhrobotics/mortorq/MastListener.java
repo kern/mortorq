@@ -129,7 +129,7 @@ public class MastListener implements Listener {
     }
     
     public void set(double setpoint) {
-        if (setpoint > 0.0 || !limitSwitch.get()) {
+        // if (setpoint > 0.0 || limitSwitch.get()) {
             if (isAbsolute()) {
                 leftController.setSetpoint(setpoint);
                 rightController.setSetpoint(setpoint);
@@ -137,7 +137,7 @@ public class MastListener implements Listener {
                 leftMotor.set(setpoint);
                 rightMotor.set(setpoint);
             }
-        }
+        // }
     }
     
     public void stop() {
