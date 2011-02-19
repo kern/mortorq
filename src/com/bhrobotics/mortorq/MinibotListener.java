@@ -15,8 +15,8 @@ public class MinibotListener implements Listener {
     
     private Solenoid solenoid = new Solenoid(SLOT, CHANNEL);
     
-    private boolean endGame       = false;
-    private boolean safetyEngaged = true;
+    private boolean endGame   = false;
+    private boolean interlock = false;
     
     public MinibotListener() {
         reset();
@@ -31,14 +31,14 @@ public class MinibotListener implements Listener {
             if (isReady()) {
                 deploy();
             }
-        } else if (name.equals("disengageSafety")) {
-            safetyEngaged = false;
+        } else if (name.equals("minibotInterlockOn")) {
+            interlock = true;
             
             if (isReady()) {
                 deploy();
             }
-        } else if (name.equals("engageSafety")) {
-            safetyEngaged = true;
+        } else if (name.equals("minibotInterlockOff")) {
+            interlock = false;
         } else if (name.equals("minibotDeploy")) {
             deploy();
         } else if (name.equals("minibotRedact")) {
@@ -66,7 +66,7 @@ public class MinibotListener implements Listener {
     public void reset() {
         set(DEFAULT);
         endGame = false;
-        safetyEngaged = true;
+        interlock = false;
     }
     
     public void deploy() {
@@ -78,6 +78,6 @@ public class MinibotListener implements Listener {
     }
     
     public boolean isReady() {
-        return endGame && !safetyEngaged;
+        return endGame && interlock;
     }
 }

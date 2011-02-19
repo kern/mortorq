@@ -20,14 +20,14 @@ class MorTorqControlListener extends ControlListener {
     private WristListener wristListener               = new WristListener();
     private ElbowListener elbowListener               = new ElbowListener();
     private MinibotListener minibotListener           = new MinibotListener();
-    // private MastListener mastListener                 = new MastListener();
+    private MastListener mastListener                 = new MastListener();
     
     public void start() {
         // Initialize the camera.
-        AxisCamera camera = AxisCamera.getInstance();
-        camera.writeResolution(AxisCamera.ResolutionT.k160x120);
-        camera.writeCompression(30);
-        camera.writeMaxFPS(1);
+        // AxisCamera camera = AxisCamera.getInstance();
+        // camera.writeResolution(AxisCamera.ResolutionT.k160x120);
+        // camera.writeCompression(30);
+        // camera.writeMaxFPS(1);
         
         process.bind("newDataAvailable", dashboardListener);
     }
@@ -39,25 +39,15 @@ class MorTorqControlListener extends ControlListener {
         wristListener.reset();
         elbowListener.reset();
         minibotListener.reset();
-        // mastListener.stop();
+        mastListener.stop();
     }
     
     public void stopAutonomous() {
         mecanumDriveListener.stop();
-        // mastListener.stop();
+        mastListener.stop();
     }
     
     public void startOperatorControl() {
-        //Joystick joy = new Joystick(1);
-        //Jaguar mast1 = new Jaguar(6, 4);
-        //Jaguar mast2 = new Jaguar(6, 3);
-        //while (true) {
-        //    double y = joy.getY();
-        //    System.out.println("Joytick at: " + y);
-        //    
-        //    mast1.set(y);
-        //    mast2.set(y);
-        //}
         process.bind("tick", compressorListener);
         joystickFilter.bind("changeJoystick1", panelFilter);
         dsFilter.bind("all", panelFilter);
@@ -72,10 +62,11 @@ class MorTorqControlListener extends ControlListener {
         panelFilter.bind("all", wristListener);
         panelFilter.bind("all", elbowListener);
         panelFilter.bind("all", minibotListener);
-        // panelFilter.bind("all", mastListener);
+        panelFilter.bind("all", mastListener);
     }
     
     public void stopOperatorControl() {
+        process.unbind("tick", compressorListener);
         joystickFilter.unbind("changeJoystick1", panelFilter);
         dsFilter.unbind("all", panelFilter);
         
@@ -88,6 +79,6 @@ class MorTorqControlListener extends ControlListener {
         panelFilter.unbind("all", wristListener);
         panelFilter.unbind("all", elbowListener);
         panelFilter.unbind("all", minibotListener);
-        // panelFilter.unbind("all", mastListener);
+        panelFilter.unbind("all", mastListener);
     }
 }

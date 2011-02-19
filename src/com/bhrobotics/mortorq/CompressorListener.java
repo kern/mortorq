@@ -16,8 +16,8 @@ public class CompressorListener implements Listener {
     private DigitalInput pressure = new DigitalInput(PRESSURE_SLOT, PRESSURE_CHANNEL);
     private Relay relay = new Relay(RELAY_SLOT, RELAY_CHANNEL, Relay.Direction.kForward);
     
-    private boolean auto;
-    private boolean manualState;
+    private String mode;
+    private boolean state;
     
     public CompressorListener() {
         stop();
@@ -33,9 +33,9 @@ public class CompressorListener implements Listener {
         } else if (name.equals("compressorManual")) {
             manual();
         } else if (name.equals("compressorManualOn")) {
-            manualState = true;
+            state = true;
         } else if (name.equals("compressorManualOff")) {
-            manualState = false;
+            state = false;
         } else if (name.equals("compressorStop")) {
             stop();
         }
@@ -45,22 +45,22 @@ public class CompressorListener implements Listener {
     public void unbound(EventEmitter emitter, String event) {}
     
     public void auto() {
-        auto = true;
+        mode = "auto";
     }
     
     public void manual() {
-        auto = false;
+        mode = "manual";
     }
     
     public void stop() {
-        auto = false;
-        manualState = false;
+        mode = "manual";
+        state = false;
     }
     
     private void update() {
         Relay.Value value = Relay.Value.kOff;
         
-        if ((auto && !pressure.get()) || (!auto && manualState)) {
+        if ((mode.equals("auto") && !pressure.get()) || (mode.equals("manual") && state)) {
             value = Relay.Value.kOn;
         }
         
