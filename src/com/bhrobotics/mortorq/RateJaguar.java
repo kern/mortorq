@@ -2,8 +2,8 @@ package com.bhrobotics.mortorq;
 
 import edu.wpi.first.wpilibj.Jaguar;
 
-public class PIDJaguar extends Jaguar {
-    public PIDJaguar(final int slot, final int channel) {
+public class RateJaguar extends Jaguar {
+    public RateJaguar(final int slot, final int channel) {
         super(slot, channel);
     }
     

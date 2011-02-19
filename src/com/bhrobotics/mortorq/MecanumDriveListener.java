@@ -51,10 +51,10 @@ class MecanumDriveListener implements Listener {
     Encoder leftFrontEncoder;
     Encoder leftBackEncoder;
     
-    PIDJaguar rightFrontMotor = new PIDJaguar(MOTOR_SLOT, RIGHT_FRONT_MOTOR);
-    PIDJaguar rightBackMotor  = new PIDJaguar(MOTOR_SLOT, RIGHT_BACK_MOTOR);
-    PIDJaguar leftFrontMotor  = new PIDJaguar(MOTOR_SLOT, LEFT_FRONT_MOTOR);
-    PIDJaguar leftBackMotor   = new PIDJaguar(MOTOR_SLOT, LEFT_BACK_MOTOR);
+    RateJaguar rightFrontMotor = new RateJaguar(MOTOR_SLOT, RIGHT_FRONT_MOTOR);
+    RateJaguar rightBackMotor  = new RateJaguar(MOTOR_SLOT, RIGHT_BACK_MOTOR);
+    RateJaguar leftFrontMotor  = new RateJaguar(MOTOR_SLOT, LEFT_FRONT_MOTOR);
+    RateJaguar leftBackMotor   = new RateJaguar(MOTOR_SLOT, LEFT_BACK_MOTOR);
     
     PIDController rightFrontController;
     PIDController rightBackController;

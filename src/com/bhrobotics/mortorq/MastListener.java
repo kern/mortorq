@@ -72,6 +72,7 @@ public class MastListener implements Listener {
             // absolute();
             stop();
         } else if (name.equals("mastRelative")) {
+            System.out.println("Mast: " + ((Double) event.getData("value")).doubleValue());
             relative();
             set(((Double) event.getData("value")).doubleValue());
         } else if (name.equals("mastStop")) {
