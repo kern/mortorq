@@ -6,9 +6,10 @@ import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
 import com.bhrobotics.morlib.TimeoutEmitter;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
+import org.thecatattack.system451.communication.dashboard.ZomBDashboard;
+import org.thecatattack.system451.communication.dashboard.ZomBModes;
 
 class MorTorqControlListener extends ControlListener {
-    private DashboardListener dashboardListener       = new DashboardListener();
     private LineTrackerFilter lineTrackerFilter       = new LineTrackerFilter();
     private TimeoutEmitter endGameTimeout             = new TimeoutEmitter();
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
@@ -19,6 +20,7 @@ class MorTorqControlListener extends ControlListener {
     private ElbowListener elbowListener               = new ElbowListener();
     private MinibotListener minibotListener           = new MinibotListener();
     private MastListener mastListener                 = new MastListener();
+    private ZomBDashboard zomB                        = ZomBDashboard.getInstance(ZomBModes.TCP, true);
     
     public void start() {
         // Initialize the camera.
@@ -27,7 +29,6 @@ class MorTorqControlListener extends ControlListener {
         // camera.writeCompression(30);
         // camera.writeMaxFPS(1);
         
-        process.bind("newDataAvailable", dashboardListener);
         process.bind("tick", mastListener);
         process.bind("tick", compressorListener);
     }

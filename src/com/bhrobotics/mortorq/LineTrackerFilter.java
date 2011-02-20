@@ -9,9 +9,9 @@ import java.util.Hashtable;
 
 public class LineTrackerFilter extends Filter {
     private static final int SENSOR_SLOT      = 6;
-    private static final int SENSOR_L_CHANNEL = 1;
-    private static final int SENSOR_C_CHANNEL = 2;
-    private static final int SENSOR_R_CHANNEL = 3;
+    private static final int SENSOR_L_CHANNEL = 11;
+    private static final int SENSOR_C_CHANNEL = 12;
+    private static final int SENSOR_R_CHANNEL = 13;
     
     private static final int POWER_SLOT     = 8;
     private static final int SENSOR_L_POWER = 5;
