@@ -5,7 +5,6 @@ import com.bhrobotics.morlib.DashboardListener;
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
 import com.bhrobotics.morlib.TimeoutEmitter;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
 import org.thecatattack.system451.communication.dashboard.ZomBDashboard;
 import org.thecatattack.system451.communication.dashboard.ZomBModes;
 
@@ -23,12 +22,6 @@ class MorTorqControlListener extends ControlListener {
     private ZomBDashboard zomB                        = ZomBDashboard.getInstance(ZomBModes.TCP, true);
     
     public void start() {
-        // Initialize the camera.
-        // AxisCamera camera = AxisCamera.getInstance();
-        // camera.writeResolution(AxisCamera.ResolutionT.k160x120);
-        // camera.writeCompression(30);
-        // camera.writeMaxFPS(1);
-        
         process.bind("tick", mastListener);
         process.bind("tick", compressorListener);
     }
