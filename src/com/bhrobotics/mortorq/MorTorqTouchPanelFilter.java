@@ -50,6 +50,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         private static final int CLAW       = 11;
         private static final int WRIST      = 12;
         private static final int ELBOW      = 13;
+        private static final int NONE       = 14;
         
         public void bound() {
             System.out.println("[mortouch] Game screen bound.");
@@ -62,7 +63,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             elbow(ELBOW);
             minibotInterlock(MINIBOT);
             
-            mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW);
+            mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
         }
         
         public void handle(Event event) {
@@ -70,8 +71,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             if (name.startsWith("changeJoystick")) {
                 trigger(event);
-            } else if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital8") || name.equals("changeDigital9")) {
-                mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW);
+            } else if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital8") || name.equals("changeDigital9") || name.equals("changeDigital14")) {
+                mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
             } else if (name.equals("changeDigital11")) {
                 claw(CLAW);
             } else if (name.equals("changeDigital12")) {
@@ -182,6 +183,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         private static final int POSITION   = 7;
         private static final int UP_ARROW   = 8;
         private static final int DOWN_ARROW = 9;
+        private static final int NONE       = 14;
         
         public void bound() {
             System.out.println("[mortouch] Mast screen bound.");
@@ -194,14 +196,14 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("elbowReset");
             trigger("minibotReset");
             
-            mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW);
+            mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
         }
         
         public void handle(Event event) {
             String name = event.getName();
             
-            if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital8") || name.equals("changeDigital9")) {
-                mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW);
+            if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital8") || name.equals("changeDigital9") || name.equals("changeDigital14")) {
+                mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
             }
         }
     }
@@ -307,22 +309,41 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         }
     }
     
-    private void mast(int positionChannel, int bitChannel1, int bitChannel2, int bitChannel3, int upChannel, int downChannel) {
+    private void mast(int positionChannel, int bitChannel1, int bitChannel2, int bitChannel3, int upChannel, int downChannel, int noneChannel) {
         if (getDigital(positionChannel)) {
-            double value = 0.0;
-            
             if (getDigital(upChannel)) {
-                value = -1.0;
+                trigger("mastRelativeUp");
             } else if (getDigital(downChannel)) {
-                value = 0.6;
+                trigger("mastRelativeDown");
+            } else {
+                trigger("mastRelativeStop");
             }
-            
-            Hashtable data = new Hashtable();
-            data.put("value", new Double(value));
-            
-            trigger("mastRelative", data);
         } else {
-            trigger("mastAbsolute");
+            if (getDigital(noneChannel)) {
+                trigger("mastNone");
+            } else {
+                boolean bit1 = getDigital(bitChannel1);
+                boolean bit2 = getDigital(bitChannel2);
+                boolean bit3 = getDigital(bitChannel3);
+                
+                if (!bit1 && !bit2 && !bit3) {
+                    trigger("mastGround");
+                } else if (bit1 && !bit2 && !bit3) {
+                    trigger("mastCenterCenter");
+                } else if (!bit1 && bit2 && !bit3) {
+                    trigger("mastCenterTop");
+                } else if (bit1 && bit2 && !bit3) {
+                    trigger("mastCenterBottom");
+                } else if (!bit1 && !bit2 && bit3) {
+                    trigger("mastSideTop");
+                } else if (bit1 && !bit2 && bit3) {
+                    trigger("mastSideBottom");
+                } else if (!bit1 && bit2 && bit3) {
+                    trigger("mastSideCenter");
+                } else if (bit1 && bit2 && bit3) {
+                    trigger("mastFeed");
+                }
+            }
         }
     }
 }

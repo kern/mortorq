@@ -1,37 +1,30 @@
 package com.bhrobotics.mortorq;
 
-import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDController;
+import com.bhrobotics.morlib.Listener;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalModule;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Victor;
 
 class MecanumDriveListener implements Listener {
-    private static final int MOTOR_SLOT   = 6;
-    private static final int ENCODER_SLOT = 4;
+    private static final int MOTOR_SLOT   = 4;
+    private static final int ENCODER_SLOT = 6;
     
     private static final double SCALE_FAST = 1.0;
     private static final double SCALE_SLOW = 0.5;
     
-    private static final double MAX_PWM      = 1.0;
-    private static final double MIN_PWM      = -1.0;
-    private static final double MAX_DEADBAND = 0.2;
-    private static final double MIN_DEADBAND = -0.2;
-    
-    private static final double KP                 = 0.4;
-    private static final double KI                 = 0.0;
-    private static final double KD                 = 0.0;
-    private static final double DISTANCE_PER_PULSE = 1.0 / 5600.0;
+    private static final double MAX_DEADBAND = 0.3;
+    private static final double MIN_DEADBAND = -0.3;
     
     private static final int RIGHT_FRONT_MOTOR    = 5;
     private static final int RIGHT_FRONT_SIDE_A   = 5;
     private static final int RIGHT_FRONT_SIDE_B   = 6;
     private static final double RIGHT_FRONT_SCALE = -1.0;
     
-    private static final int RIGHT_BACK_MOTOR    = 1;
+    private static final int RIGHT_BACK_MOTOR    = 3;
     private static final int RIGHT_BACK_SIDE_A   = 9;
     private static final int RIGHT_BACK_SIDE_B   = 10;
     private static final double RIGHT_BACK_SCALE = -1.0;
@@ -41,25 +34,23 @@ class MecanumDriveListener implements Listener {
     private static final int LEFT_FRONT_SIDE_B   = 4;
     private static final double LEFT_FRONT_SCALE = 1.0;
     
-    private static final int LEFT_BACK_MOTOR    = 2;
+    private static final int LEFT_BACK_MOTOR    = 4;
     private static final int LEFT_BACK_SIDE_A   = 7;
     private static final int LEFT_BACK_SIDE_B   = 8;
     private static final double LEFT_BACK_SCALE = 1.0;
+    
+    private static final int LIMIT_SWITCH_SLOT    = 4;
+    private static final int LIMIT_SWITCH_CHANNEL = 1;
     
     Encoder rightFrontEncoder;
     Encoder rightBackEncoder;
     Encoder leftFrontEncoder;
     Encoder leftBackEncoder;
     
-    RateJaguar rightFrontMotor = new RateJaguar(MOTOR_SLOT, RIGHT_FRONT_MOTOR);
-    RateJaguar rightBackMotor  = new RateJaguar(MOTOR_SLOT, RIGHT_BACK_MOTOR);
-    RateJaguar leftFrontMotor  = new RateJaguar(MOTOR_SLOT, LEFT_FRONT_MOTOR);
-    RateJaguar leftBackMotor   = new RateJaguar(MOTOR_SLOT, LEFT_BACK_MOTOR);
-    
-    PIDController rightFrontController;
-    PIDController rightBackController;
-    PIDController leftFrontController;
-    PIDController leftBackController;
+    Victor rightFrontMotor = new Victor(MOTOR_SLOT, RIGHT_FRONT_MOTOR);
+    Victor rightBackMotor  = new Victor(MOTOR_SLOT, RIGHT_BACK_MOTOR);
+    Victor leftFrontMotor  = new Victor(MOTOR_SLOT, LEFT_FRONT_MOTOR);
+    Victor leftBackMotor   = new Victor(MOTOR_SLOT, LEFT_BACK_MOTOR);
     
     public MecanumDriveListener() {
         DigitalInput rightFrontSideA = new DigitalInput(ENCODER_SLOT, RIGHT_FRONT_SIDE_A);
@@ -74,10 +65,10 @@ class MecanumDriveListener implements Listener {
         DigitalInput leftBackSideA = new DigitalInput(ENCODER_SLOT, LEFT_BACK_SIDE_A);
         DigitalInput leftBackSideB = new DigitalInput(ENCODER_SLOT, LEFT_BACK_SIDE_B);
         
-        // Later, I will explain my hatred of whoever made this code necessary. I will
-        // hunt you down with a large pack of rabid dogs (and possibly squirrels) and
-        // gnaw off your face. Thank you, that is all.
-        rightFrontEncoder = new Encoder(rightFrontSideA, rightFrontSideB, false, Encoder.EncodingType.k1X);
+        // I have extreme hatred toward whoever made this code necessary. I will
+        // hunt you down with a large pack of rabid dogs (and possibly squirrels)
+        // and gnaw off your face. Thank you, that is all.
+        rightFrontEncoder = new Encoder(rightFrontSideA, rightFrontSideB, true, Encoder.EncodingType.k1X);
         rightBackEncoder  = new Encoder(rightBackSideA, rightBackSideB, false, Encoder.EncodingType.k1X);
         rightBackEncoder  = new Encoder(rightBackSideA, rightBackSideB, false, Encoder.EncodingType.k1X);
         leftFrontEncoder  = new Encoder(leftFrontSideA, leftFrontSideB, false, Encoder.EncodingType.k1X);
@@ -86,30 +77,7 @@ class MecanumDriveListener implements Listener {
         leftBackEncoder   = new Encoder(leftBackSideA, leftBackSideB, false, Encoder.EncodingType.k1X);
         leftBackEncoder   = new Encoder(leftBackSideA, leftBackSideB, false, Encoder.EncodingType.k1X);
         
-        rightFrontController = new PIDController(KP, KI, KD, rightFrontEncoder, rightFrontMotor);
-        rightBackController  = new PIDController(KP, KI, KD, rightBackEncoder, rightBackMotor);
-        leftFrontController  = new PIDController(KP, KI, KD, leftFrontEncoder, leftFrontMotor);
-        leftBackController   = new PIDController(KP, KI, KD, leftBackEncoder, leftBackMotor);
-        
-        rightFrontEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-        rightFrontEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
-        rightFrontEncoder.start();
-        rightFrontController.enable();
-        
-        rightBackEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-        rightBackEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
-        rightBackEncoder.start();
-        rightBackController.enable();
-        
-        leftFrontEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-        leftFrontEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
-        leftFrontEncoder.start();
-        leftFrontController.enable();
-        
-        leftBackEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-        leftBackEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kRate);
-        leftBackEncoder.start();
-        leftBackController.enable();
+        stop();
     }
     
     public void handle(Event event) {
@@ -118,10 +86,14 @@ class MecanumDriveListener implements Listener {
         if (name.startsWith("changeJoystick")) {
             Joystick joystick = (Joystick) event.getData("joystick");
             
-            if (joystick.getTrigger()) {
-                drive(joystick.getX(), joystick.getY(), joystick.getZ(), SCALE_SLOW);
+            double x = deadband(joystick.getX());
+            double y = deadband(joystick.getY());
+            double z = deadband(joystick.getZ());
+            
+            if (joystick.getTrigger() || !getLimitSwitch()) {
+                drive(x, y, z, SCALE_SLOW);
             } else {
-                drive(joystick.getX(), joystick.getY(), joystick.getZ(), SCALE_FAST);
+                drive(x, y, z, SCALE_FAST);
             }
         } else if (name.startsWith("changeMotor")) {
             double setpoint = ((Double) event.getData("value")).doubleValue();
@@ -148,15 +120,10 @@ class MecanumDriveListener implements Listener {
     }
     
     public void drive(double x, double y, double rotation, double scale) {
-        double rightFrontSetpoint = applyBounds(y + x + rotation);
-        double rightBackSetpoint  = applyBounds(y - x + rotation);
-        double leftFrontSetpoint  = applyBounds(y - x - rotation);
-        double leftBackSetpoint   = applyBounds(y + x - rotation);
-        
-        setRightFront(rightFrontSetpoint * scale);
-        setRightBack(rightBackSetpoint * scale);
-        setLeftFront(leftFrontSetpoint * scale);
-        setLeftBack(leftBackSetpoint * scale);
+        setRightFront((y + x + rotation) * scale);
+        setRightBack((y - x + rotation) * scale);
+        setLeftFront((y - x - rotation) * scale);
+        setLeftBack((y + x - rotation) * scale);
     }
     
     public void stop() {
@@ -166,29 +133,31 @@ class MecanumDriveListener implements Listener {
         setLeftBack(0.0);
     }
     
-    private double applyBounds(double input) {
-        input = Math.min(MAX_PWM, Math.max(MIN_PWM, input));
-        
+    private double deadband(double input) {
         if (input >= MIN_DEADBAND && input <= MAX_DEADBAND) {
-            input = 0.0;
+            return 0.0;
+        } else {
+            return input;
         }
-        
-        return input;
     }
     
     private void setRightFront(double setpoint) {
-        rightFrontController.setSetpoint(setpoint * RIGHT_FRONT_SCALE);
+        rightFrontMotor.set(setpoint * RIGHT_FRONT_SCALE);
     }
     
     private void setRightBack(double setpoint) {
-        rightBackController.setSetpoint(setpoint * RIGHT_BACK_SCALE);
+        rightBackMotor.set(setpoint * RIGHT_BACK_SCALE);
     }
     
     private void setLeftFront(double setpoint) {
-        leftFrontController.setSetpoint(setpoint * LEFT_FRONT_SCALE);
+        leftFrontMotor.set(setpoint * LEFT_FRONT_SCALE);
     }
     
     private void setLeftBack(double setpoint) {
-        leftBackController.setSetpoint(setpoint * LEFT_BACK_SCALE);
+        leftBackMotor.set(setpoint * LEFT_BACK_SCALE);
+    }
+    
+    private boolean getLimitSwitch() {
+        return DigitalModule.getInstance(LIMIT_SWITCH_SLOT).getDIO(LIMIT_SWITCH_CHANNEL);
     }
 }

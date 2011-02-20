@@ -48,7 +48,10 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void startOperatorControl() {
+        process.bind("tick", mecanumDriveListener);
         process.bind("tick", compressorListener);
+        process.bind("tick", mastListener);
+        
         joystickFilter.bind("changeJoystick1", panelFilter);
         dsFilter.bind("all", panelFilter);
         dsFilter.update(true);
@@ -66,7 +69,10 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void stopOperatorControl() {
+        process.unbind("tick", mecanumDriveListener);
         process.unbind("tick", compressorListener);
+        process.unbind("tick", mastListener);
+        
         joystickFilter.unbind("changeJoystick1", panelFilter);
         dsFilter.unbind("all", panelFilter);
         

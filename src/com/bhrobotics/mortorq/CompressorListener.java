@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
 
 public class CompressorListener implements Listener {
-    private static final int PRESSURE_SLOT    = 4;
+    private static final int PRESSURE_SLOT    = 6;
     private static final int PRESSURE_CHANNEL = 14;
     
-    private static final int RELAY_SLOT    = 6;
+    private static final int RELAY_SLOT    = 4;
     private static final int RELAY_CHANNEL = 1;
     
     private DigitalInput pressure = new DigitalInput(PRESSURE_SLOT, PRESSURE_CHANNEL);

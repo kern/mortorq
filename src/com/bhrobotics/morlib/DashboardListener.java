@@ -35,6 +35,7 @@ public class DashboardListener implements Listener {
                         lowDashData.addByte(DigitalModule.getInstance(module).getRelayForward());
                         lowDashData.addShort(DigitalModule.getInstance(module).getAllDIO());
                         lowDashData.addShort(DigitalModule.getInstance(module).getDIODirection());
+                        
                         lowDashData.addCluster(); {
                             for (int i = 1; i <= 10; i++) {
                                 lowDashData.addByte((byte) DigitalModule.getInstance(module).getPWM(i));
@@ -50,6 +51,7 @@ public class DashboardListener implements Listener {
                         lowDashData.addByte(DigitalModule.getInstance(module).getRelayReverse());
                         lowDashData.addShort(DigitalModule.getInstance(module).getAllDIO());
                         lowDashData.addShort(DigitalModule.getInstance(module).getDIODirection());
+                        
                         lowDashData.addCluster(); {
                             for (int i = 1; i <= 10; i++) {
                                 lowDashData.addByte((byte) DigitalModule.getInstance(module).getPWM(i));
@@ -62,6 +64,7 @@ public class DashboardListener implements Listener {
             lowDashData.addByte(Solenoid.getAllFromDefaultModule());
             
         } lowDashData.finalizeCluster();
+        
         lowDashData.commit();
     }
     
