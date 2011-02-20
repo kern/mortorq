@@ -36,6 +36,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("minibotReset");
             
             trigger("mastStop");
+            trigger("mastEncoderOverrideOff");
         }
     }
     
@@ -64,6 +65,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             minibotInterlock(MINIBOT);
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
+            trigger("mastEncoderOverrideOff");
         }
         
         public void handle(Event event) {
@@ -117,6 +119,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("minibotReset");
             
             trigger("mastStop");
+            trigger("mastEncoderOverrideOff");
         }
         
         public void handle(Event event) {
@@ -155,6 +158,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             minibot(MINIBOT);
             
             trigger("mastStop");
+            trigger("mastEncoderOverrideOff");
         }
         
         public void handle(Event event) {
@@ -177,13 +181,14 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     }
     
     private class MastScreen extends TouchPanelScreen {
-        private static final int MAST_BIT_1 = 4;
-        private static final int MAST_BIT_2 = 5;
-        private static final int MAST_BIT_3 = 6;
-        private static final int POSITION   = 7;
-        private static final int UP_ARROW   = 8;
-        private static final int DOWN_ARROW = 9;
-        private static final int NONE       = 14;
+        private static final int MAST_BIT_1            = 4;
+        private static final int MAST_BIT_2            = 5;
+        private static final int MAST_BIT_3            = 6;
+        private static final int POSITION              = 7;
+        private static final int UP_ARROW              = 8;
+        private static final int DOWN_ARROW            = 9;
+        private static final int NONE                  = 14;
+        private static final int MAST_ENCODER_OVERRIDE = 15;
         
         public void bound() {
             System.out.println("[mortouch] Mast screen bound.");
@@ -197,6 +202,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("minibotReset");
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
+            mastEncoderOverride(MAST_ENCODER_OVERRIDE);
         }
         
         public void handle(Event event) {
@@ -204,6 +210,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital8") || name.equals("changeDigital9") || name.equals("changeDigital14")) {
                 mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
+            } else if (name.equals("changeDigital15")) {
+                mastEncoderOverride(MAST_ENCODER_OVERRIDE);
             }
         }
     }
@@ -344,6 +352,14 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
                     trigger("mastFeed");
                 }
             }
+        }
+    }
+    
+    private void mastEncoderOverride(int channel) {
+        if (getDigital(channel)) {
+            trigger("mastEncoderOverrideOn");
+        } else {
+            trigger("mastEncoderOverrideOff");
         }
     }
 }

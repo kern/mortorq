@@ -1,9 +1,9 @@
 package com.bhrobotics.morlib;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Dashboard;
 import edu.wpi.first.wpilibj.AnalogModule;
+import edu.wpi.first.wpilibj.Dashboard;
 import edu.wpi.first.wpilibj.DigitalModule;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class DashboardListener implements Listener {

@@ -1,17 +1,15 @@
 package com.bhrobotics.mortorq;
 
+import com.bhrobotics.morlib.ControlListener;
+import com.bhrobotics.morlib.DashboardListener;
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
-import com.bhrobotics.morlib.ControlListener;
 import com.bhrobotics.morlib.TimeoutEmitter;
-import com.bhrobotics.morlib.DashboardListener;
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 class MorTorqControlListener extends ControlListener {
     private DashboardListener dashboardListener       = new DashboardListener();
+    private LineTrackerFilter lineTrackerFilter       = new LineTrackerFilter();
     private TimeoutEmitter endGameTimeout             = new TimeoutEmitter();
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
     private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
@@ -30,6 +28,8 @@ class MorTorqControlListener extends ControlListener {
         // camera.writeMaxFPS(1);
         
         process.bind("newDataAvailable", dashboardListener);
+        process.bind("tick", mastListener);
+        process.bind("tick", compressorListener);
     }
     
     public void startAutonomous() {
@@ -42,16 +42,7 @@ class MorTorqControlListener extends ControlListener {
         mastListener.stop();
     }
     
-    public void stopAutonomous() {
-        mecanumDriveListener.stop();
-        mastListener.stop();
-    }
-    
     public void startOperatorControl() {
-        process.bind("tick", mecanumDriveListener);
-        process.bind("tick", compressorListener);
-        process.bind("tick", mastListener);
-        
         joystickFilter.bind("changeJoystick1", panelFilter);
         dsFilter.bind("all", panelFilter);
         dsFilter.update(true);
@@ -69,10 +60,6 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void stopOperatorControl() {
-        process.unbind("tick", mecanumDriveListener);
-        process.unbind("tick", compressorListener);
-        process.unbind("tick", mastListener);
-        
         joystickFilter.unbind("changeJoystick1", panelFilter);
         dsFilter.unbind("all", panelFilter);
         

@@ -44,8 +44,9 @@ public class MastListener implements Listener {
     Victor leftMotor  = new Victor(MOTOR_SLOT, LEFT_MOTOR_CHANNEL);
     Victor rightMotor = new Victor(MOTOR_SLOT, RIGHT_MOTOR_CHANNEL);
     
-    private boolean calibrated = false;
-    private double setpoint = NONE;
+    private boolean calibrated      = false;
+    private boolean encoderOverride = false;
+    private double setpoint         = NONE;
     
     public MastListener() {
         DigitalInput sideA = new DigitalInput(ENCODER_SLOT, SIDE_A);
@@ -113,6 +114,10 @@ public class MastListener implements Listener {
             stop();
         } else if (name.equals("mastStop")) {
             stop();
+        } else if (name.equals("mastEncoderOverrideOn")) {
+            encoderOverride = true;
+        } else if (name.equals("mastEncoderOverrideOff")) {
+            encoderOverride = false;
         }
     }
     
@@ -149,7 +154,7 @@ public class MastListener implements Listener {
     public void relativeUp() {
         none();
         
-        if (calibrated) {
+        if (calibrated || encoderOverride) {
             set(UP_SPEED);
         }
     }
