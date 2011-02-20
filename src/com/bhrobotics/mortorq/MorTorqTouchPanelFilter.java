@@ -37,6 +37,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             trigger("mastStop");
             trigger("mastEncoderOverrideOff");
+            trigger("mastFast");
         }
     }
     
@@ -61,7 +62,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("compressorAuto");
             claw(CLAW);
             wrist(WRIST);
-            elbow(ELBOW);
+            elbow(ELBOW, true);
             minibotInterlock(MINIBOT);
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
@@ -80,7 +81,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             } else if (name.equals("changeDigital12")) {
                 wrist(WRIST);
             } else if (name.equals("changeDigital13")) {
-                elbow(ELBOW);
+                elbow(ELBOW, true);
             } else if (name.equals("changeDigital10")) {
                 minibotInterlock(MINIBOT);
             }
@@ -120,6 +121,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             trigger("mastStop");
             trigger("mastEncoderOverrideOff");
+            trigger("mastFast");
         }
         
         public void handle(Event event) {
@@ -154,11 +156,12 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             compressorState(COMPRESSOR_MANUAL_STATE);
             claw(CLAW);
             wrist(WRIST);
-            elbow(ELBOW);
+            elbow(ELBOW, false);
             minibot(MINIBOT);
             
             trigger("mastStop");
             trigger("mastEncoderOverrideOff");
+            trigger("mastFast");
         }
         
         public void handle(Event event) {
@@ -173,7 +176,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             } else if (name.equals("changeDigital5")) {
                 wrist(WRIST);
             } else if (name.equals("changeDigital6")) {
-                elbow(ELBOW);
+                elbow(ELBOW, false);
             } else if (name.equals("changeDigital9")) {
                 minibot(MINIBOT);
             }
@@ -203,6 +206,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
             mastEncoderOverride(MAST_ENCODER_OVERRIDE);
+            trigger("mastFast");
         }
         
         public void handle(Event event) {
@@ -293,11 +297,16 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         }
     }
     
-    private void elbow(int channel) {
+    private void elbow(int channel, boolean shouldSlowMast) {
         if (getDigital(channel)) {
             trigger("elbowLower");
+            
+            if (shouldSlowMast) {
+                trigger("mastSlow");
+            }
         } else {
             trigger("elbowRaise");
+            trigger("mastFast");
         }
     }
     

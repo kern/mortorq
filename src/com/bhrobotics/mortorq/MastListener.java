@@ -32,8 +32,9 @@ public class MastListener implements Listener {
     private static final double GROUND        = 0.0;
     private static final double NONE          = -1;
     
-    private static final double UP_SPEED   = -1.0;
-    private static final double DOWN_SPEED = 0.2;
+    private static final double UP_SPEED        = -1.0;
+    private static final double SLOW_DOWN_SPEED = 0.0;
+    private static final double FAST_DOWN_SPEED = 0.3;
     
     private static final double DELTA = 10.0;
     
@@ -46,6 +47,7 @@ public class MastListener implements Listener {
     
     private boolean calibrated      = false;
     private boolean encoderOverride = false;
+    private boolean slow            = false;
     private double setpoint         = NONE;
     
     public MastListener() {
@@ -82,7 +84,11 @@ public class MastListener implements Listener {
                     if (encoder.getDistance() < setpoint) {
                         set(UP_SPEED);
                     } else {
-                        set(DOWN_SPEED);
+                        if (slow) {
+                            set(SLOW_DOWN_SPEED);
+                        } else {
+                            set(FAST_DOWN_SPEED);
+                        }
                     }
                 } else {
                     set(0.0);
@@ -118,6 +124,10 @@ public class MastListener implements Listener {
             encoderOverride = true;
         } else if (name.equals("mastEncoderOverrideOff")) {
             encoderOverride = false;
+        } else if (name.equals("mastSlow")) {
+            slow = true;
+        } else if (name.equals("mastFast")) {
+            slow = false;
         }
     }
     
@@ -161,7 +171,12 @@ public class MastListener implements Listener {
     
     public void relativeDown() {
         none();
-        set(DOWN_SPEED);
+        
+        if (slow) {
+            set(SLOW_DOWN_SPEED);
+        } else {
+            set(FAST_DOWN_SPEED);
+        }
     }
     
     public void stop() {
