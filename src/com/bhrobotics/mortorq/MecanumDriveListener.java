@@ -19,22 +19,22 @@ class MecanumDriveListener implements Listener {
     private static final double MAX_DEADBAND = 0.3;
     private static final double MIN_DEADBAND = -0.3;
     
-    private static final int RIGHT_FRONT_MOTOR    = 5;
+    private static final int RIGHT_FRONT_MOTOR    = 2;
     private static final int RIGHT_FRONT_SIDE_A   = 5;
     private static final int RIGHT_FRONT_SIDE_B   = 6;
     private static final double RIGHT_FRONT_SCALE = -1.0;
     
-    private static final int RIGHT_BACK_MOTOR    = 3;
+    private static final int RIGHT_BACK_MOTOR    = 6;
     private static final int RIGHT_BACK_SIDE_A   = 9;
     private static final int RIGHT_BACK_SIDE_B   = 10;
     private static final double RIGHT_BACK_SCALE = -1.0;
     
-    private static final int LEFT_FRONT_MOTOR    = 6;
+    private static final int LEFT_FRONT_MOTOR    = 1;
     private static final int LEFT_FRONT_SIDE_A   = 3;
     private static final int LEFT_FRONT_SIDE_B   = 4;
     private static final double LEFT_FRONT_SCALE = 1.0;
     
-    private static final int LEFT_BACK_MOTOR    = 4;
+    private static final int LEFT_BACK_MOTOR    = 5;
     private static final int LEFT_BACK_SIDE_A   = 7;
     private static final int LEFT_BACK_SIDE_B   = 8;
     private static final double LEFT_BACK_SCALE = 1.0;

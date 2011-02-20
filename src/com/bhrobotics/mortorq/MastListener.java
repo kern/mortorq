@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class MastListener implements Listener {
     private static final int MOTOR_SLOT          = 4;
-    private static final int LEFT_MOTOR_CHANNEL  = 1;
-    private static final int RIGHT_MOTOR_CHANNEL = 2;
+    private static final int LEFT_MOTOR_CHANNEL  = 3;
+    private static final int RIGHT_MOTOR_CHANNEL = 4;
     
     private static final int LIMIT_SWITCH_SLOT    = 4;
     private static final int LIMIT_SWITCH_CHANNEL = 1;
