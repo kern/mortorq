@@ -5,8 +5,6 @@ import com.bhrobotics.morlib.DashboardListener;
 import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
 import com.bhrobotics.morlib.TimeoutEmitter;
-import org.thecatattack.system451.communication.dashboard.ZomBDashboard;
-import org.thecatattack.system451.communication.dashboard.ZomBModes;
 
 class MorTorqControlListener extends ControlListener {
     private LineTrackerFilter lineTrackerFilter       = new LineTrackerFilter();
@@ -19,7 +17,6 @@ class MorTorqControlListener extends ControlListener {
     private ElbowListener elbowListener               = new ElbowListener();
     private MinibotListener minibotListener           = new MinibotListener();
     private MastListener mastListener                 = new MastListener();
-    private ZomBDashboard zomB                        = ZomBDashboard.getInstance(ZomBModes.TCP, true);
     
     public void start() {
         process.bind("tick", mastListener);
@@ -34,6 +31,14 @@ class MorTorqControlListener extends ControlListener {
         elbowListener.reset();
         minibotListener.reset();
         mastListener.stop();
+        
+        process.bind("tick", lineTrackerFilter);
+        lineTrackerFilter.bind("all", mecanumDriveListener);
+    }
+    
+    public void stopAutonomous() {
+        process.unbind("tick", lineTrackerFilter);
+        lineTrackerFilter.unbind("all", mecanumDriveListener);
     }
     
     public void startOperatorControl() {

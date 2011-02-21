@@ -2,6 +2,7 @@ package com.bhrobotics.mortorq;
 
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
+import com.bhrobotics.morlib.TimeoutEmitter;
 import com.bhrobotics.morlib.Filter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -18,21 +19,26 @@ public class LineTrackerFilter extends Filter {
     private static final int SENSOR_C_POWER = 6;
     private static final int SENSOR_R_POWER = 7;
     
-    private static final double FORWARD_X        = 1;
-    private static final double FORWARD_Y        = 1;
-    private static final double FORWARD_ROTATION = 1;
+    private static final double FORWARD_X        = 0.0;
+    private static final double FORWARD_Y        = -0.2;
+    private static final double FORWARD_ROTATION = 0.0;
     
-    private static final double RIGHT_X        = 1;
-    private static final double RIGHT_Y        = 1;
-    private static final double RIGHT_ROTATION = 1;
+    private static final double RIGHT_X        = 0.0;
+    private static final double RIGHT_Y        = -0.2;
+    private static final double RIGHT_ROTATION = 0.2;
     
-    private static final double LEFT_X        = 1;
-    private static final double LEFT_Y        = 1;
-    private static final double LEFT_ROTATION = 1;
+    private static final double LEFT_X        = 0.0;
+    private static final double LEFT_Y        = -0.2;
+    private static final double LEFT_ROTATION = -0.2;
+    
+    private static final double STRAFE_X        = -0.7;
+    private static final double STRAFE_Y        = 0.0;
+    private static final double STRAFE_ROTATION = 0.0;
     
     private Hashtable fowardData = new Hashtable();
     private Hashtable rightData  = new Hashtable();
     private Hashtable leftData   = new Hashtable();
+    private Hashtable strafeData = new Hashtable();
      
     private DigitalInput sensorL = new DigitalInput(SENSOR_SLOT, SENSOR_L_CHANNEL); 
     private DigitalInput sensorC = new DigitalInput(SENSOR_SLOT, SENSOR_C_CHANNEL); 
@@ -43,6 +49,9 @@ public class LineTrackerFilter extends Filter {
     private Solenoid sensorRPower = new Solenoid(POWER_SLOT, SENSOR_R_POWER);
     
     private EventEmitter emitter = new EventEmitter();
+    
+    private TimeoutEmitter strafeTimeout = new TimeoutEmitter();
+    private int strafeState = 0;
     
     public LineTrackerFilter() {
         powerOn();
@@ -58,24 +67,43 @@ public class LineTrackerFilter extends Filter {
         leftData.put("x", new Double(LEFT_X));
         leftData.put("y", new Double(LEFT_Y));
         leftData.put("rotation", new Double(LEFT_ROTATION));
+        
+        strafeData.put("x", new Double(STRAFE_X));
+        strafeData.put("y", new Double(STRAFE_Y));
+        strafeData.put("rotation", new Double(STRAFE_ROTATION));
+        
+        strafeTimeout.bind("all", this);
     }
     
     public void handle(Event event) {
-        if (sensorL.get() && sensorC.get() && sensorR.get()) {
-            stop();
-        } else if (sensorL.get()) {
-            right();
-        } else if (sensorC.get()) {
-            foward();
-        } else if (sensorR.get()) {
-            left();
+        if (event.getName().equals("stopStrafe")) {
+            strafeState = 2;
+            forward();
         } else {
-            stop();
+            if (strafeState == 2 && (sensorL.get() || sensorR.get() || sensorC.get())) {
+                strafeState = 3;
+                stop();
+            } else if (sensorL.get() && strafeState == 0) {
+                right();
+            } else if (sensorR.get() && strafeState == 0) {
+                left();
+            } else if (sensorC.get() && strafeState == 0) {
+                forward();
+            } else if (strafeState == 0) {
+                strafeState = 1;
+                strafeTimeout.schedule("stopStrafe", 2.0);
+                strafe();
+            }
         }
     }
     
-    public void bound(EventEmitter emitter, String name) {}
-    public void unbound(EventEmitter emitter, String name) {}
+    public void bound(EventEmitter emitter, String name) {
+        strafeState = 0;
+    }
+    
+    public void unbound(EventEmitter emitter, String name) {
+        strafeState = 0;
+    }
     
     public EventEmitter getEmitter() {
         return emitter;
@@ -85,12 +113,16 @@ public class LineTrackerFilter extends Filter {
         trigger("drive", leftData);
     }
     
-    public void foward() {
+    public void forward() {
         trigger("drive", fowardData);
     }
     
     public void right() {
         trigger("drive", rightData);
+    }
+    
+    public void strafe() {
+        trigger("drive", strafeData);
     }
     
     public void stop() {

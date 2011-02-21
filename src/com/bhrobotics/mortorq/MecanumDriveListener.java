@@ -32,7 +32,7 @@ class MecanumDriveListener implements Listener {
     private static final int LEFT_FRONT_MOTOR    = 1;
     private static final int LEFT_FRONT_SIDE_A   = 3;
     private static final int LEFT_FRONT_SIDE_B   = 4;
-    private static final double LEFT_FRONT_SCALE = 1.0;
+    private static final double LEFT_FRONT_SCALE = 0.9;
     
     private static final int LEFT_BACK_MOTOR    = 5;
     private static final int LEFT_BACK_SIDE_A   = 7;
@@ -90,11 +90,17 @@ class MecanumDriveListener implements Listener {
             double y = deadband(joystick.getY());
             double z = deadband(joystick.getZ());
             
-            if (joystick.getTrigger() || !getLimitSwitch()) {
+            if (joystick.getTrigger() || getLimitSwitch()) {
                 drive(x, y, z, SCALE_SLOW);
             } else {
                 drive(x, y, z, SCALE_FAST);
             }
+        } else if (name.equals("drive")) {
+            double x = ((Double) event.getData("x")).doubleValue();
+            double y = ((Double) event.getData("y")).doubleValue();
+            double rotation = ((Double) event.getData("rotation")).doubleValue();
+            
+            drive(x, y, rotation);
         } else if (name.startsWith("changeMotor")) {
             double setpoint = ((Double) event.getData("value")).doubleValue();
             
