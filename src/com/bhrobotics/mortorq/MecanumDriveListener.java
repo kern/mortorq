@@ -23,21 +23,29 @@ class MecanumDriveListener implements Listener {
     private static final int RIGHT_FRONT_SIDE_A   = 5;
     private static final int RIGHT_FRONT_SIDE_B   = 6;
     private static final double RIGHT_FRONT_SCALE = -1.0;
+    private static final double RIGHT_FRONT_MAX   = 1.0;
+    private static final double RIGHT_FRONT_MIN   = 0.0;
     
     private static final int RIGHT_BACK_MOTOR    = 6;
     private static final int RIGHT_BACK_SIDE_A   = 9;
     private static final int RIGHT_BACK_SIDE_B   = 10;
     private static final double RIGHT_BACK_SCALE = -1.0;
+    private static final double RIGHT_BACK_MAX   = 1.0;
+    private static final double RIGHT_BACK_MIN   = 0.0;
     
     private static final int LEFT_FRONT_MOTOR    = 1;
     private static final int LEFT_FRONT_SIDE_A   = 3;
     private static final int LEFT_FRONT_SIDE_B   = 4;
-    private static final double LEFT_FRONT_SCALE = 0.9;
+    private static final double LEFT_FRONT_SCALE = 1.0;
+    private static final double LEFT_FRONT_MAX   = 1.0;
+    private static final double LEFT_FRONT_MIN   = 0.0;
     
     private static final int LEFT_BACK_MOTOR    = 5;
     private static final int LEFT_BACK_SIDE_A   = 7;
     private static final int LEFT_BACK_SIDE_B   = 8;
     private static final double LEFT_BACK_SCALE = 1.0;
+    private static final double LEFT_BACK_MAX   = 1.0;
+    private static final double LEFT_BACK_MIN   = 0.0;
     
     private static final int LIMIT_SWITCH_SLOT    = 4;
     private static final int LIMIT_SWITCH_CHANNEL = 1;
@@ -148,22 +156,36 @@ class MecanumDriveListener implements Listener {
     }
     
     private void setRightFront(double setpoint) {
-        rightFrontMotor.set(setpoint * RIGHT_FRONT_SCALE);
+        rightFrontMotor.set(scale(setpoint, RIGHT_FRONT_MAX, RIGHT_FRONT_MIN, RIGHT_FRONT_SCALE));
     }
     
     private void setRightBack(double setpoint) {
-        rightBackMotor.set(setpoint * RIGHT_BACK_SCALE);
+        rightBackMotor.set(scale(setpoint, RIGHT_BACK_MAX, RIGHT_BACK_MIN, RIGHT_BACK_SCALE));
     }
     
     private void setLeftFront(double setpoint) {
-        leftFrontMotor.set(setpoint * LEFT_FRONT_SCALE);
+        leftFrontMotor.set(scale(setpoint, LEFT_FRONT_MAX, LEFT_FRONT_MIN, LEFT_FRONT_SCALE));
     }
     
     private void setLeftBack(double setpoint) {
-        leftBackMotor.set(setpoint * LEFT_BACK_SCALE);
+        leftBackMotor.set(scale(setpoint, LEFT_BACK_MAX, LEFT_BACK_MIN, LEFT_BACK_SCALE));
     }
     
     private boolean getLimitSwitch() {
         return DigitalModule.getInstance(LIMIT_SWITCH_SLOT).getDIO(LIMIT_SWITCH_CHANNEL);
+    }
+    
+    private double scale(double original, double max, double min, double scale) {
+        return ((max - min) * original) + (min * signum(original));
+    }
+    
+    private int signum(double n) {
+        if (n > 0) {
+            return 1;
+        } else if (n < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }
