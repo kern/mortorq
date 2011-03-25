@@ -39,6 +39,7 @@ public class MinibotListener implements Listener {
             }
         } else if (name.equals("minibotInterlockOff")) {
             interlock = false;
+            redact();
         } else if (name.equals("minibotDeploy")) {
             deploy();
         } else if (name.equals("minibotRedact")) {

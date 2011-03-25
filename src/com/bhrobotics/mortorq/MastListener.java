@@ -63,7 +63,7 @@ public class MastListener implements Listener {
         String name = event.getName();
         
         if (name.equals("tick")) {
-            if (!calibrated && getLimitSwitch()) {
+            if (getLimitSwitch()) {
                 calibrated = true;
                 encoder.reset();
             }

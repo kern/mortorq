@@ -58,9 +58,9 @@ public class DriverStationFilter extends Filter {
         updateAllAnalogs(forceEmit);
         updateDigitalsShort(forceEmit);
         updateAllDigitals(forceEmit);
-        updateAllAccels(forceEmit);
-        updateButtonsByte(forceEmit);
-        updateAllButtons(forceEmit);
+        // updateAllAccels(forceEmit);
+        // updateButtonsByte(forceEmit);
+        // updateAllButtons(forceEmit);
     }
     
     public void updateAllAnalogs(boolean forceEmit) {

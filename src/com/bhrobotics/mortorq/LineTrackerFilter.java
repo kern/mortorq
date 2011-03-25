@@ -20,25 +20,30 @@ public class LineTrackerFilter extends Filter {
     private static final int SENSOR_R_POWER = 7;
     
     private static final double FORWARD_X        = 0.0;
-    private static final double FORWARD_Y        = -0.2;
+    private static final double FORWARD_Y        = -0.11;
     private static final double FORWARD_ROTATION = 0.0;
     
     private static final double RIGHT_X        = 0.0;
-    private static final double RIGHT_Y        = -0.2;
-    private static final double RIGHT_ROTATION = 0.2;
+    private static final double RIGHT_Y        = -0.1;
+    private static final double RIGHT_ROTATION = 0.25;
     
     private static final double LEFT_X        = 0.0;
-    private static final double LEFT_Y        = -0.2;
+    private static final double LEFT_Y        = -0.1;
     private static final double LEFT_ROTATION = -0.2;
     
-    private static final double STRAFE_X        = -0.7;
-    private static final double STRAFE_Y        = 0.0;
-    private static final double STRAFE_ROTATION = 0.0;
+    private static final double BACKWARD_X        = 0.0;
+    private static final double BACKWARD_Y        = 0.25;
+    private static final double BACKWARD_ROTATION = 0.0;
     
-    private Hashtable fowardData = new Hashtable();
-    private Hashtable rightData  = new Hashtable();
-    private Hashtable leftData   = new Hashtable();
-    private Hashtable strafeData = new Hashtable();
+    private static final double PAUSE_DELAY = 1.0;
+    private static final double CLAW_NARROW_DELAY = 0.5;
+    private static final double MAST_GROUND_DELAY = 0.5;
+    private static final double BACKWARD_DELAY = 2.0;
+    
+    private Hashtable fowardData   = new Hashtable();
+    private Hashtable rightData    = new Hashtable();
+    private Hashtable leftData     = new Hashtable();
+    private Hashtable backwardData = new Hashtable();
      
     private DigitalInput sensorL = new DigitalInput(SENSOR_SLOT, SENSOR_L_CHANNEL); 
     private DigitalInput sensorC = new DigitalInput(SENSOR_SLOT, SENSOR_C_CHANNEL); 
@@ -49,9 +54,9 @@ public class LineTrackerFilter extends Filter {
     private Solenoid sensorRPower = new Solenoid(POWER_SLOT, SENSOR_R_POWER);
     
     private EventEmitter emitter = new EventEmitter();
+    private TimeoutEmitter timeout = new TimeoutEmitter();
     
-    private TimeoutEmitter strafeTimeout = new TimeoutEmitter();
-    private int strafeState = 0;
+    private boolean atPeg = false;
     
     public LineTrackerFilter() {
         powerOn();
@@ -68,42 +73,54 @@ public class LineTrackerFilter extends Filter {
         leftData.put("y", new Double(LEFT_Y));
         leftData.put("rotation", new Double(LEFT_ROTATION));
         
-        strafeData.put("x", new Double(STRAFE_X));
-        strafeData.put("y", new Double(STRAFE_Y));
-        strafeData.put("rotation", new Double(STRAFE_ROTATION));
+        backwardData.put("x", new Double(BACKWARD_X));
+        backwardData.put("y", new Double(BACKWARD_Y));
+        backwardData.put("rotation", new Double(BACKWARD_ROTATION));
         
-        strafeTimeout.bind("all", this);
+        timeout.bind("all", this);
     }
     
     public void handle(Event event) {
-        if (event.getName().equals("stopStrafe")) {
-            strafeState = 2;
-            forward();
+        if (event.getName().equals("clawNarrow")) {
+            trigger("clawNarrow");
+        } else if (event.getName().equals("backward")) {
+            backward();
+        } else if (event.getName().equals("mastGround")) {
+            trigger("mastGround");
+        } else if (event.getName().equals("stop")) {
+            stop();
         } else {
-            if (strafeState == 2 && (sensorL.get() || sensorR.get() || sensorC.get())) {
-                strafeState = 3;
-                stop();
-            } else if (sensorL.get() && strafeState == 0) {
-                right();
-            } else if (sensorR.get() && strafeState == 0) {
-                left();
-            } else if (sensorC.get() && strafeState == 0) {
-                forward();
-            } else if (strafeState == 0) {
-                strafeState = 1;
-                strafeTimeout.schedule("stopStrafe", 2.0);
-                strafe();
+            if (!atPeg) {
+                trigger("clawWide");
+                
+                boolean l = sensorL.get();
+                boolean c = sensorC.get();
+                boolean r = sensorR.get();
+                
+                if (l && r && c) {
+                    pegReached();
+                } else if (l) {
+                    right();
+                } else if (r) {
+                    left();
+                } else if (c) {
+                    forward();
+                    trigger("mastCenterTop");
+                } else {
+                    stop();
+                }
             }
         }
     }
     
     public void bound(EventEmitter emitter, String name) {
-        strafeState = 0;
+        atPeg = false;
+        stop();
+        trigger("clawWide");
+        trigger("mastCenterTop");
     }
     
-    public void unbound(EventEmitter emitter, String name) {
-        strafeState = 0;
-    }
+    public void unbound(EventEmitter emitter, String name) {}
     
     public EventEmitter getEmitter() {
         return emitter;
@@ -111,22 +128,36 @@ public class LineTrackerFilter extends Filter {
     
     public void left() {
         trigger("drive", leftData);
+        System.out.println("[auto] Left.");
     }
     
     public void forward() {
         trigger("drive", fowardData);
+        System.out.println("[auto] Forward.");
     }
     
     public void right() {
         trigger("drive", rightData);
+        System.out.println("[auto] Right.");
     }
     
-    public void strafe() {
-        trigger("drive", strafeData);
+    public void backward() {
+        trigger("drive", backwardData);
+        System.out.println("[auto] Backward.");
     }
     
     public void stop() {
         trigger("stopMotors");
+        System.out.println("[auto] Stopping.");
+    }
+    
+    private void pegReached() {
+        atPeg = true;
+        stop();
+        timeout.schedule("clawNarrow", PAUSE_DELAY);
+        timeout.schedule("backward", PAUSE_DELAY + CLAW_NARROW_DELAY);
+        timeout.schedule("mastGround", PAUSE_DELAY + CLAW_NARROW_DELAY + MAST_GROUND_DELAY);
+        timeout.schedule("stop", PAUSE_DELAY + CLAW_NARROW_DELAY + BACKWARD_DELAY);
     }
     
     public void powerOn() {

@@ -24,21 +24,22 @@ class MorTorqControlListener extends ControlListener {
     }
     
     public void startAutonomous() {
-        mecanumDriveListener.stop();
         compressorListener.auto();
-        clawListener.reset();
         wristListener.reset();
         elbowListener.reset();
         minibotListener.reset();
-        mastListener.stop();
         
         process.bind("tick", lineTrackerFilter);
         lineTrackerFilter.bind("all", mecanumDriveListener);
+        lineTrackerFilter.bind("all", clawListener);
+        lineTrackerFilter.bind("all", mastListener);
     }
     
     public void stopAutonomous() {
         process.unbind("tick", lineTrackerFilter);
         lineTrackerFilter.unbind("all", mecanumDriveListener);
+        lineTrackerFilter.unbind("all", clawListener);
+        lineTrackerFilter.unbind("all", mastListener);
     }
     
     public void startOperatorControl() {

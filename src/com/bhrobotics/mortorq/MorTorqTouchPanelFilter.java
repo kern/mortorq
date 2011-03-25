@@ -63,6 +63,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             claw(CLAW);
             wrist(WRIST);
             elbow(ELBOW, true);
+            trigger("minibotRedact");
             minibotInterlock(MINIBOT);
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
