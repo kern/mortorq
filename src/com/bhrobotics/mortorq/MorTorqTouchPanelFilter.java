@@ -30,8 +30,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("stopMotors");
             
             trigger("compressorStop");
-            trigger("clawReset");
-            trigger("wristReset");
+            Claw.getInstance().wide();
+            Wrist.getInstance().lower();
             trigger("elbowReset");
             trigger("minibotReset");
             
@@ -115,8 +115,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             rightBackMotor(RIGHT_BACK_STOP, RIGHT_BACK_BACKWARD, RIGHT_BACK_SPEED);
             
             trigger("compressorStop");
-            trigger("clawReset");
-            trigger("wristReset");
+            Claw.getInstance().wide();
+            Wrist.getInstance().lower();
             trigger("elbowReset");
             trigger("minibotReset");
             
@@ -200,8 +200,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("stopMotors");
             
             trigger("compressorStop");
-            trigger("clawReset");
-            trigger("wristReset");
+            Claw.getInstance().wide();
+            Wrist.getInstance().lower();
             trigger("elbowReset");
             trigger("minibotReset");
             
@@ -284,17 +284,17 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private void claw(int channel) {
         if (getDigital(channel)) {
-            trigger("clawNarrow");
+            Claw.getInstance().narrow();
         } else {
-            trigger("clawWide");
+            Claw.getInstance().wide();
         }
     }
     
     private void wrist(int channel) {
         if (getDigital(channel)) {
-            trigger("wristLower");
+            Wrist.getInstance().raise();
         } else {
-            trigger("wristRaise");
+            Wrist.getInstance().lower();
         }
     }
     

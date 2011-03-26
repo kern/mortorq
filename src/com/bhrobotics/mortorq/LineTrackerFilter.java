@@ -82,7 +82,7 @@ public class LineTrackerFilter extends Filter {
     
     public void handle(Event event) {
         if (event.getName().equals("clawNarrow")) {
-            trigger("clawNarrow");
+            Claw.getInstance().narrow();
         } else if (event.getName().equals("backward")) {
             backward();
         } else if (event.getName().equals("mastGround")) {
@@ -91,7 +91,7 @@ public class LineTrackerFilter extends Filter {
             stop();
         } else {
             if (!atPeg) {
-                trigger("clawWide");
+                Claw.getInstance().wide();
                 
                 boolean l = sensorL.get();
                 boolean c = sensorC.get();
@@ -116,7 +116,7 @@ public class LineTrackerFilter extends Filter {
     public void bound(EventEmitter emitter, String name) {
         atPeg = false;
         stop();
-        trigger("clawWide");
+        Claw.getInstance().wide();
         trigger("mastCenterTop");
     }
     

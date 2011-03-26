@@ -12,8 +12,6 @@ class MorTorqControlListener extends ControlListener {
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
     private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
     private CompressorListener compressorListener     = new CompressorListener();
-    private ClawListener clawListener                 = new ClawListener();
-    private WristListener wristListener               = new WristListener();
     private ElbowListener elbowListener               = new ElbowListener();
     private MinibotListener minibotListener           = new MinibotListener();
     private MastListener mastListener                 = new MastListener();
@@ -25,20 +23,18 @@ class MorTorqControlListener extends ControlListener {
     
     public void startAutonomous() {
         compressorListener.auto();
-        wristListener.reset();
+        Wrist.getInstance().raise();
         elbowListener.reset();
         minibotListener.reset();
         
         process.bind("tick", lineTrackerFilter);
         lineTrackerFilter.bind("all", mecanumDriveListener);
-        lineTrackerFilter.bind("all", clawListener);
         lineTrackerFilter.bind("all", mastListener);
     }
     
     public void stopAutonomous() {
         process.unbind("tick", lineTrackerFilter);
         lineTrackerFilter.unbind("all", mecanumDriveListener);
-        lineTrackerFilter.unbind("all", clawListener);
         lineTrackerFilter.unbind("all", mastListener);
     }
     
@@ -52,8 +48,6 @@ class MorTorqControlListener extends ControlListener {
         
         panelFilter.bind("all", mecanumDriveListener);
         panelFilter.bind("all", compressorListener);
-        panelFilter.bind("all", clawListener);
-        panelFilter.bind("all", wristListener);
         panelFilter.bind("all", elbowListener);
         panelFilter.bind("all", minibotListener);
         panelFilter.bind("all", mastListener);
@@ -68,8 +62,6 @@ class MorTorqControlListener extends ControlListener {
         
         panelFilter.unbind("all", mecanumDriveListener);
         panelFilter.unbind("all", compressorListener);
-        panelFilter.unbind("all", clawListener);
-        panelFilter.unbind("all", wristListener);
         panelFilter.unbind("all", elbowListener);
         panelFilter.unbind("all", minibotListener);
         panelFilter.unbind("all", mastListener);
