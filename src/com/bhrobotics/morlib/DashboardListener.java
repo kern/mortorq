@@ -67,7 +67,4 @@ public class DashboardListener implements Listener {
         
         lowDashData.commit();
     }
-    
-    public void bound(EventEmitter emitter, String name) {}
-    public void unbound(EventEmitter emitter, String name) {}
 }

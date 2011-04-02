@@ -131,9 +131,6 @@ public class MastListener implements Listener {
         }
     }
     
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
-    
     public boolean isMovingUp() {
         return get() < 0.0;
     }

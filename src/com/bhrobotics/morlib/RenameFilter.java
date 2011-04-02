@@ -1,21 +1,9 @@
 package com.bhrobotics.morlib;
 
-import com.bhrobotics.morlib.Filter;
-import com.bhrobotics.morlib.EventEmitter;
-import com.bhrobotics.morlib.Listener;
-import com.bhrobotics.morlib.Event;
 import java.util.Hashtable;
 
-public class RenameFilter extends Filter {
+public class RenameFilter extends EventEmitter implements Listener {
     private Hashtable links = new Hashtable();
-    private EventEmitter emitter = new EventEmitter(); 
-    
-    public EventEmitter getEmitter() {
-        return emitter;
-    }
-    
-    public void bound (EventEmitter em, String event) {}
-    public void unbound (EventEmitter em, String event) {}
     
     public void addLink(String occur, Event effect) {
         links.put(occur, effect);

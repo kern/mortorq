@@ -96,9 +96,6 @@ class MecanumDriveListener implements Listener {
         }
     }
     
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
-    
     public void drive(double x, double y, double rotation) {
         drive(x, y, rotation, SCALE_FAST);
     }

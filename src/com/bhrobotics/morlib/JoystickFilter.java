@@ -3,9 +3,7 @@ package com.bhrobotics.morlib;
 import edu.wpi.first.wpilibj.Joystick;
 import java.util.Hashtable;
 
-public class JoystickFilter extends Filter {
-    private EventEmitter emitter = new EventEmitter();
-    
+public class JoystickFilter extends EventEmitter implements Listener {
     private Joystick joystick1 = new Joystick(1);
     private Joystick joystick2 = new Joystick(2);
     private Joystick joystick3 = new Joystick(3);
@@ -28,11 +26,4 @@ public class JoystickFilter extends Filter {
         joystick4Data.put("joystick", joystick4);
         trigger("changeJoystick4", joystick4Data);
     }
-    
-    public EventEmitter getEmitter() {
-        return emitter;
-    }
-    
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
 }

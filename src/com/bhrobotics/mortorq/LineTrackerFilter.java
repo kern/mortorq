@@ -2,13 +2,12 @@ package com.bhrobotics.mortorq;
 
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.EventEmitter;
-import com.bhrobotics.morlib.TimeoutEmitter;
-import com.bhrobotics.morlib.Filter;
+import com.bhrobotics.morlib.Listener;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import java.util.Hashtable;
 
-public class LineTrackerFilter extends Filter {
+public class LineTrackerFilter extends EventEmitter implements Listener {
     private static final int SENSOR_SLOT      = 6;
     private static final int SENSOR_L_CHANNEL = 11;
     private static final int SENSOR_C_CHANNEL = 12;
@@ -53,9 +52,6 @@ public class LineTrackerFilter extends Filter {
     private Solenoid sensorCPower = new Solenoid(POWER_SLOT, SENSOR_C_POWER);
     private Solenoid sensorRPower = new Solenoid(POWER_SLOT, SENSOR_R_POWER);
     
-    private EventEmitter emitter = new EventEmitter();
-    private TimeoutEmitter timeout = new TimeoutEmitter();
-    
     private boolean atPeg = false;
     
     public LineTrackerFilter() {
@@ -77,7 +73,7 @@ public class LineTrackerFilter extends Filter {
         backwardData.put("y", new Double(BACKWARD_Y));
         backwardData.put("rotation", new Double(BACKWARD_ROTATION));
         
-        timeout.bind("all", this);
+        bind("all", this);
     }
     
     public void handle(Event event) {
@@ -120,12 +116,6 @@ public class LineTrackerFilter extends Filter {
         trigger("mastCenterTop");
     }
     
-    public void unbound(EventEmitter emitter, String name) {}
-    
-    public EventEmitter getEmitter() {
-        return emitter;
-    }
-    
     public void left() {
         trigger("drive", leftData);
         System.out.println("[auto] Left.");
@@ -154,10 +144,10 @@ public class LineTrackerFilter extends Filter {
     private void pegReached() {
         atPeg = true;
         stop();
-        timeout.schedule("clawNarrow", PAUSE_DELAY);
-        timeout.schedule("backward", PAUSE_DELAY + CLAW_NARROW_DELAY);
-        timeout.schedule("mastGround", PAUSE_DELAY + CLAW_NARROW_DELAY + MAST_GROUND_DELAY);
-        timeout.schedule("stop", PAUSE_DELAY + CLAW_NARROW_DELAY + BACKWARD_DELAY);
+        schedule("clawNarrow", PAUSE_DELAY);
+        schedule("backward", PAUSE_DELAY + CLAW_NARROW_DELAY);
+        schedule("mastGround", PAUSE_DELAY + CLAW_NARROW_DELAY + MAST_GROUND_DELAY);
+        schedule("stop", PAUSE_DELAY + CLAW_NARROW_DELAY + BACKWARD_DELAY);
     }
     
     public void powerOn() {

@@ -3,9 +3,12 @@ package com.bhrobotics.morlib;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Enumeration;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EventEmitter {
     private Hashtable listeners = new Hashtable();
+    private Timer timer = new Timer();
     
     public Hashtable getListeners() {
         return listeners;
@@ -47,13 +50,15 @@ public class EventEmitter {
     public void bind(String event, Listener listener) {
         Vector eventListeners = getListeners(event);
         eventListeners.addElement(listener);
-        listener.bound(this, event);
     }
     
     public void unbind(String event, Listener listener) {
         Vector eventListeners = getListeners(event);
         eventListeners.removeElement(listener);
-        listener.unbound(this, event);
+    }
+    
+    public void unbindAll() {
+        listeners = new Hashtable();
     }
     
     public void trigger(String name) {
@@ -88,6 +93,36 @@ public class EventEmitter {
         
         if(flush && !eventListeners.isEmpty()) {
             getListeners(event.getName()).removeAllElements();
+        }
+    }
+    
+    public void schedule(String name, double delay) {
+        schedule(name, new Hashtable(), delay);
+    }
+    
+    public void schedule(String name, Hashtable data, double delay) {
+        schedule(new Event(name, data), delay);
+    }
+    
+    public void schedule(Event event, double delay) {
+        TimeoutTask task = new TimeoutTask(event);
+        timer.schedule(task, (long) (delay * 1000));
+    }
+    
+    public void cancelAll() {
+        timer.cancel();
+        timer = new Timer();
+    }
+    
+    private class TimeoutTask extends TimerTask {
+        private Event event;
+        
+        public TimeoutTask(Event e) {
+            event = e;
+        }
+        
+        public void run() {
+            trigger(event);
         }
     }
 }

@@ -32,8 +32,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("compressorStop");
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
-            trigger("elbowReset");
-            trigger("minibotReset");
+            Elbow.getInstance().raise();
+            Minibot.getInstance().retract();
             
             trigger("mastStop");
             trigger("mastEncoderOverrideOff");
@@ -63,7 +63,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             claw(CLAW);
             wrist(WRIST);
             elbow(ELBOW, true);
-            trigger("minibotRedact");
+            Minibot.getInstance().retract();
             minibotInterlock(MINIBOT);
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
@@ -117,8 +117,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("compressorStop");
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
-            trigger("elbowReset");
-            trigger("minibotReset");
+            Elbow.getInstance().raise();
+            Minibot.getInstance().retract();
             
             trigger("mastStop");
             trigger("mastEncoderOverrideOff");
@@ -202,8 +202,8 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("compressorStop");
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
-            trigger("elbowReset");
-            trigger("minibotReset");
+            Elbow.getInstance().raise();
+            Minibot.getInstance().retract();
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
             mastEncoderOverride(MAST_ENCODER_OVERRIDE);
@@ -300,30 +300,26 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private void elbow(int channel, boolean shouldSlowMast) {
         if (getDigital(channel)) {
-            trigger("elbowLower");
+            Elbow.getInstance().lower();
             
             if (shouldSlowMast) {
                 trigger("mastSlow");
             }
         } else {
-            trigger("elbowRaise");
+            Elbow.getInstance().raise();
             trigger("mastFast");
         }
     }
     
     private void minibotInterlock(int channel) {
-        if (getDigital(channel)) {
-            trigger("minibotInterlockOn");
-        } else {
-            trigger("minibotInterlockOff");
-        }
+        Minibot.getInstance().setInterlock(getDigital(channel));
     }
     
     private void minibot(int channel) {
         if (getDigital(channel)) {
-            trigger("minibotDeploy");
+            Minibot.getInstance().deploy();
         } else {
-            trigger("minibotRedact");
+            Minibot.getInstance().retract();
         }
     }
     

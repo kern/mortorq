@@ -11,7 +11,4 @@ public class EchoListener implements Listener {
     public boolean wasTriggered() {
         return triggered;
     }
-    
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
 }

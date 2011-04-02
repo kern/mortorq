@@ -28,9 +28,6 @@ public class ControlListener implements Listener {
         }
     }
     
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
-    
     public void start() {}
     public void stop() {}
     public void startAutonomous() {}

@@ -41,9 +41,6 @@ public class CompressorListener implements Listener {
         }
     }
     
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
-    
     public void auto() {
         mode = "auto";
     }

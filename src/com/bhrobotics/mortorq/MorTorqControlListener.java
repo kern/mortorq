@@ -3,18 +3,17 @@ package com.bhrobotics.mortorq;
 import com.bhrobotics.morlib.ControlListener;
 import com.bhrobotics.morlib.DashboardListener;
 import com.bhrobotics.morlib.Listener;
+import com.bhrobotics.morlib.EventEmitter;
+import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.Reactor;
-import com.bhrobotics.morlib.TimeoutEmitter;
 
 class MorTorqControlListener extends ControlListener {
     private LineTrackerFilter lineTrackerFilter       = new LineTrackerFilter();
-    private TimeoutEmitter endGameTimeout             = new TimeoutEmitter();
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
     private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
     private CompressorListener compressorListener     = new CompressorListener();
-    private ElbowListener elbowListener               = new ElbowListener();
-    private MinibotListener minibotListener           = new MinibotListener();
     private MastListener mastListener                 = new MastListener();
+    private EventEmitter endGameEmitter               = new EventEmitter();
     
     public void start() {
         process.bind("tick", mastListener);
@@ -24,8 +23,8 @@ class MorTorqControlListener extends ControlListener {
     public void startAutonomous() {
         compressorListener.auto();
         Wrist.getInstance().raise();
-        elbowListener.reset();
-        minibotListener.reset();
+        Elbow.getInstance().raise();
+        Minibot.getInstance().retract();
         
         process.bind("tick", lineTrackerFilter);
         lineTrackerFilter.bind("all", mecanumDriveListener);
@@ -34,36 +33,33 @@ class MorTorqControlListener extends ControlListener {
     
     public void stopAutonomous() {
         process.unbind("tick", lineTrackerFilter);
-        lineTrackerFilter.unbind("all", mecanumDriveListener);
-        lineTrackerFilter.unbind("all", mastListener);
+        lineTrackerFilter.unbindAll();
     }
     
     public void startOperatorControl() {
         joystickFilter.bind("changeJoystick1", panelFilter);
         dsFilter.bind("all", panelFilter);
-        dsFilter.update(true);
-        
-        endGameTimeout.bind("startEndGame", minibotListener);
-        endGameTimeout.schedule("startEndGame", 110);
+        dsFilter.update(false);
         
         panelFilter.bind("all", mecanumDriveListener);
         panelFilter.bind("all", compressorListener);
-        panelFilter.bind("all", elbowListener);
-        panelFilter.bind("all", minibotListener);
         panelFilter.bind("all", mastListener);
+        
+        endGameEmitter.bind("startEndGame", new Listener() {
+            public void handle(Event event) {
+                Minibot.getInstance().setEndGame(true);
+            }
+        });
+        
+        endGameEmitter.schedule("startEndGame", 110);
     }
     
     public void stopOperatorControl() {
-        joystickFilter.unbind("changeJoystick1", panelFilter);
-        dsFilter.unbind("all", panelFilter);
+        joystickFilter.unbindAll();
+        dsFilter.unbindAll();
+        panelFilter.unbindAll();
         
-        endGameTimeout.unbind("startEndGame", minibotListener);
-        endGameTimeout.cancelAll();
-        
-        panelFilter.unbind("all", mecanumDriveListener);
-        panelFilter.unbind("all", compressorListener);
-        panelFilter.unbind("all", elbowListener);
-        panelFilter.unbind("all", minibotListener);
-        panelFilter.unbind("all", mastListener);
+        endGameEmitter.unbindAll();
+        endGameEmitter.cancelAll();
     }
 }

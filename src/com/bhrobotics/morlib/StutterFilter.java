@@ -1,13 +1,8 @@
-package com.bhrobotics.mortorq;
+package com.bhrobotics.morlib;
 
-import com.bhrobotics.morlib.Filter;
-import com.bhrobotics.morlib.Event;
-import com.bhrobotics.morlib.EventEmitter;
-import com.bhrobotics.morlib.TimeoutEmitter;
 import java.util.Hashtable;
 
-public class StutterFilter extends Filter {
-    private TimeoutEmitter emitter = new TimeoutEmitter();
+public class StutterFilter extends EventEmitter implements Listener {
     private double highInterval;
     private double lowInterval;
     private int cycles;
@@ -20,14 +15,6 @@ public class StutterFilter extends Filter {
         setHighInterval(h);
         setLowInterval(l);
         setCycles(c);
-    }
-    
-    public EventEmitter getEmitter() {
-        return emitter;
-    }
-    
-    public TimeoutEmitter getTimeoutEmitter() {
-        return emitter;
     }
     
     public double getHighInterval() {
@@ -55,7 +42,7 @@ public class StutterFilter extends Filter {
     }
     
     public void handle(Event highEvent) {
-        emitter.cancelAll();
+        cancelAll();
         String name = highEvent.getName();
         
         Hashtable lowData = new Hashtable();
@@ -72,15 +59,8 @@ public class StutterFilter extends Filter {
         for (int i = 0; i < cycles; i++) {
             int j = i + 1;
             
-            emitter.schedule(lowEvent, (highInterval * j) + (lowInterval * i));
-            emitter.schedule(highEvent, (highInterval * j) + (lowInterval * j));
+            schedule(lowEvent, (highInterval * j) + (lowInterval * i));
+            schedule(highEvent, (highInterval * j) + (lowInterval * j));
         }
     }
-    
-    public void cancelAll() {
-        emitter.cancelAll();
-    }
-    
-    public void bound(EventEmitter emitter, String event) {}
-    public void unbound(EventEmitter emitter, String event) {}
 }
