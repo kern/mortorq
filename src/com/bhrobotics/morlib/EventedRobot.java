@@ -4,38 +4,35 @@ import edu.wpi.first.wpilibj.SimpleRobot;
 
 public class EventedRobot extends SimpleRobot {
     protected EventEmitter process = Reactor.getProcess();
-    
-    public void addControlListener(ControlListener listener) {
-        process.bind("start", listener);
-        process.bind("stop", listener);
-        process.bind("startAutonomous", listener);
-        process.bind("stopAutonomous", listener);
-        process.bind("startOperatorControl", listener);
-        process.bind("stopOperatorControl", listener);
-    }
+    protected JoystickFilter joystickFilter = new JoystickFilter();
+    protected DriverStationFilter dsFilter = new DriverStationFilter();
     
     protected void robotInit() {
         System.out.println("[morlib] Robot started.");
+        start();
     }
     
     public void autonomous() {
         System.out.println("[morlib] Autonomous started.");
         Reactor.startTicking();
-        process.trigger("startAutonomous");
+        startAutonomous();
         
         while(isAutonomous() && isSystemActive()) {
             getWatchdog().feed();
         }
         
-        process.trigger("stopAutonomous");
+        stopAutonomous();
         Reactor.stopTicking();
         System.out.println("[morlib] Autonomous stopped.");
     }
     
     public void operatorControl() {
         System.out.println("[morlib] Operator control started.");
+        process.bind("newDataAvailable", joystickFilter);
+        process.bind("newDataAvailable", dsFilter);
         Reactor.startTicking();
-        process.trigger("startOperatorControl");
+        
+        startOperatorControl();
         
         while(isOperatorControl() && isSystemActive()) {
             if(isNewDataAvailable()) {
@@ -45,8 +42,11 @@ public class EventedRobot extends SimpleRobot {
             getWatchdog().feed();
         }
         
-        process.trigger("stopOperatorControl");
+        stopOperatorControl();
+        
         Reactor.stopTicking();
+        process.unbind("newDataAvailable", joystickFilter);
+        process.unbind("newDataAvailable", dsFilter);
         System.out.println("[morlib] Operator control stopped.");
     }
     
@@ -55,4 +55,10 @@ public class EventedRobot extends SimpleRobot {
         while(isDisabled()) {}
         System.out.println("[morlib] Disabled stopped.");
     }
+    
+    public void start() {}
+    public void startAutonomous() {}
+    public void stopAutonomous() {}
+    public void startOperatorControl() {}
+    public void stopOperatorControl() {}
 }
