@@ -31,10 +31,6 @@ public class DriverStationFilter extends EventEmitter implements Listener {
         update(false);
     }
     
-    public void bound(EventEmitter emitter, String event) {
-        update(false);
-    }
-    
     public void update(boolean forceEmit) {
         updateAllAnalogs(forceEmit);
         updateDigitalsShort(forceEmit);

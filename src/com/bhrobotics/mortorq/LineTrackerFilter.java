@@ -109,6 +109,7 @@ public class LineTrackerFilter extends EventEmitter implements Listener {
         }
     }
     
+    // TODO: Put this into the initialization of autonomous.
     public void bound(EventEmitter emitter, String name) {
         atPeg = false;
         stop();
