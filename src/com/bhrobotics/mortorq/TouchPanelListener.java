@@ -6,7 +6,7 @@ import com.bhrobotics.morlib.Reactor;
 import com.bhrobotics.morlib.Listener;
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class TouchPanelFilter extends EventEmitter implements Listener {
+public class TouchPanelListener implements Listener {
     private static final int NUM_SCREENS = 5;
     
     private TouchPanelScreen[] screens = new TouchPanelScreen[NUM_SCREENS];

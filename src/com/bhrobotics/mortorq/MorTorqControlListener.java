@@ -7,21 +7,18 @@ import com.bhrobotics.morlib.EventEmitter;
 import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.Reactor;
 
-class MorTorqControlListener extends ControlListener {
-    private LineTrackerFilter lineTrackerFilter       = new LineTrackerFilter();
-    private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
-    private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
-    private MastListener mastListener                 = new MastListener();
-    private EventEmitter endGameEmitter               = new EventEmitter();
+public class MorTorqControlListener extends ControlListener {
+    private LineTrackerListener lineTrackerListener = new LineTrackerListener();
+    private MorTorqTouchPanelListener panelListener = new MorTorqTouchPanelListener();
+    private EventEmitter endGameEmitter             = new EventEmitter();
     
     public void start() {
         process.bind("tick", new Listener() {
             public void handle(Event event) {
                 Compressor.getInstance().update();
+                Mast.getInstance().update();
             }
         });
-        
-        process.bind("tick", mastListener);
     }
     
     public void startAutonomous() {
@@ -30,23 +27,19 @@ class MorTorqControlListener extends ControlListener {
         Elbow.getInstance().raise();
         Minibot.getInstance().retract();
         
-        process.bind("tick", lineTrackerFilter);
-        lineTrackerFilter.bind("all", mecanumDriveListener);
-        lineTrackerFilter.bind("all", mastListener);
+        process.bind("tick", lineTrackerListener);
+        lineTrackerListener.setAtPeg(false);
+        lineTrackerListener.stop();
     }
     
     public void stopAutonomous() {
-        process.unbind("tick", lineTrackerFilter);
-        lineTrackerFilter.unbindAll();
+        process.unbind("tick", lineTrackerListener);
     }
     
     public void startOperatorControl() {
-        joystickFilter.bind("changeJoystick1", panelFilter);
-        dsFilter.bind("all", panelFilter);
+        joystickFilter.bind("changeJoystick1", panelListener);
+        dsFilter.bind("all", panelListener);
         dsFilter.update(false);
-        
-        panelFilter.bind("all", mecanumDriveListener);
-        panelFilter.bind("all", mastListener);
         
         endGameEmitter.bind("startEndGame", new Listener() {
             public void handle(Event event) {
@@ -60,7 +53,6 @@ class MorTorqControlListener extends ControlListener {
     public void stopOperatorControl() {
         joystickFilter.unbindAll();
         dsFilter.unbindAll();
-        panelFilter.unbindAll();
         
         endGameEmitter.unbindAll();
         endGameEmitter.cancelAll();

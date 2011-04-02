@@ -1,13 +1,10 @@
 package com.bhrobotics.mortorq;
 
-import com.bhrobotics.morlib.Event;
-import com.bhrobotics.morlib.EventEmitter;
-import com.bhrobotics.morlib.Listener;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Victor;
 
-public class MastListener implements Listener {
+public class Mast {
     private static final int MOTOR_SLOT          = 4;
     private static final int LEFT_MOTOR_CHANNEL  = 3;
     private static final int RIGHT_MOTOR_CHANNEL = 4;
@@ -38,19 +35,19 @@ public class MastListener implements Listener {
     
     private static final double DELTA = 10.0;
     
-    DigitalInput limitSwitch = new DigitalInput(LIMIT_SWITCH_SLOT, LIMIT_SWITCH_CHANNEL);
-    
-    Encoder encoder;
-    
-    Victor leftMotor  = new Victor(MOTOR_SLOT, LEFT_MOTOR_CHANNEL);
-    Victor rightMotor = new Victor(MOTOR_SLOT, RIGHT_MOTOR_CHANNEL);
+    private DigitalInput limitSwitch = new DigitalInput(LIMIT_SWITCH_SLOT, LIMIT_SWITCH_CHANNEL);
+    private Victor leftMotor  = new Victor(MOTOR_SLOT, LEFT_MOTOR_CHANNEL);
+    private Victor rightMotor = new Victor(MOTOR_SLOT, RIGHT_MOTOR_CHANNEL);
+    private Encoder encoder;
     
     private boolean calibrated      = false;
     private boolean encoderOverride = false;
     private boolean slow            = false;
     private double setpoint         = NONE;
     
-    public MastListener() {
+    private static Mast instance = new Mast();
+    
+    private Mast() {
         DigitalInput sideA = new DigitalInput(ENCODER_SLOT, SIDE_A);
         DigitalInput sideB = new DigitalInput(ENCODER_SLOT, SIDE_B);
         
@@ -59,75 +56,37 @@ public class MastListener implements Listener {
         encoder.start();
     }
     
-    public void handle(Event event) {
-        String name = event.getName();
+    public void update() {
+        if (getLimitSwitch()) {
+            calibrated = true;
+            encoder.reset();
+        }
         
-        if (name.equals("tick")) {
-            if (getLimitSwitch()) {
-                calibrated = true;
-                encoder.reset();
-            }
+        if (isMovingDown() && getLimitSwitch()) {
+            stop();
+            encoder.reset();
+        }
+        
+        if (isMovingUp() && encoder.getDistance() >= TOP_LIMIT) {
+            stop();
+        }
+        
+        if (setpoint != NONE && calibrated) {
+            double error = Math.abs(encoder.getDistance() - setpoint);
             
-            if (isMovingDown() && getLimitSwitch()) {
-                stop();
-                encoder.reset();
-            }
-            
-            if (isMovingUp() && encoder.getDistance() >= TOP_LIMIT) {
-                stop();
-            }
-            
-            if (setpoint != NONE && calibrated) {
-                double error = Math.abs(encoder.getDistance() - setpoint);
-                
-                if (error > DELTA) {
-                    if (encoder.getDistance() < setpoint) {
-                        set(UP_SPEED);
-                    } else {
-                        if (slow) {
-                            set(SLOW_DOWN_SPEED);
-                        } else {
-                            set(FAST_DOWN_SPEED);
-                        }
-                    }
+            if (error > DELTA) {
+                if (encoder.getDistance() < setpoint) {
+                    set(UP_SPEED);
                 } else {
-                    set(0.0);
+                    if (slow) {
+                        set(SLOW_DOWN_SPEED);
+                    } else {
+                        set(FAST_DOWN_SPEED);
+                    }
                 }
+            } else {
+                set(0.0);
             }
-        } else if (name.equals("mastGround")) {
-            ground();
-        } else if (name.equals("mastFeed")) {
-            feed();
-        } else if (name.equals("mastNone")) {
-            none();
-        } else if (name.equals("mastCenterTop")) {
-            centerTop();
-        } else if (name.equals("mastCenterCenter")) {
-            centerCenter();
-        } else if (name.equals("mastCenterBottom")) {
-            centerBottom();
-        } else if (name.equals("mastSideTop")) {
-            sideTop();
-        } else if (name.equals("mastSideCenter")) {
-            sideCenter();
-        } else if (name.equals("mastSideBottom")) {
-            sideBottom();
-        } else if (name.equals("mastRelativeUp")) {
-            relativeUp();
-        } else if (name.equals("mastRelativeDown")) {
-            relativeDown();
-        } else if (name.equals("mastRelativeStop")) {
-            stop();
-        } else if (name.equals("mastStop")) {
-            stop();
-        } else if (name.equals("mastEncoderOverrideOn")) {
-            encoderOverride = true;
-        } else if (name.equals("mastEncoderOverrideOff")) {
-            encoderOverride = false;
-        } else if (name.equals("mastSlow")) {
-            slow = true;
-        } else if (name.equals("mastFast")) {
-            slow = false;
         }
     }
     
@@ -156,6 +115,14 @@ public class MastListener implements Listener {
             leftMotor.set(value);
             rightMotor.set(value);
         }
+    }
+    
+    public void setEncoderOverride(boolean e) {
+        encoderOverride = e;
+    }
+    
+    public void setSlow(boolean s) {
+        slow = s;
     }
     
     public void relativeUp() {
@@ -219,5 +186,9 @@ public class MastListener implements Listener {
     
     private boolean getLimitSwitch() {
         return !limitSwitch.get();
+    }
+    
+    public static Mast getInstance() {
+        return instance;
     }
 }

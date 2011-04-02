@@ -1,14 +1,11 @@
 package com.bhrobotics.mortorq;
 
-import com.bhrobotics.morlib.Event;
-import com.bhrobotics.morlib.EventEmitter;
-import com.bhrobotics.morlib.Listener;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalModule;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 
-class MecanumDriveListener implements Listener {
+public class MecanumDrive {
     private static final int MOTOR_SLOT   = 4;
     
     private static final double SCALE_FAST = 1.0;
@@ -44,55 +41,29 @@ class MecanumDriveListener implements Listener {
     private static final int LIMIT_SWITCH_SLOT    = 4;
     private static final int LIMIT_SWITCH_CHANNEL = 1;
     
-    Victor rightFrontMotor = new Victor(MOTOR_SLOT, RIGHT_FRONT_MOTOR);
-    Victor rightBackMotor  = new Victor(MOTOR_SLOT, RIGHT_BACK_MOTOR);
-    Victor leftFrontMotor  = new Victor(MOTOR_SLOT, LEFT_FRONT_MOTOR);
-    Victor leftBackMotor   = new Victor(MOTOR_SLOT, LEFT_BACK_MOTOR);
+    private Victor rightFrontMotor = new Victor(MOTOR_SLOT, RIGHT_FRONT_MOTOR);
+    private Victor rightBackMotor  = new Victor(MOTOR_SLOT, RIGHT_BACK_MOTOR);
+    private Victor leftFrontMotor  = new Victor(MOTOR_SLOT, LEFT_FRONT_MOTOR);
+    private Victor leftBackMotor   = new Victor(MOTOR_SLOT, LEFT_BACK_MOTOR);
     
-    public MecanumDriveListener() {
-        stop();
-    }
+    private static MecanumDrive instance = new MecanumDrive();
     
-    public void handle(Event event) {
-        String name = event.getName();
+    private MecanumDrive() {}
+    
+    public void joystickDrive(Joystick joystick) {
+        double x = deadband(joystick.getX()) * X_SCALE;
+        double y = deadband(joystick.getY()) * Y_SCALE;
+        double z = deadband(joystick.getZ()) * Z_SCALE;
         
-        if (name.startsWith("changeJoystick")) {
-            Joystick joystick = (Joystick) event.getData("joystick");
-            
-            double x = deadband(joystick.getX()) * X_SCALE;
-            double y = deadband(joystick.getY()) * Y_SCALE;
-            double z = deadband(joystick.getZ()) * Z_SCALE;
-            
-            if (joystick.getRawButton(2)) {
-                x *= -1.0;
-                y *= -1.0;
-            }
-            
-            if (joystick.getTrigger() || getLimitSwitch() || joystick.getRawButton(2)) {
-                drive(x, y, z, SCALE_SLOW);
-            } else {
-                drive(x, y, z, SCALE_FAST);
-            }
-        } else if (name.equals("drive")) {
-            double x = ((Double) event.getData("x")).doubleValue();
-            double y = ((Double) event.getData("y")).doubleValue();
-            double rotation = ((Double) event.getData("rotation")).doubleValue();
-            
-            drive(x, y, rotation);
-        } else if (name.startsWith("changeMotor")) {
-            double setpoint = ((Double) event.getData("value")).doubleValue();
-            
-            if (name.equals("changeMotorRightFront")) {
-                setRightFront(setpoint);
-            } else if (name.equals("changeMotorRightBack")) {
-                setRightBack(setpoint);
-            } else if (name.equals("changeMotorLeftFront")) {
-                setLeftFront(setpoint);
-            } else if (name.equals("changeMotorLeftBack")) {
-                setLeftBack(setpoint);
-            }
-        } else if (name.equals("stopMotors")) {
-            stop();
+        if (joystick.getRawButton(2)) {
+            x *= -1.0;
+            y *= -1.0;
+        }
+        
+        if (joystick.getTrigger() || getLimitSwitch() || joystick.getRawButton(2)) {
+            drive(x, y, z, SCALE_SLOW);
+        } else {
+            drive(x, y, z, SCALE_FAST);
         }
     }
     
@@ -122,19 +93,19 @@ class MecanumDriveListener implements Listener {
         }
     }
     
-    private void setRightFront(double setpoint) {
+    public void setRightFront(double setpoint) {
         rightFrontMotor.set(scale(setpoint, RIGHT_FRONT_MAX, RIGHT_FRONT_MIN, RIGHT_FRONT_REVERSE));
     }
     
-    private void setRightBack(double setpoint) {
+    public void setRightBack(double setpoint) {
         rightBackMotor.set(scale(setpoint, RIGHT_BACK_MAX, RIGHT_BACK_MIN, RIGHT_BACK_REVERSE));
     }
     
-    private void setLeftFront(double setpoint) {
+    public void setLeftFront(double setpoint) {
         leftFrontMotor.set(scale(setpoint, LEFT_FRONT_MAX, LEFT_FRONT_MIN, LEFT_FRONT_REVERSE));
     }
     
-    private void setLeftBack(double setpoint) {
+    public void setLeftBack(double setpoint) {
         leftBackMotor.set(scale(setpoint, LEFT_BACK_MAX, LEFT_BACK_MIN, LEFT_BACK_REVERSE));
     }
     
@@ -155,5 +126,9 @@ class MecanumDriveListener implements Listener {
         } else {
             return 0;
         }
+    }
+    
+    public static MecanumDrive getInstance() {
+        return instance;
     }
 }

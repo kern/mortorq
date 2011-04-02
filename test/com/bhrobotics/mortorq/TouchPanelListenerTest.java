@@ -7,12 +7,12 @@ import com.bhrobotics.morlib.Listener;
 import com.bhrobotics.morlib.Reactor;
 import java.util.Hashtable;
 
-public class TouchPanelFilterTest extends TestCase {
-    TouchPanelFilter panel;
+public class TouchPanelListenerTest extends TestCase {
+    TouchPanelListener panel;
     
     public void setUp() {
         Reactor.startTicking();
-        panel = new TouchPanelFilter();
+        panel = new TouchPanelListener();
     }
     
     public void tearDown() {
@@ -122,31 +122,21 @@ public class TouchPanelFilterTest extends TestCase {
         
         Event otherEvent = new Event("foo", null);
         
-        StubListener listener0 = new StubListener();
-        StubListener listener1 = new StubListener();
-        panel.bind("test0", listener0);
-        panel.bind("test1", listener1);
-        
         panel.handle(screenChangeEvent(0));
         panel.handle(otherEvent);
         Reactor.tick();
         
         assertTrue(screen0.received);
-        assertTrue(listener0.received);
         assertFalse(screen1.received);
-        assertFalse(listener1.received);
         
         screen0.reset();
-        listener0.reset();
         
         panel.handle(screenChangeEvent(1));
         panel.handle(otherEvent);
         Reactor.tick();
         
         assertFalse(screen0.received);
-        assertFalse(listener0.received);
         assertTrue(screen1.received);
-        assertTrue(listener1.received);
     }
     
     public void testStop() {
@@ -227,10 +217,6 @@ public class TouchPanelFilterTest extends TestCase {
         
         public void handle(Event event) {
             received = true;
-            
-            if (event.getName() == "foo") {
-                panel.trigger(name, event.getData());
-            }
         }
         
         public void reset() {

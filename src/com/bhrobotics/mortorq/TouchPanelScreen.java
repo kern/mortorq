@@ -3,14 +3,14 @@ package com.bhrobotics.mortorq;
 import com.bhrobotics.morlib.Event;
 
 public abstract class TouchPanelScreen {
-    protected TouchPanelFilter panel;
+    protected TouchPanelListener panel;
     private boolean bound = false;
     
-    public TouchPanelFilter getPanel() {
+    public TouchPanelListener getPanel() {
         return panel;
     }
     
-    public void setPanel(TouchPanelFilter p) {
+    public void setPanel(TouchPanelListener p) {
         panel = p;
     }
     

@@ -4,9 +4,10 @@ import com.bhrobotics.morlib.Event;
 import com.bhrobotics.morlib.DuplicateFilter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.Joystick;
 import java.util.Hashtable;
 
-public class MorTorqTouchPanelFilter extends TouchPanelFilter {
+public class MorTorqTouchPanelListener extends TouchPanelListener {
     DriverStationEnhancedIO ds = DriverStation.getInstance().getEnhancedIO();
     
     private StopScreen stopScreen                 = new StopScreen();
@@ -15,7 +16,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     private ManipulatorsScreen manipulatorsScreen = new ManipulatorsScreen();
     private MastScreen mastScreen                 = new MastScreen();
     
-    public MorTorqTouchPanelFilter() {
+    public MorTorqTouchPanelListener() {
         setScreen(0, new StopScreen());
         setScreen(1, new GameScreen());
         setScreen(2, new DriveTrainScreen());
@@ -27,17 +28,16 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             System.out.println("[mortouch] Stop screen bound.");
             
-            trigger("stopMotors");
-            
+            MecanumDrive.getInstance().stop();
             Compressor.getInstance().stop();
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
             Elbow.getInstance().raise();
             Minibot.getInstance().retract();
             
-            trigger("mastStop");
-            trigger("mastEncoderOverrideOff");
-            trigger("mastFast");
+            Mast.getInstance().stop();
+            Mast.getInstance().setEncoderOverride(false);
+            Mast.getInstance().setSlow(false);
         }
     }
     
@@ -57,8 +57,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             System.out.println("[mortouch] Game screen bound.");
             
-            trigger("stopMotors");
-            
+            MecanumDrive.getInstance().stop();
             Compressor.getInstance().auto();
             claw(CLAW);
             wrist(WRIST);
@@ -67,14 +66,14 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             minibotInterlock(MINIBOT);
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
-            trigger("mastEncoderOverrideOff");
+            Mast.getInstance().setEncoderOverride(false);
         }
         
         public void handle(Event event) {
             String name = event.getName();
             
             if (name.startsWith("changeJoystick")) {
-                trigger(event);
+                MecanumDrive.getInstance().joystickDrive((Joystick) event.getData("joystick"));
             } else if (name.equals("changeDigital4") || name.equals("changeDigital5") || name.equals("changeDigital6") || name.equals("changeDigital7") || name.equals("changeDigital8") || name.equals("changeDigital9") || name.equals("changeDigital14")) {
                 mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
             } else if (name.equals("changeDigital11")) {
@@ -120,9 +119,9 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             Elbow.getInstance().raise();
             Minibot.getInstance().retract();
             
-            trigger("mastStop");
-            trigger("mastEncoderOverrideOff");
-            trigger("mastFast");
+            Mast.getInstance().stop();
+            Mast.getInstance().setEncoderOverride(false);
+            Mast.getInstance().setSlow(false);
         }
         
         public void handle(Event event) {
@@ -151,8 +150,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             System.out.println("[mortouch] Manipulators screen bound.");
             
-            trigger("stopMotors");
-            
+            MecanumDrive.getInstance().stop();
             compressorMode(COMPRESSOR_AUTO);
             compressorManualState(COMPRESSOR_MANUAL_STATE);
             claw(CLAW);
@@ -160,9 +158,9 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             elbow(ELBOW, false);
             minibot(MINIBOT);
             
-            trigger("mastStop");
-            trigger("mastEncoderOverrideOff");
-            trigger("mastFast");
+            Mast.getInstance().stop();
+            Mast.getInstance().setEncoderOverride(false);
+            Mast.getInstance().setSlow(false);
         }
         
         public void handle(Event event) {
@@ -197,8 +195,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
         public void bound() {
             System.out.println("[mortouch] Mast screen bound.");
             
-            trigger("stopMotors");
-            
+            MecanumDrive.getInstance().stop();
             Compressor.getInstance().stop();
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
@@ -207,7 +204,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             mast(POSITION, MAST_BIT_1, MAST_BIT_2, MAST_BIT_3, UP_ARROW, DOWN_ARROW, NONE);
             mastEncoderOverride(MAST_ENCODER_OVERRIDE);
-            trigger("mastFast");
+            Mast.getInstance().setSlow(false);
         }
         
         public void handle(Event event) {
@@ -230,22 +227,22 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     }
     
     private void leftFrontMotor(int stopChannel, int backwardChannel, int speedChannel) {
-        motor("LeftFront", stopChannel, backwardChannel, speedChannel);
+        MecanumDrive.getInstance().setLeftFront(motor(stopChannel, backwardChannel, speedChannel));
     }
     
     private void rightFrontMotor(int stopChannel, int backwardChannel, int speedChannel) {
-        motor("RightFront", stopChannel, backwardChannel, speedChannel);
+        MecanumDrive.getInstance().setRightFront(motor(stopChannel, backwardChannel, speedChannel));
     }
     
     private void leftBackMotor(int stopChannel, int backwardChannel, int speedChannel) {
-        motor("LeftBack", stopChannel, backwardChannel, speedChannel);
+        MecanumDrive.getInstance().setLeftBack(motor(stopChannel, backwardChannel, speedChannel));
     }
     
     private void rightBackMotor(int stopChannel, int backwardChannel, int speedChannel) {
-        motor("RightBack", stopChannel, backwardChannel, speedChannel);
+        MecanumDrive.getInstance().setRightBack(motor(stopChannel, backwardChannel, speedChannel));
     }
     
-    private void motor(String name, int stopChannel, int backwardChannel, int speedChannel) {
+    private double motor(int stopChannel, int backwardChannel, int speedChannel) {
         double value;
         
         if (getDigital(backwardChannel)) {
@@ -260,10 +257,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             value /= 2.0;
         }
         
-        Hashtable data = new Hashtable();
-        data.put("value", new Double(value));
-        
-        trigger("changeMotor" + name, data);
+        return value;
     }
     
     private void compressorMode(int channel) {
@@ -299,11 +293,11 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             Elbow.getInstance().lower();
             
             if (shouldSlowMast) {
-                trigger("mastSlow");
+            Mast.getInstance().setSlow(true);
             }
         } else {
             Elbow.getInstance().raise();
-            trigger("mastFast");
+            Mast.getInstance().setSlow(false);
         }
     }
     
@@ -322,36 +316,36 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     private void mast(int positionChannel, int bitChannel1, int bitChannel2, int bitChannel3, int upChannel, int downChannel, int noneChannel) {
         if (getDigital(positionChannel)) {
             if (getDigital(upChannel)) {
-                trigger("mastRelativeUp");
+                Mast.getInstance().relativeUp();
             } else if (getDigital(downChannel)) {
-                trigger("mastRelativeDown");
+                Mast.getInstance().relativeDown();
             } else {
-                trigger("mastRelativeStop");
+                Mast.getInstance().stop();
             }
         } else {
             if (getDigital(noneChannel)) {
-                trigger("mastNone");
+                Mast.getInstance().none();
             } else {
                 boolean bit1 = getDigital(bitChannel1);
                 boolean bit2 = getDigital(bitChannel2);
                 boolean bit3 = getDigital(bitChannel3);
                 
                 if (!bit1 && !bit2 && !bit3) {
-                    trigger("mastGround");
+                    Mast.getInstance().ground();
                 } else if (bit1 && !bit2 && !bit3) {
-                    trigger("mastCenterCenter");
+                    Mast.getInstance().centerCenter();
                 } else if (!bit1 && bit2 && !bit3) {
-                    trigger("mastCenterTop");
+                    Mast.getInstance().centerTop();
                 } else if (bit1 && bit2 && !bit3) {
-                    trigger("mastCenterBottom");
+                    Mast.getInstance().centerBottom();
                 } else if (!bit1 && !bit2 && bit3) {
-                    trigger("mastSideTop");
+                    Mast.getInstance().sideTop();
                 } else if (bit1 && !bit2 && bit3) {
-                    trigger("mastSideBottom");
+                    Mast.getInstance().sideBottom();
                 } else if (!bit1 && bit2 && bit3) {
-                    trigger("mastSideCenter");
+                    Mast.getInstance().sideCenter();
                 } else if (bit1 && bit2 && bit3) {
-                    trigger("mastFeed");
+                    Mast.getInstance().feed();
                 }
             }
         }
@@ -359,9 +353,9 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private void mastEncoderOverride(int channel) {
         if (getDigital(channel)) {
-            trigger("mastEncoderOverrideOn");
+            Mast.getInstance().setEncoderOverride(true);
         } else {
-            trigger("mastEncoderOverrideOff");
+            Mast.getInstance().setEncoderOverride(false);
         }
     }
 }
