@@ -11,17 +11,21 @@ class MorTorqControlListener extends ControlListener {
     private LineTrackerFilter lineTrackerFilter       = new LineTrackerFilter();
     private MorTorqTouchPanelFilter panelFilter       = new MorTorqTouchPanelFilter();
     private MecanumDriveListener mecanumDriveListener = new MecanumDriveListener();
-    private CompressorListener compressorListener     = new CompressorListener();
     private MastListener mastListener                 = new MastListener();
     private EventEmitter endGameEmitter               = new EventEmitter();
     
     public void start() {
+        process.bind("tick", new Listener() {
+            public void handle(Event event) {
+                Compressor.getInstance().update();
+            }
+        });
+        
         process.bind("tick", mastListener);
-        process.bind("tick", compressorListener);
     }
     
     public void startAutonomous() {
-        compressorListener.auto();
+        Compressor.getInstance().auto();
         Wrist.getInstance().raise();
         Elbow.getInstance().raise();
         Minibot.getInstance().retract();
@@ -42,7 +46,6 @@ class MorTorqControlListener extends ControlListener {
         dsFilter.update(false);
         
         panelFilter.bind("all", mecanumDriveListener);
-        panelFilter.bind("all", compressorListener);
         panelFilter.bind("all", mastListener);
         
         endGameEmitter.bind("startEndGame", new Listener() {

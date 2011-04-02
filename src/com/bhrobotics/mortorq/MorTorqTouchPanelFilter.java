@@ -29,7 +29,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             trigger("stopMotors");
             
-            trigger("compressorStop");
+            Compressor.getInstance().stop();
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
             Elbow.getInstance().raise();
@@ -59,7 +59,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             trigger("stopMotors");
             
-            trigger("compressorAuto");
+            Compressor.getInstance().auto();
             claw(CLAW);
             wrist(WRIST);
             elbow(ELBOW, true);
@@ -114,7 +114,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             leftBackMotor(LEFT_BACK_STOP, LEFT_BACK_BACKWARD, LEFT_BACK_SPEED);
             rightBackMotor(RIGHT_BACK_STOP, RIGHT_BACK_BACKWARD, RIGHT_BACK_SPEED);
             
-            trigger("compressorStop");
+            Compressor.getInstance().stop();
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
             Elbow.getInstance().raise();
@@ -154,7 +154,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             trigger("stopMotors");
             
             compressorMode(COMPRESSOR_AUTO);
-            compressorState(COMPRESSOR_MANUAL_STATE);
+            compressorManualState(COMPRESSOR_MANUAL_STATE);
             claw(CLAW);
             wrist(WRIST);
             elbow(ELBOW, false);
@@ -171,7 +171,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             if (name.equals("changeDigital7")) {
                 compressorMode(COMPRESSOR_AUTO);
             } else if (name.equals("changeDigital8")) {
-                compressorState(COMPRESSOR_MANUAL_STATE);
+                compressorManualState(COMPRESSOR_MANUAL_STATE);
             } else if (name.equals("changeDigital4")) {
                 claw(CLAW);
             } else if (name.equals("changeDigital5")) {
@@ -199,7 +199,7 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
             
             trigger("stopMotors");
             
-            trigger("compressorStop");
+            Compressor.getInstance().stop();
             Claw.getInstance().wide();
             Wrist.getInstance().lower();
             Elbow.getInstance().raise();
@@ -268,18 +268,14 @@ public class MorTorqTouchPanelFilter extends TouchPanelFilter {
     
     private void compressorMode(int channel) {
         if (getDigital(channel)) {
-            trigger("compressorAuto");
+            Compressor.getInstance().auto();
         } else {
-            trigger("compressorManual");
+            Compressor.getInstance().manual();
         }
     }
     
-    private void compressorState(int channel) {
-        if (getDigital(channel)) {
-            trigger("compressorManualOn");
-        } else {
-            trigger("compressorManualOff");
-        }
+    private void compressorManualState(int channel) {
+        Compressor.getInstance().setManualState(getDigital(channel));
     }
     
     private void claw(int channel) {
